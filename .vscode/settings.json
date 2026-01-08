@@ -1,0 +1,12 @@
+{
+  "editor.wordWrap": "off",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "frontMatter.taxonomy.quoteStringValues": true,
+  "frontMatter.content.autoUpdateDate": true,
+  "frontMatter.framework.id": "hugo",
+  "frontMatter.content.publicFolder": "static",
+  "frontMatter.preview.host": "http://localhost:1313"
+}
