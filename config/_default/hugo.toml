@@ -40,7 +40,7 @@ copyRight = "Copyright (c) 2025-2026 GolemCpp"
   rel  = "sitemap"
 
 [sitemap]
-  changefreq = "monthly"
+  changefreq = "weekly"
   filename = "sitemap.xml"
   priority = 0.5
 

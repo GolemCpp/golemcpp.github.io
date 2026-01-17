@@ -1,1 +1,72 @@
 // Put your custom SCSS code here
+
+@font-face {
+  font-family: InterVariable;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter/InterVariable.woff2") format("woff2");
+}
+@font-face {
+  font-family: InterVariable;
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter/InterVariable-Italic.woff2") format("woff2");
+}
+
+.content .golem-icon {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2.5rem;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));
+}
+
+.content .golem-title {
+  text-shadow:
+    0 1px 1px rgba(0,0,0,0.3),
+    0 2px 4px rgba(0,0,0,0.25),
+    0 4px 12px rgba(0,0,0,0.15);
+}
+
+:root {
+  --scroll: 0;
+  --bg-pos-x: 0%;
+  --bg-pos-y: 0%;
+}
+
+[data-bs-theme="dark"] body {
+  background: linear-gradient(135deg,
+  #200b0b 0%,
+  #161d3b 33%,
+  #291037 66%,
+  #0d2c2e 100%);
+  background-size: 300% 300%;
+  animation: gradientShift 18s ease-in-out infinite;
+}
+
+[data-bs-theme="light"] body {
+  background: linear-gradient(135deg,
+  #f5d9d988 0%,
+  #bcbfe888 33%,
+  #e0beef88 66%,
+  #d0f3f588 100%);
+  background-size: 300% 300%;
+  animation: gradientShift 18s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0%   { background-position: calc(var(--bg-pos-x) / 2 + 0%) 50%; }
+  50%  { background-position: calc(var(--bg-pos-x) / 2 + 50%) 50%; }
+  100% { background-position: calc(var(--bg-pos-x) / 2 + 0%) 50%; }
+}
+
+[data-bs-theme="dark"] .card {
+	background: #17181c3d;
+	border: 1px solid #23262f;
+}
+
+[data-bs-theme="light"] .card {
+	background: #FFFFFF3d;
+	border: 1px solid #23262f4f;
+}

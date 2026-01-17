@@ -1,9 +1,9 @@
 ---
-title: "Blog"
+title: Blog
 description: ""
 summary: ""
-date: 2023-09-07T16:21:44+02:00
-lastmod: 2023-09-07T16:21:44+02:00
+date: 2026-01-17T13:25:47.744Z
+lastmod: 2026-01-17T13:25:47.744Z
 draft: false
 weight: 50
 categories: []
@@ -12,8 +12,8 @@ contributors: []
 pinned: false
 homepage: false
 seo:
-  title: "" # custom title (optional)
-  description: "" # custom description (recommended)
-  canonical: "" # custom canonical URL (optional)
-  noindex: false # false (default) or true
+  title: ""
+  description: ""
+  canonical: ""
+  noindex: false
 ---
