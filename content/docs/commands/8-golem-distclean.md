@@ -1,11 +1,11 @@
 ---
-title: "golem clean"
+title: "golem distclean"
 description: ""
 summary: ""
-date: 2026-01-18T10:20:48+01:00
-lastmod: 2026-01-18T10:20:50+01:00
+date: 2026-01-18T10:21:17+01:00
+lastmod: 2026-01-18T10:21:19+01:00
 draft: false
-weight: 305
+weight: 308
 toc: true
 seo:
   title: "" # custom title (optional)
@@ -14,8 +14,8 @@ seo:
   noindex: false # false (default) or true
 ---
 
-This command cleans up the objects built with `golem build`.
+This command deletes the build directory.
 
 ``` bash
-golem clean
+golem distclean
 ```
