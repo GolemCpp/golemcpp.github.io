@@ -14,7 +14,41 @@ seo:
   noindex: false # false (default) or true
 ---
 
-### How to install?
+## About Golem
+
+Golem is a cross-platform build system for C/C++ projects. It can build projects like CMake does, or manage dependencies like Conan does. It only requires Python and Git to work.
+
+Golem's main goal is to remove the noise in the project file, and favor the developers intents rather than the technical details when unneeded.
+
+Here is how a **golemfile.py** looks like:
+``` python {title="golemfile.py"}
+def configure(project):
+
+    project.dependency(name='json',
+                       repository='https://github.com/nlohmann/json.git',
+                       version='^3.0.0',
+                       shallow=True)
+
+    project.library(name='mylib',
+                    includes=['mylib/include'],
+                    source=['mylib/src'],
+                    defines=['FOO_API_EXPORT'])
+
+    project.export(name='mylib',
+                   includes=['mylib/include'],
+                   defines=['FOO_API_IMPORT'])
+
+    project.program(name='hello',
+                    source=['src'],
+                    use=['mylib'],
+                    deps=['json'])
+```
+
+But alternatively, you can also define an equivalent [golemfile.json](https://github.com/GolemCpp/golem/tree/main/examples/minimal/golemfile.json).
+
+Have a look at the full example in [examples/minimal](https://github.com/GolemCpp/golem/tree/main/examples/minimal).
+
+## Installing Golem
 
 **Requirements:** Python 3.10 or later, Git
 
@@ -46,7 +80,7 @@ pipx upgrade --global golemcpp
 pip install --upgrade golemcpp
 ```
 
-### First project
+## First project
 
 Everything starts with `golemfile.py`. Create it at the root of your project directory.
 
@@ -56,8 +90,6 @@ Here is an example to compile a **Hello World** program:
 def configure(project):
     project.program(name='hello',
                     source=['src'])
-
-
 ```
 
 The project variable is the entry point to declare dependencies, libraries and programs that make up the project.
@@ -76,7 +108,7 @@ int main()
 
 Have a look at the full example in [examples/hello](https://github.com/GolemCpp/golem/tree/main/examples/hello).
 
-#### Building the project
+### Building the project
 
 To build the program, run:
 
