@@ -1,0 +1,25 @@
+{{ $emojis := dict
+  "note" "ℹ️"
+  "tip" "💡"
+  "important" "❗"
+  "warning" "⚠️"
+  "caution" "🚨"
+}}
+
+{{ if eq .Type "alert" }}
+  <blockquote class="golem-callout golem-callout-{{ .AlertType }}">
+    <p class="golem-callout-heading">
+      {{ transform.Emojify (index $emojis .AlertType) }}
+      {{ with .AlertTitle }}
+        {{ . }}
+      {{ else }}
+        {{ or (i18n .AlertType) (title .AlertType) }}
+      {{ end }}
+    </p>
+    {{ .Text }}
+  </blockquote>
+{{ else }}
+  <blockquote>
+    {{ .Text }}
+  </blockquote>
+{{ end }}

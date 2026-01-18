@@ -89,3 +89,41 @@
   position: relative;
   z-index: 1;
 }
+
+blockquote.golem-callout {
+  background-color: transparent;
+  border-radius: .5rem;
+  padding-top: .8rem;
+  padding-bottom: .01rem;
+  font-size: 1rem;
+}
+
+p.golem-callout-heading {
+  font-weight: bold;
+  margin-bottom: .5em;
+}
+
+blockquote.golem-callout.golem-callout-note {
+  background-color: #00b3ff15;
+	border-color: #00b3ff55;
+}
+
+blockquote.golem-callout.golem-callout-tip {
+  background-color: #00ff2f15;
+	border-color: #00ff2f55;
+}
+
+blockquote.golem-callout.golem-callout-important {
+  background-color: #9500ff15;
+	border-color: #9500ff55;
+}
+
+blockquote.golem-callout.golem-callout-warning {
+  background-color: #ffc40015;
+	border-color: #ffc40055;
+}
+
+blockquote.golem-callout.golem-callout-caution {
+  background-color: #FF000015;
+	border-color: #FF000055;
+}
