@@ -2,8 +2,8 @@
 title: "golem distclean"
 description: ""
 summary: ""
-date: 2023-09-07T16:13:18+02:00
-lastmod: 2023-09-07T16:13:18+02:00
+date: 2026-01-18T10:21:17+01:00
+lastmod: 2026-01-18T10:21:19+01:00
 draft: false
 weight: 306
 toc: true
@@ -14,4 +14,8 @@ seo:
   noindex: false # false (default) or true
 ---
 
-TODO
+This command deletes the build directory.
+
+``` bash
+golem distclean
+```

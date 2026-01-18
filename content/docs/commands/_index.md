@@ -2,8 +2,8 @@
 title: "Commands"
 description: ""
 summary: ""
-date: 2023-09-07T16:12:37+02:00
-lastmod: 2023-09-07T16:12:37+02:00
+date: 2026-01-18T13:13:08+01:00
+lastmod: 2026-01-18T13:13:11+01:00
 draft: false
 weight: 300
 toc: true

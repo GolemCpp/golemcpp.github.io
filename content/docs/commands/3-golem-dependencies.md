@@ -2,8 +2,8 @@
 title: "golem dependencies"
 description: ""
 summary: ""
-date: 2023-09-07T16:13:18+02:00
-lastmod: 2023-09-07T16:13:18+02:00
+date: 2026-01-18T10:16:28+01:00
+lastmod: 2026-01-18T10:16:31+01:00
 draft: false
 weight: 303
 toc: true
@@ -14,4 +14,10 @@ seo:
   noindex: false # false (default) or true
 ---
 
-TODO
+This command builds the dependencies needed to build the project.
+
+When defining **dependencies** in the project file, this command becomes **mandatory** after `golem resolve`, and expects it to have run successfully.
+
+``` bash
+golem dependencies
+```

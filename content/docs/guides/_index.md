@@ -2,8 +2,8 @@
 title: "Guides"
 description: ""
 summary: ""
-date: 2023-09-07T16:06:50+02:00
-lastmod: 2023-09-07T16:06:50+02:00
+date: 2026-01-18T13:13:30+01:00
+lastmod: 2026-01-18T13:13:33+01:00
 draft: false
 weight: 100
 toc: true

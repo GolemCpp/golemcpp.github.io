@@ -2,8 +2,8 @@
 title: "Dependencies"
 description: ""
 summary: ""
-date: 2023-09-07T16:13:18+02:00
-lastmod: 2023-09-07T16:13:18+02:00
+date: 2026-01-18T10:33:54+01:00
+lastmod: 2026-01-18T10:33:57+01:00
 draft: false
 weight: 802
 toc: true
@@ -14,4 +14,51 @@ seo:
   noindex: false # false (default) or true
 ---
 
-TODO
+## Management and Conflict mitigation
+
+It is expected in a complex project that dependencies have some dependencies in common, and sometimes they are conflicting with each other.
+
+The `master_dependencies.json` file solves this issue by overriding how dependencies should be resolved. It's a list of dependencies that `golem resolve` checks everytime it is encountering a dependency definition to replace it with the one found (if any) in the `master_dependencies.json`.
+
+> [!TIP]+
+> The most common use cases are forcing a specific version or forcing the release variant on a dependency accross a whole dependency tree.
+
+Here is how a it looks like:
+
+```json {title="master_dependencies.json"}
+[
+    {
+        "repository": "https://github.com/nlohmann/json.git",
+        "version": "^3.0.0",
+        "variant": "release",
+        "shallow": true
+    }
+]
+```
+
+This overrides any reference to this dependency with the version `^3.0.0` and the release variant.
+
+The `master_dependencies.json` can be specified in multiple ways. By order of precedence:
+
+1. `--master-dependencies-configuration=<path_to_file>`
+
+   Call golem configure with an option pointing to the file
+
+2. `project.master_dependencies_configuration = '<path_to_file>'`
+
+   Define in the project file where to find the file
+
+3. `GOLEM_MASTER_DEPENDENCIES_CONFIGURATION=<path_to_file>`
+
+   Define an environment variable pointing to the file
+
+4. `project.master_dependencies_repository = '<repository_url>'`
+
+   Define in the project file the repository where to find the file
+
+5. `GOLEM_MASTER_DEPENDENCIES_REPOSITORY=<repository_url>`
+
+   Define an environment variable pointing to a repository containing: `master_dependencies.json`
+
+> [!NOTE]+
+> Although useful to quickly try a `master_dependencies.json`, it is not recommended to define it in the project file itself for most projects.
