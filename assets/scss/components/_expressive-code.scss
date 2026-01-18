@@ -500,7 +500,7 @@
     --ec-tm-delDiffIndCol: #ed8779d0;
     --ec-frm-shdCol: #011627;
     --ec-frm-frameBoxShdCssVal: none;
-    --ec-frm-edActTabBg: var(--sl-color-gray-6);
+    --ec-frm-edActTabBg: color-mix(in srgb, var(--sl-color-gray-6), transparent 50%);
     --ec-frm-edActTabFg: var(--sl-color-text);
     --ec-frm-edActTabBrdCol: transparent;
     --ec-frm-edActTabIndHt: 1px;
@@ -509,16 +509,16 @@
     --ec-frm-edTabsMargInlStart: 0;
     --ec-frm-edTabsMargBlkStart: 0;
     --ec-frm-edTabBrdRad: 0px;
-    --ec-frm-edTabBarBg: var(--sl-color-black);
+    --ec-frm-edTabBarBg: color-mix(in srgb, var(--sl-color-black), transparent 50%);
     --ec-frm-edTabBarBrdCol: color-mix(in srgb, var(--sl-color-gray-5), transparent 25%);
     --ec-frm-edTabBarBrdBtmCol: color-mix(in srgb, var(--sl-color-gray-5), transparent 25%);
     --ec-frm-edBg: color-mix(in srgb, var(--sl-color-gray-6), transparent 50%);
     --ec-frm-trmTtbDotsFg: color-mix(in srgb, var(--sl-color-gray-5), transparent 25%);
     --ec-frm-trmTtbDotsOpa: 0.75;
-    --ec-frm-trmTtbBg: var(--sl-color-black);
+    --ec-frm-trmTtbBg: color-mix(in srgb, var(--sl-color-black), transparent 50%);
     --ec-frm-trmTtbFg: var(--sl-color-text);
     --ec-frm-trmTtbBrdBtmCol: color-mix(in srgb, var(--sl-color-gray-5), transparent 25%);
-    --ec-frm-trmBg: var(--sl-color-gray-6);
+    --ec-frm-trmBg: color-mix(in srgb, var(--sl-color-gray-6), transparent 50%);
     --ec-frm-inlBtnFg: var(--sl-color-text);
     --ec-frm-inlBtnBg: var(--sl-color-text);
     --ec-frm-inlBtnBgIdleOpa: 0;
@@ -554,13 +554,13 @@
         --ec-tm-delBg: #ff9c8e99;
         --ec-tm-delDiffIndCol: #9d4138d0;
         --ec-frm-shdCol: #d9d9d9;
-        --ec-frm-edActTabBg: var(--sl-color-gray-7);
+        --ec-frm-edActTabBg: color-mix(in srgb, var(--sl-color-gray-7), transparent 50%);
         // --ec-frm-edActTabIndTopCol: var(--sl-color-accent);
         --ec-frm-edActTabIndTopCol: #5d2f86;
-        --ec-frm-edTabBarBg: var(--sl-color-gray-6);
+        --ec-frm-edTabBarBg: color-mix(in srgb, var(--sl-color-gray-6), transparent 50%);
         --ec-frm-edBg: color-mix(in srgb, var(--sl-color-gray-7), transparent 50%);
-        --ec-frm-trmTtbBg: var(--sl-color-gray-6);
-        --ec-frm-trmBg: var(--sl-color-gray-7);
+        --ec-frm-trmTtbBg: color-mix(in srgb, var(--sl-color-gray-6), transparent 50%);
+        --ec-frm-trmBg: color-mix(in srgb, var(--sl-color-gray-7), transparent 50%);
         --ec-frm-tooltipSuccessBg: #078662;
     }
 
@@ -589,13 +589,13 @@
     --ec-tm-delBg: #ff9c8e99;
     --ec-tm-delDiffIndCol: #9d4138d0;
     --ec-frm-shdCol: #d9d9d9;
-    --ec-frm-edActTabBg: var(--sl-color-gray-7);
+    --ec-frm-edActTabBg: color-mix(in srgb, var(--sl-color-gray-7), transparent 0%);
     // --ec-frm-edActTabIndTopCol: var(--sl-color-accent);
     --ec-frm-edActTabIndTopCol: #5d2f86;
-    --ec-frm-edTabBarBg: var(--sl-color-gray-6);
-    --ec-frm-edBg: color-mix(in srgb, var(--sl-color-gray-7), transparent 50%);
-    --ec-frm-trmTtbBg: var(--sl-color-gray-6);
-    --ec-frm-trmBg: var(--sl-color-gray-7);
+    --ec-frm-edTabBarBg: color-mix(in srgb, var(--sl-color-gray-6), transparent 0%);
+    --ec-frm-edBg: color-mix(in srgb, var(--sl-color-gray-7), transparent 0%);
+    --ec-frm-trmTtbBg: color-mix(in srgb, var(--sl-color-gray-6), transparent 0%);
+    --ec-frm-trmBg: color-mix(in srgb, var(--sl-color-gray-7), transparent 0%);
     --ec-frm-tooltipSuccessBg: #078662;
 }
 
