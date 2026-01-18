@@ -3,7 +3,6 @@ title: golem configure
 description: ""
 summary: ""
 date: 2026-01-18T07:30:00.897Z
-lastmod: 2026-01-18T07:30:00.897Z
 draft: false
 weight: 302
 toc: true

@@ -3,7 +3,6 @@ title: "golem distclean"
 description: ""
 summary: ""
 date: 2026-01-18T10:21:17+01:00
-lastmod: 2026-01-18T10:21:19+01:00
 draft: false
 weight: 308
 toc: true

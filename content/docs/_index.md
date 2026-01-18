@@ -3,7 +3,6 @@ title: "Docs"
 description: ""
 summary: ""
 date: 2026-01-18T13:14:04+01:00
-lastmod: 2026-01-18T13:14:06+01:00
 draft: false
 weight: 999
 toc: true

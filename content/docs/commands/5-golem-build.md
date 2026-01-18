@@ -3,7 +3,6 @@ title: "golem build"
 description: ""
 summary: ""
 date: 2026-01-18T10:16:49+01:00
-lastmod: 2026-01-18T10:16:52+01:00
 draft: false
 weight: 305
 toc: true

@@ -3,7 +3,6 @@ title: "Guides"
 description: ""
 summary: ""
 date: 2026-01-18T13:13:30+01:00
-lastmod: 2026-01-18T13:13:33+01:00
 draft: false
 weight: 100
 toc: true

@@ -3,7 +3,6 @@ title: "Reference"
 description: ""
 summary: ""
 date: 2026-01-18T13:13:50+01:00
-lastmod: 2026-01-18T13:13:57+01:00
 draft: false
 weight: 900
 toc: true

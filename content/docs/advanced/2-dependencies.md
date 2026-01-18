@@ -3,7 +3,6 @@ title: "Dependencies"
 description: ""
 summary: ""
 date: 2026-01-18T10:33:54+01:00
-lastmod: 2026-01-18T10:33:57+01:00
 draft: false
 weight: 802
 toc: true

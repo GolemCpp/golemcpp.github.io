@@ -3,7 +3,6 @@ title: Why another build system?
 description: About how Golem started back in 2016
 summary: It all started back in 2016, with accumulated frustrations about the absence of proper dependency management in the tools of that time.
 date: 2026-01-17T17:32:01.757Z
-lastmod: 2026-01-17T17:32:01.757Z
 draft: false
 weight: 50
 categories: []

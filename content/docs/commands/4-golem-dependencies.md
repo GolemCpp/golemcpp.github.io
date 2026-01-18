@@ -3,7 +3,6 @@ title: "golem dependencies"
 description: ""
 summary: ""
 date: 2026-01-18T10:16:28+01:00
-lastmod: 2026-01-18T10:16:31+01:00
 draft: false
 weight: 304
 toc: true

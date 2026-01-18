@@ -3,7 +3,6 @@ title: "Getting Started"
 description: ""
 summary: ""
 date: 2026-01-18T13:12:16+01:00
-lastmod: 2026-01-18T13:12:19+01:00
 draft: false
 weight: 101
 toc: true

@@ -3,7 +3,6 @@ title: "golem resolve"
 description: ""
 summary: ""
 date: 2026-01-18T10:15:18+01:00
-lastmod: 2026-01-18T10:15:22+01:00
 draft: false
 weight: 303
 toc: true

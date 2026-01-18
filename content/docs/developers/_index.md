@@ -3,7 +3,6 @@ title: "Developers"
 description: ""
 summary: ""
 date: 2026-01-18T13:13:21+01:00
-lastmod: 2026-01-18T13:13:24+01:00
 draft: false
 weight: 1000
 toc: true

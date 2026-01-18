@@ -3,7 +3,6 @@ title: "golem clean"
 description: ""
 summary: ""
 date: 2026-01-18T10:20:48+01:00
-lastmod: 2026-01-18T10:20:50+01:00
 draft: false
 weight: 307
 toc: true

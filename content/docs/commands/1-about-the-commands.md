@@ -3,7 +3,6 @@ title: "About the Commands"
 description: ""
 summary: ""
 date: 2026-01-18T14:11:31+01:00
-lastmod: 2026-01-18T14:11:35+01:00
 draft: false
 weight: 301
 toc: true

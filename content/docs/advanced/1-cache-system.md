@@ -3,7 +3,6 @@ title: "Cache System"
 description: ""
 summary: ""
 date: 2026-01-18T10:23:02+01:00
-lastmod: 2026-01-18T10:23:06+01:00
 draft: false
 weight: 801
 toc: true

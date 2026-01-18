@@ -2,8 +2,7 @@
 title: "Environment Variables"
 description: ""
 summary: ""
-date: 2023-09-07T16:13:18+02:00
-lastmod: 2023-09-07T16:13:18+02:00
+date: 2026-01-18T14:30:55+01:00
 draft: false
 weight: 901
 toc: true

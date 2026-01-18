@@ -3,7 +3,6 @@ title: "Recipes"
 description: ""
 summary: ""
 date: 2026-01-18T10:44:16+01:00
-lastmod: 2026-01-18T10:44:19+01:00
 draft: false
 weight: 803
 toc: true
