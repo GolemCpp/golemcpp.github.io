@@ -1,3 +1,3 @@
-``` bash {title="pipx"}
+``` bash {title=""}
 pipx install golemcpp
 ```
