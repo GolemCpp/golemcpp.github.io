@@ -7,6 +7,7 @@
   font-display: swap;
   src: url("/fonts/inter/InterVariable.woff2") format("woff2");
 }
+
 @font-face {
   font-family: InterVariable;
   font-style: italic;
@@ -24,9 +25,9 @@
 
 .content .golem-title {
   text-shadow:
-    0 1px 1px rgba(0,0,0,0.3),
-    0 2px 4px rgba(0,0,0,0.25),
-    0 4px 12px rgba(0,0,0,0.15);
+    0 1px 1px rgba(0, 0, 0, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 :root {
@@ -37,38 +38,46 @@
 
 [data-bs-theme="dark"] body {
   background: linear-gradient(135deg,
-  #200b0b 0%,
-  #161d3b 33%,
-  #291037 66%,
-  #0d2c2e 100%);
+      #200b0b 0%,
+      #161d3b 33%,
+      #291037 66%,
+      #0d2c2e 100%);
   background-size: 300% 300%;
   animation: gradientShift 18s ease-in-out infinite;
 }
 
 [data-bs-theme="light"] body {
   background: linear-gradient(135deg,
-  #f5d9d988 0%,
-  #bcbfe888 33%,
-  #e0beef88 66%,
-  #d0f3f588 100%);
+      #f5d9d988 0%,
+      #bcbfe888 33%,
+      #e0beef88 66%,
+      #d0f3f588 100%);
   background-size: 300% 300%;
   animation: gradientShift 18s ease-in-out infinite;
 }
 
 @keyframes gradientShift {
-  0%   { background-position: calc(var(--bg-pos-x) / 2 + 0%) 50%; }
-  50%  { background-position: calc(var(--bg-pos-x) / 2 + 50%) 50%; }
-  100% { background-position: calc(var(--bg-pos-x) / 2 + 0%) 50%; }
+  0% {
+    background-position: calc(var(--bg-pos-x) / 2 + 0%) 50%;
+  }
+
+  50% {
+    background-position: calc(var(--bg-pos-x) / 2 + 50%) 50%;
+  }
+
+  100% {
+    background-position: calc(var(--bg-pos-x) / 2 + 0%) 50%;
+  }
 }
 
 [data-bs-theme="dark"] .card {
-	background: #17181c3d;
-	border: 1px solid #23262f;
+  background: #17181c3d;
+  border: 1px solid #23262f;
 }
 
 [data-bs-theme="light"] .card {
-	background: #FFFFFF3d;
-	border: 1px solid #23262f4f;
+  background: #FFFFFF3d;
+  border: 1px solid #23262f4f;
 }
 
 [data-bs-theme="light"] .expressive-code {
@@ -90,25 +99,25 @@ p.golem-callout-heading {
 
 blockquote.golem-callout.golem-callout-note {
   background-color: #00b3ff15;
-	border-color: #00b3ff55;
+  border-color: #00b3ff55;
 }
 
 blockquote.golem-callout.golem-callout-tip {
   background-color: #00ff2f15;
-	border-color: #00ff2f55;
+  border-color: #00ff2f55;
 }
 
 blockquote.golem-callout.golem-callout-important {
   background-color: #9500ff15;
-	border-color: #9500ff55;
+  border-color: #9500ff55;
 }
 
 blockquote.golem-callout.golem-callout-warning {
   background-color: #ffc40015;
-	border-color: #ffc40055;
+  border-color: #ffc40055;
 }
 
 blockquote.golem-callout.golem-callout-caution {
   background-color: #FF000015;
-	border-color: #FF000055;
+  border-color: #FF000055;
 }
