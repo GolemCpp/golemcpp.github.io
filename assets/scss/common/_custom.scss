@@ -75,21 +75,6 @@
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));
 }
 
-.blur-overlay {
-  position: absolute;
-  inset: 0; // Full coverage
-  /*
-  Warning: Generates artifacts on Firefox
-  backdrop-filter: blur(50px); // Adjust blur radius
-  mask: linear-gradient(black 60%, transparent); // Gradient mask: full blur to none
-  */
-}
-
-.blur-content {
-  position: relative;
-  z-index: 1;
-}
-
 blockquote.golem-callout {
   background-color: transparent;
   border-radius: .5rem;
