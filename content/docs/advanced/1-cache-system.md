@@ -36,19 +36,3 @@ GOLEM_DEFINE_CACHE_DIRECTORIES=F:\CACHE=^.*$
 > [!TIP]+
 > One interesting use case for this feature is to be able to split the cache in different directories to separate your own dependencies from others. By separating the cache, in a CI environment it allows you to only trigger rebuilds on a specified set of dependencies.
 
-## Read-only cache
-
-To define a cache directory in read-only mode:
-
-``` text
-GOLEM_STATIC_CACHE_DIRECTORY=<path>
-GOLEM_STATIC_CACHE_DEPENDENCIES_REGEX=<regex>
-```
-
-- `<path>` is a directory where the matched depencencies are stored
-- `<regex>` is defining which dependency is already stored in `<path>` based on the repository URL
-
-> [!TIP]+
-> This makes sure that the dependencies stored in it will stay untouched. In a CI environment, it guarantees that Golem won't mess with the static cache if an artifact is found missing, etc.
-
-Note that a static cache doesn't need to be defined with **GOLEM_DEFINE_CACHE_DIRECTORIES** to exist. The static cache definition is defined independantly.
