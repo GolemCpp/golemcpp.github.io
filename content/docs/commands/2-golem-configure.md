@@ -53,8 +53,7 @@ golem configure [options]
 
   Default: `<your_os_arch>`
 
-## IDE/support options
-
+## IDE / Tools options
 
 - `--vscode`
 
