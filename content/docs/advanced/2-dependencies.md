@@ -13,6 +13,8 @@ seo:
   noindex: false # false (default) or true
 ---
 
+Have a look at [examples/dependencies](https://github.com/GolemCpp/golem/tree/main/examples/dependencies) to find a working example illustrating the concepts described in this section.
+
 ## Management and Conflict mitigation
 
 It is expected in a complex project that dependencies have some dependencies in common, and sometimes they are conflicting with each other.
