@@ -53,6 +53,14 @@ golem configure [options]
 
   Default: `<your_os_arch>`
 
+## Qt options
+
+- `--qtdir=<qt_dir>`
+
+  Directory to Qt, for example `C:\Qt\6.10.0\msvc2022_64`
+
+  Default: `None`
+
 ## IDE / Tools options
 
 - `--vscode`
@@ -61,11 +69,15 @@ golem configure [options]
 
   Default: `False`
 
+  See [Visual Studio Code](/docs/tools/visual-studio-code) to know more
+
 - `--clangd`
 
   Generates files to support clangd
 
   Default: `False`
+
+  See [clangd](/docs/tools/clangd) to know more
 
 - `--compile-commands`
 
@@ -73,10 +85,32 @@ golem configure [options]
 
   Default: `False`
 
-## Qt options
+  See [compile_commands.json](/docs/tools/compile_commands.json) to know more
 
-- `--qtdir=<qt_dir>`
+## Cache System options
 
-  Directory to Qt, for example `C:\Qt\6.10.0\msvc2022_64`
+See [Cache System](/docs/advanced/cache-system) to know more
+
+- `--cache-directory=<path>`
+
+  Change the default cache directory
+
+  Default: `~/.cache/golem`
+
+- `--define-cache-directories=<path1>=<regex1>|<path2>=<regex2>|...`
+
+  `<path>` is a directory where the matched depencencies are stored
+
+  `<regex>` has to match the dependency's URL or be left empty
+
+  | is the sperator between multiple cache definitions
 
   Default: `None`
+
+- `--cache-resolution-policy=<policy>`
+
+  `strict` (default) Stops at the first valid cache definition found for the given dependency.
+
+  `weak` Tries to find the dependency in each valid cache definition, or returns the first valid cache definition for the given dependency.
+
+  Default: `strict`
