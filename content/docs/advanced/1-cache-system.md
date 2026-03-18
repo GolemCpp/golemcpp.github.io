@@ -48,7 +48,7 @@ Or use the following `golem configure` option:
 The option takes precedence over the environment variable.
 
 - `<path>` is a directory where the matched depencencies are stored
-- `<regex>` is defining which dependency needs to be stored in <path> based on the repository URL
+- `<regex>` has to match the dependency's URL or be left empty
 - `|` is the sperator between multiple cache definitions
 
 For example, this will store all dependencies in `F:\CACHE`:
