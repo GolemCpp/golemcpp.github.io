@@ -17,6 +17,8 @@ This command builds the libraries and programs defined in the project file (e.g.
 
 If any dependency is needed, the artifacts are expected to be built using `golem resolve` and `golem dependencies` before hand.
 
+Outputs the artifacts in `build/bin`, or depending on `golem configure`'s `--dir` option: `<dir>/bin`.
+
 ``` bash
 golem build [options]
 ```

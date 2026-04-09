@@ -15,6 +15,8 @@ seo:
 
 This command generates the packages defined in the project file.
 
+Outputs the packages in `build/`, or depending on `golem configure`'s `--dir` option: `<dir>/`.
+
 ``` bash
 golem package
 ```
