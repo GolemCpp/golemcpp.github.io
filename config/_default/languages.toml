@@ -5,7 +5,7 @@
   [en.params]
     languageISO = "EN"
     languageTag = "en-US"
-    footer = '© <script>document.write(new Date().getFullYear())</script> <a class="text-muted" href="https://github.com/GolemCpp">GolemCpp</a> - Powered by <a class="text-muted" href="https://getdoks.org/">Doks</a>'
+    footer = '©&nbsp;<script>document.write(new Date().getFullYear())</script>&nbsp;<a class="text-muted" href="https://github.com/GolemCpp">GolemCpp</a> - Powered by <a class="text-muted" href="https://getdoks.org/">Doks</a>'
     alertText = ''
 
 [de]
