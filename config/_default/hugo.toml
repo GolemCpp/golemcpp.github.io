@@ -15,7 +15,7 @@ defaultContentLanguage = "en"
 disableLanguages = ["de", "nl"]
 defaultContentLanguageInSubdir = false
 
-copyRight = "Copyright (c) 2025-2026 GolemCpp"
+copyRight = "Copyright (c) 2025-YYYY GolemCpp"
 
 [build.buildStats]
   enable = true

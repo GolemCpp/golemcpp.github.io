@@ -1,12 +1,12 @@
 {
   "name": "golemcpp",
-  "version": "1.8.0",
-  "description": "Doks theme",
-  "author": "Thulite",
+  "version": "1.0.0",
+  "description": "Golem",
+  "author": "GolemCpp",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thuliteio/doks.git"
+    "url": "https://github.com/GolemCpp/golemcpp.github.io.git"
   },
   "scripts": {
     "create": "hugo new",
@@ -22,6 +22,7 @@
     "@thulite/seo": "^2.4.1",
     "@tabler/icons": "^3.34.1",
     "thulite": "^2.6.3",
+    "@fullhuman/postcss-purgecss": "^7.0.2",
     "purgecss-whitelister": "^2.4.0"
   },
   "devDependencies": {
