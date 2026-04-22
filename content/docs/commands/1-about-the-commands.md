@@ -16,3 +16,5 @@ seo:
 All the commands are meant to be called at the root of your project, where the project file (e.g. `golemfile.py` or `golemfile.json`) seats.
 
 The commands are presented in the order they are expected to be called, when needed to be called.
+
+If you are starting from scratch, begin with [golem init](/docs/commands/golem-init/) to generate a documented starter `golemfile.py`.

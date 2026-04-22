@@ -4,7 +4,7 @@ description: ""
 summary: ""
 date: 2026-01-18T07:30:00.897Z
 draft: false
-weight: 302
+weight: 303
 toc: true
 seo:
   title: ""
@@ -23,7 +23,13 @@ golem configure [options]
 
 ## Build options
 
-- `--dir=<build_dir>`
+- `--project-dir=<project_dir>`
+
+  Directory containing the project file
+
+  Default: Current directory
+
+- `--build-dir=<build_dir>`
 
   Directory where to build the project
 

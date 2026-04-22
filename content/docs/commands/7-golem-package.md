@@ -4,7 +4,7 @@ description: ""
 summary: ""
 date: 2026-01-18T10:21:50+01:00
 draft: false
-weight: 306
+weight: 307
 toc: true
 seo:
   title: "" # custom title (optional)
@@ -15,7 +15,7 @@ seo:
 
 This command generates the packages defined in the project file.
 
-Outputs the packages in `build/`, or depending on `golem configure`'s `--dir` option: `<dir>/`.
+Outputs the packages in `build/`, or depending on `golem configure`'s `--build-dir` option: `<build_dir>/`.
 
 ``` bash
 golem package
