@@ -41,11 +41,17 @@ golem configure [options]
 
   Default: `debug`
 
-- `--runtime=(shared|static)`
+- `--runtime-link=(shared|static)`
 
   Links the runtime dynamically (`shared`) or statically (`static`)
 
   Default: `shared`
+
+- `--runtime-variant=(debug|release)`
+
+  Selects the runtime variant independently from the project variant. This is mainly relevant on Windows for choosing between debug and release CRTs.
+
+  Default: matches `--variant`
 
 - `--link=(shared|static)`
 

@@ -29,7 +29,8 @@ task.when(osystem="osx", includes=['src/macos'])
 def when(self,
          variant=None,
          link=None,
-         runtime=None,
+         runtime_link=None,
+         runtime_variant=None,
          osystem=None,
          arch=None,
          compiler=None,
@@ -51,7 +52,9 @@ Here is a description of these condition parameters:
 
 - `link` list of linking options (e.g. `'shared'`, `'static'`)
 
-- `runtime` list of runtime linking options (e.g. `'shared'`, `'static'`)
+- `runtime_link` list of runtime linking options (e.g. `'shared'`, `'static'`)
+
+- `runtime_variant` list of runtime variants (e.g. `'debug'`, `'release'`)
 
 - `arch` list of architectures (e.g. `'x86'`, `x64`)
 

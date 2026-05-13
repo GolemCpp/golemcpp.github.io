@@ -82,7 +82,7 @@ Example of a cloned repository in a cached dependency: `json@com.github.nlohmann
 - `65ee6845` : commit hash
 
 **Configuring the dependency** consists of:
-1. Determining the build location, which is a directory named after a condensed concatenation of characters designating the platform, architecture, compiler, runtime, linking and variant information. See `def build_path(self, dep=None):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
+1. Determining the build location, which is a directory named after a condensed concatenation of characters designating the platform, architecture, compiler, runtime link, runtime variant on Windows, linking and variant information. See `def build_path(self, dep=None):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
 2. Running `golem configure` with all the needed options on the dependency. See `def run_dep_command(self, dep, cache_dir, command):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
 
 When configuring the dependency, the build directory is setup.
@@ -93,12 +93,12 @@ When configuring the dependency, the build directory is setup.
 - Creating a configuration file to hold how a project can use the dependency.
 - Creating a `dependencies.json` file to hold the list of dependencies the dependency relies on.
 
-Example of an artifact directory in a cached dependency: `json@com.github.nlohmann+65ee6845\w64mshshd\bin-da39a3ee`
+Example of an artifact directory in a cached dependency: `json@com.github.nlohmann+65ee6845\w64mshdshd\bin-da39a3ee`
 
-- `w64mshshd` : Windows, x64, msvc, shared runtime, shared linking, debug
+- `w64mshdshd` : Windows, x64, msvc, shared runtime, debug runtime, shared linking, debug
 - `da39a3ee` : dependency slug to isolate the artifacts
 
-Example of a configuration file: `json@com.github.nlohmann+65ee6845\w64mshshd\conf\json@json@com.github.nlohmann.json`
+Example of a configuration file: `json@com.github.nlohmann+65ee6845\w64mshdshd\conf\json@json@com.github.nlohmann.json`
 
 - `json@json@com.github.nlohmann.json` the name follows the format `<target>@<recipe_id>`
 
