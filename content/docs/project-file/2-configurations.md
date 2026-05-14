@@ -36,6 +36,15 @@ A configuration is a set parameters common to [program](/docs/project-file/defin
 
   Useful to let the user project retrieve the licences of all the dependencies in `build/licences`.
 
+- `no_defaults` boolean
+
+  Controls whether Golem applies its default build settings for the final target.
+
+  * `False` (default): apply Golem's default defines and compiler, linker and archiver flags for the current platform, compiler, architecture and variant.
+  * `True`: do not apply these defaults on the final target.
+
+  This is useful when a target or dependency must fully control its own toolchain flags.
+
 ## Compilation options
 
 - `defines` list of preprocessor definitions (e.g. `'MY_MACRO=MY_VALUE'`)
@@ -56,6 +65,7 @@ A configuration is a set parameters common to [program](/docs/project-file/defin
 - `stlib` list of static library names to use, without prefix or extension
 - `stlibpath` list of search path for static libraries
 - `linkflags` list of link flags
+- `arflags` list of archive flags used when producing static libraries
 - `ldflags` list of link flags added at the end of link commands
 - `program_linkflags` list of linking flags only effective on program definitions, useful when defining a global configuration to use on multiple definitions
 - `library_linkflags` list of linking flags only effective on library definitions, useful when defining a global configuration to use on multiple definitions
