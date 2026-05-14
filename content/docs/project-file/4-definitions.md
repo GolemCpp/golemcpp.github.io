@@ -132,7 +132,7 @@ Dependency definitions allow a project to refer to another project. Doing so, li
 
 Any repository can be a dependency. If the dependency is using Golem, it can be used seemlessly. If the dependency is not using Golem, it needs a recipe to work.
 
-The recipe may exist in the [default recipe repository](/docs/advanced/recipes/#default-recipes). But a [custom recipe repository](/docs/advanced/recipes/#custom-recipes) can also be set independently.
+The recipe may exist in the [default recipe repository](/docs/advanced/recipes/#default-recipes). But a [custom recipe source](/docs/advanced/recipes/#custom-recipes) can also be set independently.
 
 Here is how to define a dependency:
 
@@ -157,7 +157,7 @@ But...
 
 Dependency definitions also require a `repository` and a `version`.
 
-The `repository` must be a URL of the same format Git accepts them to clone a repository.
+The `repository` can be a Git URL or a local directory path. Local directory paths are normalized internally to `file://...` URLs.
 
 Optionally, `shallow` controls how the repository is cloned:
 - `True` orders to perform a shallow clone of the repository

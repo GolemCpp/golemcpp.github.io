@@ -53,13 +53,15 @@ The `master_dependencies.json` can be specified in multiple ways. By order of pr
 
    Define an environment variable pointing to the file
 
-4. `project.master_dependencies_repository = '<repository_url>'`
+4. `project.master_dependencies_repository = '<repository_url_or_directory>'`
 
-   Define in the project file the repository where to find the file
+   Define in the project file the repository or local directory where to find the file
 
-5. `GOLEM_MASTER_DEPENDENCIES_REPOSITORY=<repository_url>`
+5. `GOLEM_MASTER_DEPENDENCIES_REPOSITORY=<repository_url_or_directory>`
 
-   Define an environment variable pointing to a repository containing: `master_dependencies.json`
+   Define an environment variable pointing to a repository or local directory containing `master_dependencies.json`
+
+Local directory paths are normalized internally to `file://...` URLs. If the directory is not a Git repository, Golem recopies it into the cache on each `golem resolve`.
 
 > [!NOTE]+
 > Although useful to quickly try a `master_dependencies.json`, it is not recommended to define it in the project file itself for most projects.

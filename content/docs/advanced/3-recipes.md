@@ -23,7 +23,7 @@ By default, Golem provides a [recipe repository](https://github.com/GolemCpp/rec
 
 Dependencies are uniquely identified by their repository URL. Their ID is constructed such as **https://github.com/nlohmann/json.git** becomes **json@com.github.nlohmann**.
 
-A recipe repository contains directories named after these dependency IDs, and each directory contains a project file.
+A recipe source contains directories named after these dependency IDs, and each directory contains a project file.
 
 This is how it looks like:
 
@@ -49,14 +49,19 @@ A `golemfile.py` can use scripting to handle any build system, any situation.
 To override the default Golem recipe repository, and possibly have multiple sources for recipes, define the following environment variable:
 
 ``` text
-GOLEM_RECIPES_REPOSITORIES=<repository_url_1>|<reposiroty_url_2>|...
+GOLEM_RECIPES_REPOSITORIES=<repository_or_directory_1>|<repository_or_directory_2>|...
 ```
 
-- `<repository_url>` Any form accepted by Git to clone the repository (including **file:///home/user/repository** for a local directory containing a Git repository)
-- `|` Separator between repositories
+- `<repository_or_directory>` Any form accepted by Git to clone the repository, or a local directory path.
+- Local directory paths are normalized internally to `file://...` URLs.
+- If the local directory is not a Git repository, Golem copies it into the cache again on each `golem resolve` because it cannot track changes.
+- `|` Separator between sources
 
-> [!NOTE]+
-> For now, there is no possibility to define a directory instead of a repository, but this is in the Roadmap.
+Example:
+
+``` text
+GOLEM_RECIPES_REPOSITORIES=/home/user/recipes|https://github.com/GolemCpp/recipes.git
+```
 
 > [!NOTE]+
 > When a dependency is missing, or not building properly, it is recommended to fork the Golem [recipe repository](https://github.com/GolemCpp/recipes), make the needed changes and create a Pull Request. Contributions are very welcome!

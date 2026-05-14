@@ -19,6 +19,8 @@ When defining **dependencies** in the project file, this command becomes **manda
 
 This is the only command requiring a network access, although Golem can be setup to not require any network access.
 
+When a dependency, recipe source, or master dependencies source points to a local directory that is not a Git repository, `golem resolve` recopies that directory into the cache on each run.
+
 ``` bash
 golem resolve [options]
 ```
