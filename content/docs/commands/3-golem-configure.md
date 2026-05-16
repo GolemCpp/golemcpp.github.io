@@ -73,6 +73,20 @@ golem configure [options]
 
   Default: `None`
 
+## cppfront options
+
+- `--cppfront-path=<exe_path>`
+
+  Path to cppfront executable
+
+  Default: `None`
+
+- `--cppfront-include=<dir_path>`
+
+  Path to cppfront include directory
+
+  Default: `None`
+
 ## IDE / Tools options
 
 - `--vscode`
