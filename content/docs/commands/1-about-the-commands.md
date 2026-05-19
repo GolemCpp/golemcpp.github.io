@@ -18,3 +18,5 @@ All the commands are meant to be called at the root of your project, where the p
 The commands are presented in the order they are expected to be called, when needed to be called.
 
 If you are starting from scratch, begin with [golem init](/docs/commands/golem-init/) to generate a documented starter `golemfile.py`.
+
+Use [golem tools](/docs/commands/golem-tools/) to install, uninstall, and inspect external tools managed by Golem.

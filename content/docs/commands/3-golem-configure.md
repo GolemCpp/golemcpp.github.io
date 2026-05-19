@@ -87,6 +87,8 @@ golem configure [options]
 
   Default: `None`
 
+For cppfront setup, cache-backed installs, and lookup behavior, see [cppfront](/docs/tools/cppfront/).
+
 ## IDE / Tools options
 
 - `--vscode`
