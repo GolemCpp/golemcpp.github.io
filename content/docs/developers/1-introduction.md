@@ -115,7 +115,7 @@ Example of a configuration file: `json@com.github.nlohmann+65ee6845\w64mshdshd\c
             }
         ],
         "header_only": true,
-        "isystem": [
+        "isystems": [
             "${GOLEM_CACHE_DIR}\\json@com.github.nlohmann+65ee6845\\include"
         ],
         "licenses": [

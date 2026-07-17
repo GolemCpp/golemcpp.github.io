@@ -49,7 +49,7 @@ A configuration is a set parameters common to [program](/docs/project-file/defin
 
 - `defines` list of preprocessor definitions (e.g. `'MY_MACRO=MY_VALUE'`)
 - `includes` list of include directories
-- `isystem` list of include directories considered as system headers from which no warning should be issued at build
+- `isystems` list of include directories considered as system headers from which no warning should be issued at build
 - `source` list of source files (can use [alternative ways to list files](#alternative-ways-to-list-files)), expects `*.cpp`, `*.c`, `*.cxx`, `*.cc` when specifying a directory
 - `cflags` list of compilation flags for C files
 - `cxxflags` list of compilation flags for C++ files
