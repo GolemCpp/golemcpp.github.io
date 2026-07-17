@@ -65,6 +65,18 @@ golem configure [options]
 
   Default: `<your_os_arch>`
 
+- `--check-c-compiler=<compiler>`
+
+  Hints the C compiler to use
+
+  Default: Searches for gcc, clang and cl.exe
+
+- `--check-cxx-compiler=<compiler>`
+
+  Hints the C++ compiler to use
+
+  Default: Searches for g++, clang++ and cl.exe
+
 ## Qt options
 
 - `--qtdir=<qt_dir>`
