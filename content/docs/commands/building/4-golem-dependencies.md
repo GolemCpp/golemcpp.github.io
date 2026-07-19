@@ -1,10 +1,11 @@
 ---
 title: "golem dependencies"
+url: "/docs/commands/golem-dependencies/"
 description: ""
 summary: ""
 date: 2026-01-18T10:16:28+01:00
 draft: false
-weight: 305
+weight: 314
 toc: true
 seo:
   title: "" # custom title (optional)

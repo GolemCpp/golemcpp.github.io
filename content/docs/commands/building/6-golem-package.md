@@ -1,10 +1,11 @@
 ---
 title: "golem package"
+url: "/docs/commands/golem-package/"
 description: ""
 summary: ""
 date: 2026-01-18T10:21:50+01:00
 draft: false
-weight: 307
+weight: 316
 toc: true
 seo:
   title: "" # custom title (optional)

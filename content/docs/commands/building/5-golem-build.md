@@ -1,10 +1,11 @@
 ---
 title: "golem build"
+url: "/docs/commands/golem-build/"
 description: ""
 summary: ""
 date: 2026-01-18T10:16:49+01:00
 draft: false
-weight: 306
+weight: 315
 toc: true
 seo:
   title: "" # custom title (optional)

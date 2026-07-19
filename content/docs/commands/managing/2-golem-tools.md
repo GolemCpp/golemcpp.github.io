@@ -1,10 +1,11 @@
 ---
 title: golem tools
+url: "/docs/commands/golem-tools/"
 description: ""
 summary: ""
 date: 2026-05-19T22:42:37+02:00
 draft: false
-weight: 310
+weight: 332
 toc: true
 seo:
   title: ""

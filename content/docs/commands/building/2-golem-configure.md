@@ -1,10 +1,11 @@
 ---
 title: golem configure
+url: "/docs/commands/golem-configure/"
 description: ""
 summary: ""
 date: 2026-01-18T07:30:00.897Z
 draft: false
-weight: 303
+weight: 312
 toc: true
 seo:
   title: ""

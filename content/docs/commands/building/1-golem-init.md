@@ -1,10 +1,11 @@
 ---
 title: golem init
+url: "/docs/commands/golem-init/"
 description: ""
 summary: ""
 date: 2026-04-22T20:45:45+02:00
 draft: false
-weight: 302
+weight: 311
 toc: true
 seo:
   title: ""

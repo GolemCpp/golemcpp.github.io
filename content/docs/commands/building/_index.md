@@ -1,23 +1,19 @@
 ---
-title: "About the Commands"
+title: "Building"
 description: ""
 summary: ""
-date: 2026-01-18T14:11:31+01:00
+date: 2026-07-19T03:04:35+02:00
 draft: false
-weight: 301
+weight: 310
 toc: true
+sidebar:
+  collapsed: false
 seo:
   title: ""
   description: ""
   canonical: ""
   noindex: false
 ---
-
-All the commands are meant to be called at the root of your project, where the project file (e.g. `golemfile.py` or `golemfile.json`) seats.
-
-If you need to run them from somewhere else, use `--project-dir=<project_dir>`. If you need to customize the build directory, use `--build-dir=<build_dir>`.
-
-## Building
 
 These commands take your project from an empty directory to a package. They are presented in the order they are expected to be called, when needed to be called.
 
@@ -29,12 +25,3 @@ These commands take your project from an empty directory to a package. They are 
 - [golem package](/docs/commands/golem-package/) to generate a package
 - [golem clean](/docs/commands/golem-clean/) to clean up built object files
 - [golem distclean](/docs/commands/golem-distclean/) to delete the build directory
-
-If you are starting from scratch, begin with [golem init](/docs/commands/golem-init/).
-
-## Managing
-
-These commands are not part of the build workflow. Call them whenever you need to.
-
-- [golem config](/docs/commands/golem-config/) to get and set global or project-local settings
-- [golem tools](/docs/commands/golem-tools/) to install, uninstall, and inspect external tools managed by Golem
