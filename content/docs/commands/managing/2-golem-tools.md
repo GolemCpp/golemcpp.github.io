@@ -42,13 +42,13 @@ golem tools list [--available]
 
 ## Options
 
-- `--tools-cache-directory=<path>`
+- `--cache-directory=<path>`
 
-  Select the tools cache directory.
+  Select the cache directory. Tools are stored in its `tools/` subdirectory.
 
-  Default: `~/.cache/golem/tools`
+  Default: `~/.cache/golem` (tools in `~/.cache/golem/tools`)
 
-You can also set the tools cache location with the `GOLEM_TOOLS_CACHE_DIRECTORY` environment variable.
+You can also set the cache location with the `GOLEM_CACHE_DIRECTORY` environment variable.
 
 ## Supported tools
 

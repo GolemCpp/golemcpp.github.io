@@ -19,14 +19,14 @@ Have a look at [examples/dependencies](https://github.com/GolemCpp/golem/tree/ma
 
 It is expected in a complex project that dependencies have some dependencies in common, and sometimes they are conflicting with each other.
 
-The `master_dependencies.json` file solves this issue by overriding how dependencies should be resolved. It's a list of dependencies that `golem resolve` checks everytime it is encountering a dependency definition to replace it with the one found (if any) in the `master_dependencies.json`.
+The `overrides.json` file solves this issue by overriding how dependencies should be resolved. It's a list of dependencies that `golem resolve` checks everytime it is encountering a dependency definition to replace it with the one found (if any) in the `overrides.json`.
 
 > [!TIP]+
 > The most common use cases are forcing a specific version or forcing the release variant on a dependency accross a whole dependency tree.
 
 Here is how a it looks like:
 
-```json {title="master_dependencies.json"}
+```json {title="overrides.json"}
 [
     {
         "repository": "https://github.com/nlohmann/json.git",
@@ -39,29 +39,29 @@ Here is how a it looks like:
 
 This overrides any reference to this dependency with the version `^3.0.0` and the release variant.
 
-The `master_dependencies.json` can be specified in multiple ways. By order of precedence:
+The `overrides.json` can be specified in multiple ways. By order of precedence:
 
-1. `--master-dependencies-configuration=<path_to_file>`
+1. `--overrides-configuration=<path_to_file>`
 
    Call golem configure with an option pointing to the file
 
-2. `project.master_dependencies_configuration = '<path_to_file>'`
+2. `project.overrides_configuration = '<path_to_file>'`
 
    Define in the project file where to find the file
 
-3. `GOLEM_MASTER_DEPENDENCIES_CONFIGURATION=<path_to_file>`
+3. `GOLEM_OVERRIDES_CONFIGURATION=<path_to_file>`
 
    Define an environment variable pointing to the file
 
-4. `project.master_dependencies_repository = '<repository_url_or_directory>'`
+4. `project.overrides_repository = '<repository_url_or_directory>'`
 
    Define in the project file the repository or local directory where to find the file
 
-5. `GOLEM_MASTER_DEPENDENCIES_REPOSITORY=<repository_url_or_directory>`
+5. `GOLEM_OVERRIDES_REPOSITORY=<repository_url_or_directory>`
 
-   Define an environment variable pointing to a repository or local directory containing `master_dependencies.json`
+   Define an environment variable pointing to a repository or local directory containing `overrides.json`
 
 Local directory paths are normalized internally to `file://...` URLs. If the directory is not a Git repository, Golem recopies it into the cache on each `golem resolve`.
 
 > [!NOTE]+
-> Although useful to quickly try a `master_dependencies.json`, it is not recommended to define it in the project file itself for most projects.
+> Although useful to quickly try a `overrides.json`, it is not recommended to define it in the project file itself for most projects.

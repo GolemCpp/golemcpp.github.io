@@ -79,23 +79,24 @@ An explicit environment variable therefore still overrides a stored configuratio
 | `cache.static-directories` | `GOLEM_DEFINE_STATIC_CACHE_DIRECTORIES` |
 | `cache.static-dependencies-regex` | `GOLEM_STATIC_CACHE_DEPENDENCIES_REGEX` |
 | `cache.resolution-policy` | `GOLEM_CACHE_RESOLUTION_POLICY` |
-| `tools.cache-directory` | `GOLEM_TOOLS_CACHE_DIRECTORY` |
 | `recipes.repositories` | `GOLEM_RECIPES_REPOSITORIES` |
-| `master-dependencies.configuration` | `GOLEM_MASTER_DEPENDENCIES_CONFIGURATION` |
-| `master-dependencies.repository` | `GOLEM_MASTER_DEPENDENCIES_REPOSITORY` |
+| `overrides.configuration` | `GOLEM_OVERRIDES_CONFIGURATION` |
+| `overrides.repository` | `GOLEM_OVERRIDES_REPOSITORY` |
+
+The cache directory holds one subdirectory per resource kind: `dependencies/` for built dependencies, `recipes/` for recipe repositories, `overrides/` for overrides repositories, and `tools/` for installable tools.
 
 ## Example
 
 ``` bash
-# Point the tools cache at a shared directory for every project
-golem config --global tools.cache-directory /opt/golem-tools
+# Point the cache at a shared directory for every project
+golem config --global cache.directory /opt/golem-cache
 
 # Override it for the current project only
-golem config tools.cache-directory .golem-tools
+golem config cache.directory .golem-cache
 
 # Inspect the effective configuration
 golem config --list
-golem config tools.cache-directory
+golem config cache.directory
 ```
 
 The local configuration file `<project>/.golem/config.json` is a regular file in your project tree. Commit it to share settings across a team, or add `.golem/` to your `.gitignore` to keep it as a personal, per-checkout override.

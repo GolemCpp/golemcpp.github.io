@@ -34,14 +34,14 @@ GOLEM_RECIPES_REPOSITORIES=/home/user/recipes
 GOLEM_RECIPES_REPOSITORIES=/home/user/recipes|https://github.com/GolemCpp/recipes.git
 ```
 
-## Master dependencies
+## Overrides
 
-### `GOLEM_MASTER_DEPENDENCIES_REPOSITORY`
+### `GOLEM_OVERRIDES_REPOSITORY`
 
-Defines a repository or local directory containing `master_dependencies.json`.
+Defines a repository or local directory containing `overrides.json`.
 
 ``` text
-GOLEM_MASTER_DEPENDENCIES_REPOSITORY=<repository_or_directory>
+GOLEM_OVERRIDES_REPOSITORY=<repository_or_directory>
 ```
 
 - The value may be a Git-cloneable repository URL or a local directory path.
@@ -51,13 +51,13 @@ GOLEM_MASTER_DEPENDENCIES_REPOSITORY=<repository_or_directory>
 Example:
 
 ``` text
-GOLEM_MASTER_DEPENDENCIES_REPOSITORY=/home/user/master-dependencies
+GOLEM_OVERRIDES_REPOSITORY=/home/user/overrides
 ```
 
-### `GOLEM_MASTER_DEPENDENCIES_CONFIGURATION`
+### `GOLEM_OVERRIDES_CONFIGURATION`
 
-Defines the path to a `master_dependencies.json` file directly.
+Defines the path to a `overrides.json` file directly.
 
 ``` text
-GOLEM_MASTER_DEPENDENCIES_CONFIGURATION=/home/user/master_dependencies.json
+GOLEM_OVERRIDES_CONFIGURATION=/home/user/overrides.json
 ```

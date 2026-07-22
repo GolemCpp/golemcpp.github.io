@@ -31,13 +31,13 @@ Available options:
 
   Default: `v0.8.1`
 
-- `--tools-cache-directory=<path>`
+- `--cache-directory=<path>`
 
-  Select the tools cache directory.
+  Select the cache directory. Tools are stored in its `tools/` subdirectory.
 
-  Default: `~/.cache/golem/tools`
+  Default: `~/.cache/golem` (tools in `~/.cache/golem/tools`)
 
-Once installed, `golem configure` can reuse that cached installation automatically, without requiring `--cppfront-path` or `--cppfront-include`. But provide `--tools-cache-directory` if not set on the default value.
+Once installed, `golem configure` can reuse that cached installation automatically, without requiring `--cppfront-path` or `--cppfront-include`. But provide `--cache-directory` if not set on the default value.
 
 To learn more about tool management, see [golem tools](/docs/commands/golem-tools/).
 
@@ -64,7 +64,7 @@ When a project contains `.cpp2` files, Golem looks for cppfront in this order:
 3. A cached installation created by `golem tools install cppfront`
 4. `cppfront` on `PATH` for the executable
 
-For the cache-backed lookup, Golem uses `--tools-cache-directory=<path>` when provided, otherwise `GOLEM_TOOLS_CACHE_DIRECTORY`, otherwise `~/.cache/golem/tools`.
+For the cache-backed lookup, Golem uses the `tools/` subdirectory of `--cache-directory=<path>` when provided, otherwise `GOLEM_CACHE_DIRECTORY`, otherwise `~/.cache/golem/tools`.
 
 ## Examples
 
