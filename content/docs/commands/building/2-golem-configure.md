@@ -138,13 +138,19 @@ See [Cache System](/docs/advanced/cache-system) to know more
 
   Default: `~/.cache/golem`
 
-- `--define-cache-directories=<path1>=<regex1>|<path2>=<regex2>|...`
+- `--additional-cache-directory=<path>[=<url-regex>]` (repeatable)
 
-  `<path>` is a directory where the matched depencencies are stored
+  Add an additional **writable** cache directory. Pass the option once per directory.
 
-  `<regex>` has to match the dependency's URL or be left empty
+  `<path>` is a directory where the matched dependencies are stored
 
-  | is the sperator between multiple cache definitions
+  `<url-regex>` has to match the dependency's repository URL, or be left empty to match anything
+
+  Default: `None`
+
+- `--additional-read-only-cache-directory=<path>[=<url-regex>]` (repeatable)
+
+  Same as above, but the directory is **read-only**: Golem reads dependencies from it but never writes into it.
 
   Default: `None`
 

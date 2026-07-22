@@ -74,10 +74,8 @@ An explicit environment variable therefore still overrides a stored configuratio
 | Key | Environment variable |
 | --- | --- |
 | `cache.directory` | `GOLEM_CACHE_DIRECTORY` |
-| `cache.directories` | `GOLEM_DEFINE_CACHE_DIRECTORIES` |
-| `cache.static-directory` | `GOLEM_STATIC_CACHE_DIRECTORY` |
-| `cache.static-directories` | `GOLEM_DEFINE_STATIC_CACHE_DIRECTORIES` |
-| `cache.static-dependencies-regex` | `GOLEM_STATIC_CACHE_DEPENDENCIES_REGEX` |
+| `cache.additional-directories` | `GOLEM_ADDITIONAL_CACHE_DIRECTORIES` |
+| `cache.additional-read-only-directories` | `GOLEM_ADDITIONAL_READ_ONLY_CACHE_DIRECTORIES` |
 | `cache.resolution-policy` | `GOLEM_CACHE_RESOLUTION_POLICY` |
 | `recipes.repositories` | `GOLEM_RECIPES_REPOSITORIES` |
 | `overrides.configuration` | `GOLEM_OVERRIDES_CONFIGURATION` |

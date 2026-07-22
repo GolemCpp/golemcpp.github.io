@@ -33,28 +33,31 @@ Or use the following `golem configure` option:
 
 The option takes precedence over the environment variable.
 
-### Custom cache directories
+### Additional cache directories
 
-To control where the dependencies are being cached more precisely, define the following environment variable:
+On top of the default cache, you can declare **additional** cache directories. Each one may be **writable** or **read-only**, and may carry an optional regex that scopes which dependencies it stores or serves.
+
+Use the following `golem configure` options — each is **repeatable**, so pass it once per directory:
+
+- `--additional-cache-directory=<path>[=<url-regex>]` — an additional **writable** cache.
+- `--additional-read-only-cache-directory=<path>[=<url-regex>]` — an additional **read-only** cache: Golem reads dependencies from it but never writes into it.
+
+Where:
+
+- `<path>` is a directory where the matched dependencies are stored.
+- `<url-regex>` has to match the dependency's repository URL, or be left empty to match anything.
+
+The equivalent environment variables take a single `|`-separated list of entries (the CLI options take precedence over them):
 
 ``` text
-GOLEM_DEFINE_CACHE_DIRECTORIES=<path1>=<regex1>|<path2>=<regex2>|...
+GOLEM_ADDITIONAL_CACHE_DIRECTORIES=<path1>[=<regex1>]|<path2>[=<regex2>]|...
+GOLEM_ADDITIONAL_READ_ONLY_CACHE_DIRECTORIES=<path1>[=<regex1>]|...
 ```
-
-Or use the following `golem configure` option:
-
-- `--define-cache-directories=<path1>=<regex1>|<path2>=<regex2>|...`
-
-The option takes precedence over the environment variable.
-
-- `<path>` is a directory where the matched depencencies are stored
-- `<regex>` has to match the dependency's URL or be left empty
-- `|` is the sperator between multiple cache definitions
 
 For example, this will store all dependencies in `F:\CACHE`:
 
 ``` text
-GOLEM_DEFINE_CACHE_DIRECTORIES=F:\CACHE=^.*$
+GOLEM_ADDITIONAL_CACHE_DIRECTORIES=F:\CACHE=^.*$
 ```
 
 > [!TIP]+
