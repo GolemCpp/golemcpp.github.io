@@ -61,7 +61,7 @@ Remains some cases where Golem isn't using yet the task system (but should), suc
 
 ### Resolving a dependency
 
-Resolving a dependency (`golem resolve`) consists of 5 steps:
+Resolving a dependency (`golem resolve`) consists of 4 steps:
 1. Resolving the version (commit hash) of the dependency the project refers to
 2. Cloning the dependency in the right cache directory (if doesn't exist yet)
 3. Configuring the dependency before build
@@ -72,7 +72,7 @@ Resolving a dependency (`golem resolve`) consists of 5 steps:
 To do so, Golem uses `git ls-remote --tags` and `git ls-remote --heads` to search for a corresponding commit hash. See [dependency.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/dependency.py).
 
 **Cloning the dependency in the cache** consists of:
-1. Generating a recipe ID corresponding to the dependency and adding to it the short commit hash (8 first characters). See `def generate_recipe_id(url):` and `def make_dep_base(dep):` in [helpers.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/helpers.py).
+1. Generating a recipe ID corresponding to the dependency and adding to it the short commit hash (8 first characters). See `def generate_recipe_id(url):` and `def make_repository_base(cls, repository, resolved_version):` in [repository.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/repository.py).
 2. Determining where the dependency must be cached. See `def find_dep_cache_dir(self, dep, cache_conf):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
 3. Cloning the repository in the cache. See `def make_repo_ready(self, dep, cache_dir, should_clean=False):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
 

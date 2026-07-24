@@ -15,6 +15,10 @@ seo:
 
 Have a look at [examples/cache](https://github.com/GolemCpp/golem/tree/main/examples/cache) to find a working example illustrating the concepts described in this section.
 
+Every cached resource carries a `.golem-manifest.json` descriptor at its root
+identifying its kind and identity. Use [golem cache](/docs/commands/golem-cache/)
+to list, size, and clean cached resources across the configured caches.
+
 ## Controlling the locations
 
 ### Default cache directory
