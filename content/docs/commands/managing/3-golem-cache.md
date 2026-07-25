@@ -60,19 +60,19 @@ git reference; for a tool: name and version), the **manifest schema version**
 This lets Golem manage cached resources without relying on their opaque
 directory names.
 
-Resources stored before manifests were introduced have no descriptor and are
-reported as **unidentified**. Likewise, any unexpected directory sitting directly
-at a cache root — such as a legacy resource stored flat before the per-kind
-subdirectory layout existed — is reported as an unidentified resource of kind
-`unknown`.
+The manifest is the source of truth for a resource's identity wherever it is
+stored, so a [minimized](/docs/advanced/cache-system/#path-minimization) resource
+kept flat at the cache root is still fully identified. A directory with **no**
+manifest is reported as **unidentified**, with the kind `unknown`.
 
 ## Subcommands
 
 - `list`
 
-  List cached resources across every configured cache, with their kind,
-  identity, originating cache, and size. Add `--long` to also show the created
-  and last-used ages, the manifest version, and the on-disk path.
+  List cached resources, **grouped per cache** (each cache location is a header,
+  writable or read-only). Every resource shows its kind, identity, size and
+  on-disk path. Add `--long` to also show the created and last-used ages and the
+  manifest version.
 
 - `caches`
 
@@ -95,17 +95,16 @@ subdirectory layout existed — is reported as an unidentified resource of kind
 
 - `unidentified`
 
-  List resources that have no valid manifest — including legacy flat resources
-  and any unexpected directory found at a cache root. Add `--remove` to delete
-  them.
+  List resources that have no valid manifest — for example legacy resources
+  stored before manifests existed. Add `--remove` to delete them.
 
 ## Options
 
 - `--kind=<kind>`
 
   Filter by resource kind: `dependency`, `recipes-repository`,
-  `overrides-repository`, `tool`, or `unknown` (legacy flat and unexpected
-  directories).
+  `overrides-repository`, `tool`, or `unknown` (directories with no valid
+  manifest).
 
 - `--cache=<path>`
 
@@ -117,7 +116,7 @@ subdirectory layout existed — is reported as an unidentified resource of kind
 
 - `--long`, `-l`
 
-  Show created/last-used ages, manifest version, and path in `list`.
+  Show the created/last-used ages and manifest version in `list`.
 
 - `--json`
 

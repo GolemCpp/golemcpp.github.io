@@ -44,11 +44,27 @@ golem tools list [--available]
 
 - `--cache-directory=<path>`
 
-  Select the cache directory. Tools are stored in its `tools/` subdirectory.
+  Select the base cache directory. Tools are stored in its `tools/` subdirectory,
+  or flat at the cache root under a short hash when [path minimization](/docs/advanced/cache-system/#path-minimization)
+  is enabled (the default).
 
   Default: `~/.cache/golem` (tools in `~/.cache/golem/tools`)
 
-You can also set the cache location with the `GOLEM_CACHE_DIRECTORY` environment variable.
+- `--cache-minimization-enabled[=<on|off>]`
+
+  Store tools under short hashed flat paths to avoid long-path limits. Omit for
+  the automatic default, pass the bare flag to force it on, or pass `=on` / `=off`
+  to force a value.
+
+  Default: `on`
+
+- `--cache-minimization-length=<n>`
+
+  Number of hash characters used for minimized tool names.
+
+  Default: `8`
+
+You can also set the cache location with the `GOLEM_CACHE_DIRECTORY` environment variable. Path minimization honours the same `GOLEM_CACHE_MINIMIZATION_ENABLED` / `GOLEM_CACHE_MINIMIZATION_LENGTH` environment variables and [golem config](/docs/commands/golem-config/) settings as the rest of the cache.
 
 ## Supported tools
 

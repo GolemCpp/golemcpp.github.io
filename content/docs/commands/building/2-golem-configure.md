@@ -161,3 +161,15 @@ See [Cache System](/docs/advanced/cache-system) to know more
   `weak` Tries to find the dependency in each valid cache definition, or returns the first valid cache definition for the given dependency.
 
   Default: `strict`
+
+- `--cache-minimization-enabled[=<on|off>]`
+
+  Store new cached resources under short hashed flat paths to avoid long-path limits (for example Windows `cl.exe`). Omit for the automatic default, pass the bare flag to force it on, or pass `=on` / `=off` to force a value.
+
+  Default: `on`
+
+- `--cache-minimization-length=<n>`
+
+  Number of hash characters used for minimized resource names.
+
+  Default: `8`

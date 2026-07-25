@@ -77,11 +77,13 @@ An explicit environment variable therefore still overrides a stored configuratio
 | `cache.additional-directories` | `GOLEM_ADDITIONAL_CACHE_DIRECTORIES` |
 | `cache.additional-read-only-directories` | `GOLEM_ADDITIONAL_READ_ONLY_CACHE_DIRECTORIES` |
 | `cache.resolution-policy` | `GOLEM_CACHE_RESOLUTION_POLICY` |
+| `cache.minimization.enabled` | `GOLEM_CACHE_MINIMIZATION_ENABLED` |
+| `cache.minimization.length` | `GOLEM_CACHE_MINIMIZATION_LENGTH` |
 | `recipes.repositories` | `GOLEM_RECIPES_REPOSITORIES` |
 | `overrides.configuration` | `GOLEM_OVERRIDES_CONFIGURATION` |
 | `overrides.repository` | `GOLEM_OVERRIDES_REPOSITORY` |
 
-The cache directory holds one subdirectory per resource kind: `dependencies/` for built dependencies, `recipes/` for recipe repositories, `overrides/` for overrides repositories, and `tools/` for installable tools.
+The cache directory holds one subdirectory per resource kind: `dependencies/` for built dependencies, `recipes/` for recipe repositories, `overrides/` for overrides repositories, and `tools/` for installable tools. When [path minimization](/docs/advanced/cache-system/#path-minimization) is enabled (the default), new resources are instead stored flat at the cache root under a short hash, to keep paths short on long-path-limited toolchains.
 
 ## Example
 

@@ -106,3 +106,63 @@ To search the cache directory corresponding to a given dependency, all policies 
 3. If no cache definition was returned yet:
  * `strict` policy returns an error
  * `weak` policy returns the first valid cache definition with a regex matching the dependency's URL, or the first cache definition without regex.
+
+## Path minimization
+
+On Windows, `cl.exe` and cannot handle paths longer than about 255 characters.
+Because cached resources live under `<cache>/<kind>/<cache-key>/...` and the
+compiler is handed deep sub-paths of those roots (include directories, libraries,
+artifacts), a deep cache directory can push paths past that limit and break the build.
+
+**Path minimization** keeps these paths short. Instead of the classic
+`<cache>/<kind>/<cache-key>` layout, a minimized resource is stored **flat at the
+cache root**, under a short hash of `<kind>/<cache-key>` with no per-kind
+subdirectory:
+
+``` text
+<cache>/dependencies/json@com.github.nlohmann+65ee6845   ->   <cache>/3a33b297
+```
+
+It applies uniformly to every resource kind — dependencies, recipes
+repositories, overrides repositories, and tools — and the setting is forwarded to
+dependency sub-builds so the whole dependency graph uses the same layout.
+
+A minimized resource is still fully described by its `.golem-manifest.json`, so
+[golem cache](/docs/commands/golem-cache/) reports its real kind and identity
+regardless of where it is stored.
+
+### Priority to existing non-minimized resources
+
+If a resource already exists at its classic `<cache>/<kind>/<cache-key>`
+location, Golem keeps using it. Minimization only changes where **new** resources
+are written, so caches populated before it was enabled stay usable.
+
+### Enabling and disabling
+
+Path minimization is **on by default**. Control it with the environment variable:
+
+``` text
+GOLEM_CACHE_MINIMIZATION_ENABLED=<on|off>
+```
+
+- `--cache-minimization-enabled[=<on|off>]` — the `golem configure` option
+- `cache.minimization.enabled` — the persisted setting (see [golem config](/docs/commands/golem-config/))
+
+Regarding the `golem configure` option, omit it entirely to keep the automatic default. Pass the
+**bare** flag to force it on. Pass `=on` / `=off` to force a value — an explicit value overrides
+the environment variable and stored configuration.
+
+### Controlling the hash length
+
+The number of hash characters used for a minimized name is configurable
+(default `8`):
+
+``` text
+GOLEM_CACHE_MINIMIZATION_LENGTH=<n>
+```
+
+- `--cache-minimization-length=<n>` — the `golem configure` option
+- `cache.minimization.length` — the persisted setting (see [golem config](/docs/commands/golem-config/))
+
+A larger value lowers the (already negligible) chance of a hash collision, at the
+cost of slightly longer names.
