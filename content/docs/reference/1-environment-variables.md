@@ -19,11 +19,10 @@ command-line option or stored with [golem config](/docs/commands/golem-config/),
 
 1. Command-line option
 2. Option persisted by `golem configure` (build directory)
-3. Project file
-4. Environment variable
-5. Local config
-6. Global config
-7. Built-in default
+3. Environment variable
+4. Local config
+5. Global config
+6. Built-in default
 
 Run `golem config --help` for the authoritative list, with each setting's key, variable, option and
 built-in default.

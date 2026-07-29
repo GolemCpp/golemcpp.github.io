@@ -65,18 +65,15 @@ Every setting is read the same way, whatever the command asking for it, with the
 
 1. Command-line option
 2. Option persisted by `golem configure` (build directory)
-3. Project file
-4. Environment variable
-5. Local config
-6. Global config
-7. Built-in default
+3. Environment variable
+4. Local config
+5. Global config
+6. Built-in default
 
 - **Option persisted by `golem configure`** — the options a project was configured with are stored in
   its build directory, so a later command reaching that build directory honours them without you
   re-passing them. This is what makes `golem cache` and `golem tools` operate on the caches the
   project was configured with (point them at a non-default build directory with `--build-dir=<path>`).
-- **Project file** — the settings a `golemfile.py` can state, such as `project.overrides_configuration`.
-  Only the settings marked as such in the table below can come from there.
 
 An explicit environment variable therefore still overrides a stored configuration value, and a stored
 value overrides the built-in default.
@@ -94,10 +91,6 @@ value overrides the built-in default.
 | `recipes.repositories` | `GOLEM_RECIPES_REPOSITORIES` | *(none)* | `https://github.com/GolemCpp/recipes.git` |
 | `overrides.configuration` | `GOLEM_OVERRIDES_CONFIGURATION` | `--overrides-configuration` | *(none)* |
 | `overrides.repository` | `GOLEM_OVERRIDES_REPOSITORY` | *(none)* | *(none)* |
-
-`overrides.configuration` and `overrides.repository` can also be set from the project file, as
-`project.overrides_configuration` and `project.overrides_repository` (see
-[Dependencies](/docs/advanced/dependencies/)).
 
 Run `golem config --help` to print this table for the version you have installed, including each
 setting's description, environment variable, command-line option and built-in default.

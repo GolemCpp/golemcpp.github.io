@@ -29,8 +29,8 @@ Every setting on this page is read through the same precedence, whichever comman
 2. Option persisted by `golem configure` (build directory)
 3. Environment variable
 4. Local config
-4. Gocal config
-4. Built-in default
+5. Global config
+6. Built-in default
 
 Each one is also a persistable setting, so it can be stored once with
 [golem config](/docs/commands/golem-config/) instead of being passed every time. The whole set is

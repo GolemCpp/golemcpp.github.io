@@ -47,35 +47,24 @@ The `overrides.json` can be specified in multiple ways. By order of precedence:
 
    Call golem configure with an option pointing to the file
 
-2. `project.overrides_configuration = '<path_to_file>'`
-
-   Define in the project file where to find the file
-
-3. `GOLEM_OVERRIDES_CONFIGURATION=<path_to_file>`
+2. `GOLEM_OVERRIDES_CONFIGURATION=<path_to_file>`
 
    Define an environment variable pointing to the file
 
-4. `golem config overrides.configuration <path_to_file>`
+3. `golem config overrides.configuration <path_to_file>`
 
    Store the setting for the project (`--local`, the default) or for your user (`--global`). See [golem config](/docs/commands/golem-config/).
 
-5. `project.overrides_repository = '<repository_url_or_directory>'`
-
-   Define in the project file the repository or local directory where to find the file
-
-6. `GOLEM_OVERRIDES_REPOSITORY=<repository_url_or_directory>`
+4. `GOLEM_OVERRIDES_REPOSITORY=<repository_url_or_directory>`
 
    Define an environment variable pointing to a repository or local directory containing `overrides.json`
 
-7. `golem config overrides.repository <repository_url_or_directory>`
+5. `golem config overrides.repository <repository_url_or_directory>`
 
    Store the setting for the project (`--local`, the default) or for your user (`--global`). See [golem config](/docs/commands/golem-config/).
 
 A configuration file always wins over a repository, and each of the two follows the usual
-[resolution order](/docs/commands/golem-config/#resolution-order): option, project file,
-environment variable, then the local and global configuration stores.
+[resolution order](/docs/commands/golem-config/#resolution-order): option, environment variable,
+then the local and global configuration stores.
 
 Local directory paths are normalized internally to `file://...` URLs. If the directory is not a Git repository, Golem recopies it into the cache on each `golem resolve`.
-
-> [!NOTE]+
-> Although useful to quickly try a `overrides.json`, it is not recommended to define it in the project file itself for most projects.
