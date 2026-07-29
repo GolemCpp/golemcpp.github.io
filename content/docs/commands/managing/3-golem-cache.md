@@ -48,17 +48,31 @@ golem cache list --build-dir=<path-to-build-directory>
 
 When the build directory does not exist or the project was never configured,
 `golem cache` falls back to environment variables, the configuration store, and
-finally the default cache location.
+finally the default cache location — the same
+[resolution order](/docs/commands/golem-config/#resolution-order) every command follows.
 
 ## Resource manifests
 
 Every resource newly stored in a cache carries a small `.golem-manifest.json`
-descriptor at its root. It records the resource **kind**, its **identity** (for
-a dependency: repository, resolved version and hash; for a repository: URL and
-git reference; for a tool: name and version), the **manifest schema version**
-(so the on-disk layout can evolve), and **created** / **last used** timestamps.
-This lets Golem manage cached resources without relying on their opaque
-directory names.
+descriptor at its root. It records the resource **kind**, its **cache key**, the
+**source** it was obtained from, the **manifest schema version** (so the on-disk
+layout can evolve), and **created** / **last used** timestamps. This lets Golem
+manage cached resources without relying on their opaque directory names.
+
+Every resource kind — dependency, recipes repository, overrides repository, tool —
+describes its source the same way:
+
+``` json
+{
+  "type": "git",
+  "location": "https://github.com/nlohmann/json.git",
+  "reference": "v3.12.0"
+}
+```
+
+- `type` — `git` for a cloned repository, `directory` for a copied local directory.
+- `location` — the repository URL, or the directory path.
+- `reference` — the resolved git reference; empty for a directory source.
 
 The manifest is the source of truth for a resource's identity wherever it is
 stored, so a [minimized](/docs/advanced/cache-system/#path-minimization) resource
@@ -70,9 +84,9 @@ manifest is reported as **unidentified**, with the kind `unknown`.
 - `list`
 
   List cached resources, **grouped per cache** (each cache location is a header,
-  writable or read-only). Every resource shows its kind, identity, size and
-  on-disk path. Add `--long` to also show the created and last-used ages and the
-  manifest version.
+  writable or read-only). Every resource shows its kind, its source
+  (`<location> <reference>`), size and on-disk path. Add `--long` to also show the
+  created and last-used ages and the manifest version.
 
 - `caches`
 
@@ -120,7 +134,8 @@ manifest is reported as **unidentified**, with the kind `unknown`.
 
 - `--json`
 
-  Emit machine-readable JSON instead of formatted text.
+  Emit machine-readable JSON instead of formatted text. Each resource carries its `kind`,
+  `cache_key`, `source`, `identified` flag, `manifest_version`, `cache_location` and path.
 
 - `--dry-run`
 

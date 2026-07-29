@@ -155,9 +155,31 @@ This `task` can make use of the [condition mechanism](/docs/project-file/conditi
 
 But...
 
-Dependency definitions also require a `repository` and a `version`.
+Dependency definitions also require a source, and a `version` when that source is a repository.
 
-The `repository` can be a Git URL or a local directory path. Local directory paths are normalized internally to `file://...` URLs.
+A dependency comes from **one of two** mutually exclusive sources:
+
+- `repository='<git-url>'` — a Git repository, **cloned** into the cache at the resolved `version`.
+- `directory='<path>'` — a local directory, **copied** into the cache as-is on each `golem resolve`.
+
+``` python
+# A dependency cloned from Git
+project.dependency(name='json',
+                   repository='https://github.com/nlohmann/json.git',
+                   version='^3.0.0')
+
+# A dependency living next to the project
+project.dependency(name='mylib',
+                   directory='./mylib')
+```
+
+A `directory` has no version to resolve, so `version`, `version_regex` and `shallow` do not apply
+to it. Paths are relative to the project file and are normalized internally to `file://...` URLs.
+
+> [!WARNING]+
+> A local directory used to be declared as `repository='./mylib'`, with Golem detecting that the
+> path was not a Git repository. If it is not a Git repository, it must now be declared as
+> `directory='./mylib'`. Because `repository` must declare a Git repository, local directory or not.
 
 Optionally, `shallow` controls how the repository is cloned:
 - `True` orders to perform a shallow clone of the repository

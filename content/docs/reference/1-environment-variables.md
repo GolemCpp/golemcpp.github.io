@@ -13,6 +13,41 @@ seo:
   noindex: false # false (default) or true
 ---
 
+Every variable on this page is one way to set a Golem setting. The same setting can be set with a
+command-line option or stored with [golem config](/docs/commands/golem-config/), following a single
+[resolution order](/docs/commands/golem-config/#resolution-order):
+
+1. Command-line option
+2. Option persisted by `golem configure` (build directory)
+3. Project file
+4. Environment variable
+5. Local config
+6. Global config
+7. Built-in default
+
+Run `golem config --help` for the authoritative list, with each setting's key, variable, option and
+built-in default.
+
+## Cache
+
+These control where and how Golem caches resources. See [Cache System](/docs/advanced/cache-system/)
+for what each one does.
+
+| Variable | Setting | Default |
+| --- | --- | --- |
+| `GOLEM_CACHE_DIRECTORY` | `cache.directory` | `~/.cache/golem` |
+| `GOLEM_ADDITIONAL_CACHE_DIRECTORIES` | `cache.additional-directories` | *(none)* |
+| `GOLEM_ADDITIONAL_READ_ONLY_CACHE_DIRECTORIES` | `cache.additional-read-only-directories` | *(none)* |
+| `GOLEM_CACHE_RESOLUTION_POLICY` | `cache.resolution-policy` | `strict` |
+| `GOLEM_CACHE_MINIMIZATION_ENABLED` | `cache.minimization.enabled` | `on` |
+| `GOLEM_CACHE_MINIMIZATION_LENGTH` | `cache.minimization.length` | `8` |
+
+The two additional-directory variables take a `|`-separated list of `<path>[=<url-regex>]` entries:
+
+``` text
+GOLEM_ADDITIONAL_CACHE_DIRECTORIES=<path1>[=<regex1>]|<path2>[=<regex2>]|...
+```
+
 ## Recipes
 
 ### `GOLEM_RECIPES_REPOSITORIES`

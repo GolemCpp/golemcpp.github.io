@@ -16,8 +16,38 @@ seo:
 Have a look at [examples/cache](https://github.com/GolemCpp/golem/tree/main/examples/cache) to find a working example illustrating the concepts described in this section.
 
 Every cached resource carries a `.golem-manifest.json` descriptor at its root
-identifying its kind and identity. Use [golem cache](/docs/commands/golem-cache/)
-to list, size, and clean cached resources across the configured caches.
+recording its kind and the source it was obtained from. Use
+[golem cache](/docs/commands/golem-cache/) to list, size, and clean cached
+resources across the configured caches.
+
+## How cache settings are resolved
+
+Every setting on this page is read through the same precedence, whichever command asks for it —
+`golem configure`, a dependency sub-build, `golem cache` or `golem tools`:
+
+1. Command-line option
+2. Option persisted by `golem configure` (build directory)
+3. Environment variable
+4. Local config
+4. Gocal config
+4. Built-in default
+
+Each one is also a persistable setting, so it can be stored once with
+[golem config](/docs/commands/golem-config/) instead of being passed every time. The whole set is
+forwarded to dependency sub-builds, so the entire dependency graph reaches the same caches with the
+same layout.
+
+## Anatomy of a cached resource
+
+A cached resource is a directory holding what Golem fetched plus what it built from it:
+
+``` text
+<cache>/dependencies/json@com.github.nlohmann+65ee6845/
+├── .golem-manifest.json   the descriptor: kind, source, timestamps
+├── source/                the git clone (or the copied directory)
+├── include/               headers exposed to the calling project
+└── <build-slug>/          artifacts, per platform/compiler/variant
+```
 
 ## Controlling the locations
 
@@ -35,7 +65,8 @@ Or use the following `golem configure` option:
 
 - `--cache-directory=<path>`
 
-The option takes precedence over the environment variable.
+  Or store it once with `golem config cache.directory <path>`. The option takes precedence over the
+environment variable, which takes precedence over the stored setting.
 
 ### Additional cache directories
 
@@ -81,9 +112,10 @@ Or use the following `golem configure` option:
 
 - `--cache-resolution-policy=<policy>`
 
-The option takes precedence over the environment variable.
+  Or store it with `golem config cache.resolution-policy <policy>`. The option takes precedence over
+the environment variable, which takes precedence over the stored setting.
 
-`<policy>` is the policy name, the valid values are:
+  `<policy>` is the policy name, the valid values are:
 
 - `strict` (default)
 
@@ -96,16 +128,16 @@ The option takes precedence over the environment variable.
 To search the cache directory corresponding to a given dependency, all policies have in common that they go through the cache definitions in this order:
 
 1. Search for a cache associated with a regex, in the order in which they were defined, where the regex matches the dependency's URL:
- * `strict` policy stops at the first cache definition.
- * `weak` policy tries to find if any of the cache definitions, contains the dependency to be cached, and returns only if found.
+  * `strict` policy stops at the first cache definition.
+  * `weak` policy tries to find if any of the cache definitions, contains the dependency to be cached, and returns only if found.
 
 2. Search for a cache associated with no regex:
- * `strict` policy stops at the first cache definition.
- * `weak` policy tries to find if any of the cache definitions, contains the dependency to be cached, and returns only if found.
+  * `strict` policy stops at the first cache definition.
+  * `weak` policy tries to find if any of the cache definitions, contains the dependency to be cached, and returns only if found.
 
 3. If no cache definition was returned yet:
- * `strict` policy returns an error
- * `weak` policy returns the first valid cache definition with a regex matching the dependency's URL, or the first cache definition without regex.
+  * `strict` policy returns an error
+  * `weak` policy returns the first valid cache definition with a regex matching the dependency's URL, or the first cache definition without regex.
 
 ## Path minimization
 
@@ -128,7 +160,7 @@ repositories, overrides repositories, and tools — and the setting is forwarded
 dependency sub-builds so the whole dependency graph uses the same layout.
 
 A minimized resource is still fully described by its `.golem-manifest.json`, so
-[golem cache](/docs/commands/golem-cache/) reports its real kind and identity
+[golem cache](/docs/commands/golem-cache/) reports its real kind and source
 regardless of where it is stored.
 
 ### Priority to existing non-minimized resources
@@ -165,4 +197,5 @@ GOLEM_CACHE_MINIMIZATION_LENGTH=<n>
 - `cache.minimization.length` — the persisted setting (see [golem config](/docs/commands/golem-config/))
 
 A larger value lowers the (already negligible) chance of a hash collision, at the
-cost of slightly longer names.
+cost of slightly longer names. The value must be a positive number: Golem reports an error rather
+than silently falling back to the default.

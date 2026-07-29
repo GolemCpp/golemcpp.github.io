@@ -39,6 +39,8 @@ Here is how a it looks like:
 
 This overrides any reference to this dependency with the version `^3.0.0` and the release variant.
 
+An entry accepts the same source parameters as a [dependency definition](/docs/project-file/definitions/#dependency): use `repository` to point at a Git repository, or `directory` to point at a local directory copied as-is.
+
 The `overrides.json` can be specified in multiple ways. By order of precedence:
 
 1. `--overrides-configuration=<path_to_file>`
@@ -53,13 +55,25 @@ The `overrides.json` can be specified in multiple ways. By order of precedence:
 
    Define an environment variable pointing to the file
 
-4. `project.overrides_repository = '<repository_url_or_directory>'`
+4. `golem config overrides.configuration <path_to_file>`
+
+   Store the setting for the project (`--local`, the default) or for your user (`--global`). See [golem config](/docs/commands/golem-config/).
+
+5. `project.overrides_repository = '<repository_url_or_directory>'`
 
    Define in the project file the repository or local directory where to find the file
 
-5. `GOLEM_OVERRIDES_REPOSITORY=<repository_url_or_directory>`
+6. `GOLEM_OVERRIDES_REPOSITORY=<repository_url_or_directory>`
 
    Define an environment variable pointing to a repository or local directory containing `overrides.json`
+
+7. `golem config overrides.repository <repository_url_or_directory>`
+
+   Store the setting for the project (`--local`, the default) or for your user (`--global`). See [golem config](/docs/commands/golem-config/).
+
+A configuration file always wins over a repository, and each of the two follows the usual
+[resolution order](/docs/commands/golem-config/#resolution-order): option, project file,
+environment variable, then the local and global configuration stores.
 
 Local directory paths are normalized internally to `file://...` URLs. If the directory is not a Git repository, Golem recopies it into the cache on each `golem resolve`.
 

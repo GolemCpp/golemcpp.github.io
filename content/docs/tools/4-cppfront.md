@@ -64,7 +64,7 @@ When a project contains `.cpp2` files, Golem looks for cppfront in this order:
 3. A cached installation created by `golem tools install cppfront`
 4. `cppfront` on `PATH` for the executable
 
-For the cache-backed lookup, Golem uses the `tools/` subdirectory of `--cache-directory=<path>` when provided, otherwise `GOLEM_CACHE_DIRECTORY`, otherwise `~/.cache/golem/tools`.
+For the cache-backed lookup, Golem searches every configured cache location — including additional and read-only ones — the same way it resolves any other cached resource (see [Cache System](/docs/advanced/cache-system/)). With no cache configured, that is `~/.cache/golem/tools`. A cppfront installed in a shared read-only cache is picked up as-is.
 
 ## Examples
 

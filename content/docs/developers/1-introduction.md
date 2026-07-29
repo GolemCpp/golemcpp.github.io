@@ -72,11 +72,11 @@ Resolving a dependency (`golem resolve`) consists of 4 steps:
 To do so, Golem uses `git ls-remote --tags` and `git ls-remote --heads` to search for a corresponding commit hash. See [dependency.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/dependency.py).
 
 **Cloning the dependency in the cache** consists of:
-1. Generating a recipe ID corresponding to the dependency and adding to it the short commit hash (8 first characters). See `def generate_recipe_id(url):` and `def make_repository_base(cls, repository, resolved_version):` in [repository.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/repository.py).
-2. Determining where the dependency must be cached. See `def find_dep_cache_dir(self, dep, cache_conf):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
+1. Generating a recipe ID corresponding to the dependency and adding to it the short commit hash (8 first characters). See `def generate_recipe_id(url):` and `def make_repository_base(cls, location, reference):` in [source.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/source.py).
+2. Determining where the dependency must be cached. See `def resolve_cache_directory(self, spec):` in [cache_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/cache_manager.py).
 3. Cloning the repository in the cache. See `def make_repo_ready(self, dep, cache_dir, should_clean=False):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
 
-Example of a cloned repository in a cached dependency: `json@com.github.nlohmann+65ee6845\repository`
+Example of a cloned repository in a cached dependency: `json@com.github.nlohmann+65ee6845\source`
 
 - `json@com.github.nlohmann` : recipe ID
 - `65ee6845` : commit hash
@@ -107,7 +107,7 @@ Example of a configuration file: `json@com.github.nlohmann+65ee6845\w64mshdshd\c
     "configuration": {
         "artifacts": [
             {
-                "location": "${GOLEM_CACHE_DIR}\\json@com.github.nlohmann+65ee6845\\repository",
+                "location": "${GOLEM_CACHE_DIR}\\json@com.github.nlohmann+65ee6845\\source",
                 "path": "LICENSE.MIT",
                 "repository": "https://github.com/nlohmann/json.git",
                 "resolved_version": "\"v3.12.0\"",
@@ -119,7 +119,7 @@ Example of a configuration file: `json@com.github.nlohmann+65ee6845\w64mshdshd\c
             "${GOLEM_CACHE_DIR}\\json@com.github.nlohmann+65ee6845\\include"
         ],
         "licenses": [
-            "${GOLEM_CACHE_DIR}\\json@com.github.nlohmann+65ee6845\\repository\\LICENSE.MIT"
+            "${GOLEM_CACHE_DIR}\\json@com.github.nlohmann+65ee6845\\source\\LICENSE.MIT"
         ],
         "targets": [
             "json"

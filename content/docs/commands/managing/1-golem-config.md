@@ -61,27 +61,52 @@ When reading a setting, the local scope overrides the global scope.
 
 ## Resolution order
 
-Each setting is resolved with the following precedence:
+Every setting is read the same way, whatever the command asking for it, with the following precedence:
 
-```
-command-line option  >  environment variable  >  local config  >  global config  >  built-in default
-```
+1. Command-line option
+2. Option persisted by `golem configure` (build directory)
+3. Project file
+4. Environment variable
+5. Local config
+6. Global config
+7. Built-in default
 
-An explicit environment variable therefore still overrides a stored configuration value, and a stored value overrides the built-in default.
+- **Option persisted by `golem configure`** — the options a project was configured with are stored in
+  its build directory, so a later command reaching that build directory honours them without you
+  re-passing them. This is what makes `golem cache` and `golem tools` operate on the caches the
+  project was configured with (point them at a non-default build directory with `--build-dir=<path>`).
+- **Project file** — the settings a `golemfile.py` can state, such as `project.overrides_configuration`.
+  Only the settings marked as such in the table below can come from there.
+
+An explicit environment variable therefore still overrides a stored configuration value, and a stored
+value overrides the built-in default.
 
 ## Settings
 
-| Key | Environment variable |
-| --- | --- |
-| `cache.directory` | `GOLEM_CACHE_DIRECTORY` |
-| `cache.additional-directories` | `GOLEM_ADDITIONAL_CACHE_DIRECTORIES` |
-| `cache.additional-read-only-directories` | `GOLEM_ADDITIONAL_READ_ONLY_CACHE_DIRECTORIES` |
-| `cache.resolution-policy` | `GOLEM_CACHE_RESOLUTION_POLICY` |
-| `cache.minimization.enabled` | `GOLEM_CACHE_MINIMIZATION_ENABLED` |
-| `cache.minimization.length` | `GOLEM_CACHE_MINIMIZATION_LENGTH` |
-| `recipes.repositories` | `GOLEM_RECIPES_REPOSITORIES` |
-| `overrides.configuration` | `GOLEM_OVERRIDES_CONFIGURATION` |
-| `overrides.repository` | `GOLEM_OVERRIDES_REPOSITORY` |
+| Key | Environment variable | Command-line option | Default |
+| --- | --- | --- | --- |
+| `cache.directory` | `GOLEM_CACHE_DIRECTORY` | `--cache-directory` | `~/.cache/golem` |
+| `cache.additional-directories` | `GOLEM_ADDITIONAL_CACHE_DIRECTORIES` | `--additional-cache-directory` | *(none)* |
+| `cache.additional-read-only-directories` | `GOLEM_ADDITIONAL_READ_ONLY_CACHE_DIRECTORIES` | `--additional-read-only-cache-directory` | *(none)* |
+| `cache.resolution-policy` | `GOLEM_CACHE_RESOLUTION_POLICY` | `--cache-resolution-policy` | `strict` |
+| `cache.minimization.enabled` | `GOLEM_CACHE_MINIMIZATION_ENABLED` | `--cache-minimization-enabled` | `on` |
+| `cache.minimization.length` | `GOLEM_CACHE_MINIMIZATION_LENGTH` | `--cache-minimization-length` | `8` |
+| `recipes.repositories` | `GOLEM_RECIPES_REPOSITORIES` | *(none)* | `https://github.com/GolemCpp/recipes.git` |
+| `overrides.configuration` | `GOLEM_OVERRIDES_CONFIGURATION` | `--overrides-configuration` | *(none)* |
+| `overrides.repository` | `GOLEM_OVERRIDES_REPOSITORY` | *(none)* | *(none)* |
+
+`overrides.configuration` and `overrides.repository` can also be set from the project file, as
+`project.overrides_configuration` and `project.overrides_repository` (see
+[Dependencies](/docs/advanced/dependencies/)).
+
+Run `golem config --help` to print this table for the version you have installed, including each
+setting's description, environment variable, command-line option and built-in default.
+
+> [!NOTE]+
+> A list setting (`cache.additional-directories`, `cache.additional-read-only-directories`,
+> `recipes.repositories`) takes a `|`-separated list of entries when set through an environment
+> variable or the configuration store, and is passed once per entry when set through its repeatable
+> command-line option.
 
 The cache directory holds one subdirectory per resource kind: `dependencies/` for built dependencies, `recipes/` for recipe repositories, `overrides/` for overrides repositories, and `tools/` for installable tools. When [path minimization](/docs/advanced/cache-system/#path-minimization) is enabled (the default), new resources are instead stored flat at the cache root under a short hash, to keep paths short on long-path-limited toolchains.
 
