@@ -135,7 +135,7 @@ manifest is reported as **unidentified**, with the kind `unknown`.
 - `--json`
 
   Emit machine-readable JSON instead of formatted text. Each resource carries its `kind`,
-  `cache_key`, `source`, `identified` flag, `manifest_version`, `cache_location` and path.
+  `cache_key`, `source`, `identified` flag, `manifest_version`, `cache_root` and path.
 
 - `--dry-run`
 
