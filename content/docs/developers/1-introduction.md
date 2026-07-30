@@ -74,7 +74,7 @@ To do so, Golem uses `git ls-remote --tags` and `git ls-remote --heads` to searc
 **Cloning the dependency in the cache** consists of:
 1. Generating a source ID corresponding to the dependency and adding to it the short commit hash (8 first characters). See `def generate_id(url):` and `def make_repository_base(cls, location, reference):` in [source.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/source.py).
 2. Determining where the dependency must be cached. See `def resolve_cache_directory(self, resource):` in [cache_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/cache_manager.py).
-3. Cloning the repository in the cache. See `def make_repo_ready(self, dep, cache_dir, should_clean=False):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
+3. Cloning the repository in the cache. See `def make_repo_ready(self, dep, should_clean=False):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
 
 Example of a cloned repository in a cached dependency: `json@com.github.nlohmann+65ee6845\source`
 
@@ -83,7 +83,7 @@ Example of a cloned repository in a cached dependency: `json@com.github.nlohmann
 
 **Configuring the dependency** consists of:
 1. Determining the build location, which is a directory named after a condensed concatenation of characters designating the platform, architecture, compiler, runtime link, runtime variant on Windows, linking and variant information. See `def build_path(self, dep=None):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
-2. Running `golem configure` with all the needed options on the dependency. See `def run_dep_command(self, dep, cache_dir, command):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
+2. Running `golem configure` with all the needed options on the dependency. See `def run_dep_command(self, dep, command):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
 
 When configuring the dependency, the build directory is setup.
 
