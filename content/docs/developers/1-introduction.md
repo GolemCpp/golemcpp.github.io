@@ -72,13 +72,13 @@ Resolving a dependency (`golem resolve`) consists of 4 steps:
 To do so, Golem uses `git ls-remote --tags` and `git ls-remote --heads` to search for a corresponding commit hash. See [dependency.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/dependency.py).
 
 **Cloning the dependency in the cache** consists of:
-1. Generating a recipe ID corresponding to the dependency and adding to it the short commit hash (8 first characters). See `def generate_recipe_id(url):` and `def make_repository_base(cls, location, reference):` in [source.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/source.py).
-2. Determining where the dependency must be cached. See `def resolve_cache_directory(self, spec):` in [cache_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/cache_manager.py).
+1. Generating a source ID corresponding to the dependency and adding to it the short commit hash (8 first characters). See `def generate_id(url):` and `def make_repository_base(cls, location, reference):` in [source.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/source.py).
+2. Determining where the dependency must be cached. See `def resolve_cache_directory(self, resource):` in [cache_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/cache_manager.py).
 3. Cloning the repository in the cache. See `def make_repo_ready(self, dep, cache_dir, should_clean=False):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
 
 Example of a cloned repository in a cached dependency: `json@com.github.nlohmann+65ee6845\source`
 
-- `json@com.github.nlohmann` : recipe ID
+- `json@com.github.nlohmann` : source ID
 - `65ee6845` : commit hash
 
 **Configuring the dependency** consists of:
@@ -100,7 +100,7 @@ Example of an artifact directory in a cached dependency: `json@com.github.nlohma
 
 Example of a configuration file: `json@com.github.nlohmann+65ee6845\w64mshdshd\conf\json@json@com.github.nlohmann.json`
 
-- `json@json@com.github.nlohmann.json` the name follows the format `<target>@<recipe_id>`
+- `json@json@com.github.nlohmann.json` the name follows the format `<target>@<source_id>`
 
 ``` json
 {
