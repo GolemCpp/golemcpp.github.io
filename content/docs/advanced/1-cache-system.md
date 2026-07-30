@@ -155,8 +155,8 @@ subdirectory:
 <cache>/dependencies/json@com.github.nlohmann+65ee6845   ->   <cache>/3a33b297
 ```
 
-It applies uniformly to every resource kind — dependencies, recipes
-repositories, overrides repositories, and tools — and the setting is forwarded to
+It applies uniformly to every resource kind — dependencies, cookbooks,
+overlays, and tools — and the setting is forwarded to
 dependency sub-builds so the whole dependency graph uses the same layout.
 
 A minimized resource is still fully described by its `.golem-manifest.json`, so

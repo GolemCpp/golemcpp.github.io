@@ -128,6 +128,30 @@ For cppfront setup, cache-backed installs, and lookup behavior, see [cppfront](/
 
   See [compile_commands.json](/docs/tools/compile_commands.json) to know more
 
+## Dependency resolution options
+
+- `--overrides-configuration=<path>`
+
+  Path to an `overrides.json` overriding how dependencies resolve. Wins over the overlays.
+
+  Default: `None`
+
+  See [Dependencies](/docs/advanced/dependencies/#management-and-conflict-mitigation) to know more
+
+- `--overlay-location=[<kind>+]<locator>` (repeatable)
+
+  Add an [overlay](/docs/advanced/dependencies/#overlays) carrying an `overrides.json`. Pass the
+  option once per overlay; they are layered in the order given.
+
+  Default: `None`
+
+- `--cookbook-location=[<kind>+]<locator>` (repeatable)
+
+  Add a [cookbook](/docs/advanced/recipes/#custom-cookbooks) to search for recipes. Pass the option
+  once per cookbook; they are searched in the order given, replacing the default cookbook.
+
+  Default: `git+https://github.com/GolemCpp/recipes.git`
+
 ## Cache System options
 
 See [Cache System](/docs/advanced/cache-system) to know more

@@ -15,7 +15,7 @@ seo:
 ---
 
 `golem cache` inspects and cleans the resources Golem stores in its caches:
-dependencies, recipes repositories, overrides repositories, and tools.
+dependencies, cookbooks, overlays, and tools.
 
 Run it from your project root: it operates on exactly the caches the project is
 configured to use, including any additional cache directories the project was
@@ -59,8 +59,8 @@ descriptor at its root. It records the resource **kind**, its **cache key**, the
 layout can evolve), and **created** / **last used** timestamps. This lets Golem
 manage cached resources without relying on their opaque directory names.
 
-Every resource kind — dependency, recipes repository, overrides repository, tool —
-describes its source the same way:
+Every resource kind — dependency, cookbook, overlay, tool — describes its
+source the same way:
 
 ``` json
 {
@@ -116,9 +116,8 @@ manifest is reported as **unidentified**, with the kind `unknown`.
 
 - `--kind=<kind>`
 
-  Filter by resource kind: `dependency`, `recipes-repository`,
-  `overrides-repository`, `tool`, or `unknown` (directories with no valid
-  manifest).
+  Filter by resource kind: `dependency`, `cookbook`, `overlay`, `tool`, or
+  `unknown` (directories with no valid manifest).
 
 - `--cache=<path>`
 

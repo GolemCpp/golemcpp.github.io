@@ -88,20 +88,25 @@ value overrides the built-in default.
 | `cache.resolution-policy` | `GOLEM_CACHE_RESOLUTION_POLICY` | `--cache-resolution-policy` | `strict` |
 | `cache.minimization.enabled` | `GOLEM_CACHE_MINIMIZATION_ENABLED` | `--cache-minimization-enabled` | `on` |
 | `cache.minimization.length` | `GOLEM_CACHE_MINIMIZATION_LENGTH` | `--cache-minimization-length` | `8` |
-| `recipes.repositories` | `GOLEM_RECIPES_REPOSITORIES` | *(none)* | `https://github.com/GolemCpp/recipes.git` |
+| `cookbooks.locations` | `GOLEM_COOKBOOKS_LOCATIONS` | `--cookbook-location` | `git+https://github.com/GolemCpp/recipes.git` |
+| `overlays.locations` | `GOLEM_OVERLAYS_LOCATIONS` | `--overlay-location` | *(none)* |
 | `overrides.configuration` | `GOLEM_OVERRIDES_CONFIGURATION` | `--overrides-configuration` | *(none)* |
-| `overrides.repository` | `GOLEM_OVERRIDES_REPOSITORY` | *(none)* | *(none)* |
 
 Run `golem config --help` to print this table for the version you have installed, including each
 setting's description, environment variable, command-line option and built-in default.
 
 > [!NOTE]+
 > A list setting (`cache.additional-directories`, `cache.additional-read-only-directories`,
-> `recipes.repositories`) takes a `|`-separated list of entries when set through an environment
-> variable or the configuration store, and is passed once per entry when set through its repeatable
-> command-line option.
+> `cookbooks.locations`, `overlays.locations`) takes a `|`-separated list of entries when set through
+> an environment variable or the configuration store, and is passed once per entry when set through
+> its repeatable command-line option.
 
-The cache directory holds one subdirectory per resource kind: `dependencies/` for built dependencies, `recipes/` for recipe repositories, `overrides/` for overrides repositories, and `tools/` for installable tools. When [path minimization](/docs/advanced/cache-system/#path-minimization) is enabled (the default), new resources are instead stored flat at the cache root under a short hash, to keep paths short on long-path-limited toolchains.
+> [!NOTE]+
+> `cookbooks.locations` and `overlays.locations` take [source locations](/docs/reference/environment-variables/#source-locations):
+> `[<kind>+]<locator>`, where `<kind>` is `git` or `directory`. Without a prefix Golem works the kind
+> out from the locator.
+
+The cache directory holds one subdirectory per resource kind: `dependencies/` for built dependencies, `cookbooks/` for cookbooks, `overlays/` for overlays, and `tools/` for installable tools. When [path minimization](/docs/advanced/cache-system/#path-minimization) is enabled (the default), new resources are instead stored flat at the cache root under a short hash, to keep paths short on long-path-limited toolchains.
 
 ## Example
 

@@ -132,7 +132,7 @@ Dependency definitions allow a project to refer to another project. Doing so, li
 
 Any repository can be a dependency. If the dependency is using Golem, it can be used seemlessly. If the dependency is not using Golem, it needs a recipe to work.
 
-The recipe may exist in the [default recipe repository](/docs/advanced/recipes/#default-recipes). But a [custom recipe source](/docs/advanced/recipes/#custom-recipes) can also be set independently.
+The recipe may exist in the [default cookbook](/docs/advanced/recipes/#the-default-cookbook). But a [custom cookbook](/docs/advanced/recipes/#custom-cookbooks) can also be set independently.
 
 Here is how to define a dependency:
 
@@ -157,10 +157,14 @@ But...
 
 Dependency definitions also require a source, and a `version` when that source is a repository.
 
-A dependency comes from **one of two** mutually exclusive sources:
+A dependency comes from **one of three** mutually exclusive sources:
 
 - `repository='<git-url>'` — a Git repository, **cloned** into the cache at the resolved `version`.
 - `directory='<path>'` — a local directory, **copied** into the cache as-is on each `golem resolve`.
+- `location='[<kind>+]<locator>'` — either of the two in one field, spelling its kind or leaving
+  Golem to work it out. The same
+  [source location](/docs/reference/environment-variables/#source-locations) syntax the
+  `cookbooks.locations` and `overlays.locations` settings take.
 
 ``` python
 # A dependency cloned from Git
@@ -171,15 +175,28 @@ project.dependency(name='json',
 # A dependency living next to the project
 project.dependency(name='mylib',
                    directory='./mylib')
+
+# The same two, named through `location`
+project.dependency(name='json',
+                   location='git+https://github.com/nlohmann/json.git',
+                   version='^3.0.0')
+
+project.dependency(name='mylib',
+                   location='directory+./mylib')
+
+# Kind left to Golem: a local directory that is not a Git checkout is copied
+project.dependency(name='mylib',
+                   location='./mylib')
 ```
 
 A `directory` has no version to resolve, so `version`, `version_regex` and `shallow` do not apply
 to it. Paths are relative to the project file and are normalized internally to `file://...` URLs.
 
-> [!WARNING]+
-> A local directory used to be declared as `repository='./mylib'`, with Golem detecting that the
-> path was not a Git repository. If it is not a Git repository, it must now be declared as
-> `directory='./mylib'`. Because `repository` must declare a Git repository, local directory or not.
+> [!NOTE]+
+> `repository` and `directory` state the kind by the field they are, so they never rely on
+> detection: `repository` declares a Git repository, local directory or not. Use `location` when you
+> want one field for both, and prefix it when the guess would be wrong — `location='git+./mylib'`
+> clones a local checkout rather than copying it.
 
 Optionally, `shallow` controls how the repository is cloned:
 - `True` orders to perform a shallow clone of the repository

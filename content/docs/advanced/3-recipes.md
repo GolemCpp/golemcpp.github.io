@@ -15,15 +15,17 @@ seo:
 
 Golem aware dependencies, those having Golem project file defined at their root, can seemlessly refer to each other. But, when refering to a dependency unaware of Golem, Golem provides a recipe mechanism.
 
-## Default recipes
+A collection of recipes is a **cookbook**.
 
-**Contributions to the default recipes are very welcome!**
+## The default cookbook
 
-By default, Golem provides a [recipe repository](https://github.com/GolemCpp/recipes) to find a corresponding project file for these dependencies unaware of Golem.
+**Contributions to the default cookbook are very welcome!**
+
+By default, Golem provides a [cookbook](https://github.com/GolemCpp/recipes) to find a corresponding project file for these dependencies unaware of Golem.
 
 Dependencies are uniquely identified by their repository URL. Their ID is constructed such as **https://github.com/nlohmann/json.git** becomes **json@com.github.nlohmann**.
 
-A recipe source contains directories named after these dependency IDs, and each directory contains a project file.
+A cookbook contains directories named after these dependency IDs, and each directory contains a project file.
 
 This is how it looks like:
 
@@ -44,27 +46,34 @@ This is how it looks like:
 
 A `golemfile.py` can use scripting to handle any build system, any situation.
 
-## Custom recipes
+## Custom cookbooks
 
-To override the default Golem recipe repository, and possibly have multiple sources for recipes, define the following environment variable:
+To replace the default Golem cookbook, or search several cookbooks, set:
 
 ``` text
-GOLEM_RECIPES_REPOSITORIES=<repository_or_directory_1>|<repository_or_directory_2>|...
+GOLEM_COOKBOOKS_LOCATIONS=<location_1>|<location_2>|...
 ```
 
-- `<repository_or_directory>` Any form accepted by Git to clone the repository, or a local directory path.
-- Local directory paths are normalized internally to `file://...` URLs.
-- If the local directory is not a Git repository, Golem copies it into the cache again on each `golem resolve` because it cannot track changes.
-- `|` Separator between sources
+- `<location>` A [source location](/docs/reference/environment-variables/#source-locations),
+  `[<kind>+]<locator>`: `git+` for a repository cloned into the cache, `directory+` for a local
+  directory copied into it. Without a prefix Golem works the kind out from the locator.
+- `|` Separator between cookbooks
+
+Cookbooks are searched in the order they are listed, and the first one holding a recipe for the
+dependency wins.
+
+The same is available as the repeatable `--cookbook-location` option and as the
+`cookbooks.locations` setting — see [golem config](/docs/commands/golem-config/).
 
 Example:
 
-``` text
-GOLEM_RECIPES_REPOSITORIES=/home/user/recipes|https://github.com/GolemCpp/recipes.git
+``` bash
+GOLEM_COOKBOOKS_LOCATIONS=directory+/home/user/recipes|git+https://github.com/GolemCpp/recipes.git
+golem configure --cookbook-location=./my-cookbook
 ```
 
 > [!NOTE]+
-> When a dependency is missing, or not building properly, it is recommended to fork the Golem [recipe repository](https://github.com/GolemCpp/recipes), make the needed changes and create a Pull Request. Contributions are very welcome!
+> When a dependency is missing, or not building properly, it is recommended to fork the Golem [cookbook](https://github.com/GolemCpp/recipes), make the needed changes and create a Pull Request. Contributions are very welcome!
 
 ## Writing a recipe
 

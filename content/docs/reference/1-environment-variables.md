@@ -47,50 +47,73 @@ The two additional-directory variables take a `|`-separated list of `<path>[=<ur
 GOLEM_ADDITIONAL_CACHE_DIRECTORIES=<path1>[=<regex1>]|<path2>[=<regex2>]|...
 ```
 
-## Recipes
+## Source locations
 
-### `GOLEM_RECIPES_REPOSITORIES`
-
-Defines the ordered list of recipe sources to search.
+`GOLEM_COOKBOOKS_LOCATIONS` and `GOLEM_OVERLAYS_LOCATIONS` name where a resource comes from. Each
+entry is a **location**, optionally prefixed by the **kind** of source it is:
 
 ``` text
-GOLEM_RECIPES_REPOSITORIES=<repository_or_directory_1>|<repository_or_directory_2>|...
+[<kind>+]<locator>
 ```
 
-- Each entry may be a Git-cloneable repository URL or a local directory path.
-- Local directory paths are normalized internally to `file://...` URLs.
-- If a local directory is not a Git repository, Golem recopies it into the cache on each `golem resolve`.
+| Kind | Locator | Behaviour |
+| --- | --- | --- |
+| `git` | Any form accepted by `git clone`, or a local path | **Cloned** into the cache, then updated with `git fetch` |
+| `directory` | A local path | **Copied** into the cache as-is, again on each `golem resolve` |
+
+Without a prefix, Golem works the kind out: a local directory that is not a Git checkout is
+`directory`, anything else is `git`. Spell the kind when the guess would be wrong — a local Git
+checkout you want copied rather than cloned, or a directory you want treated as a repository.
+
+- Local paths are relative to the project and normalized internally to `file://...` URLs.
+- A prefix naming a kind Golem does not know is an error, not a path.
+
+``` text
+GOLEM_COOKBOOKS_LOCATIONS=directory+/home/user/recipes
+GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git
+```
+
+## Cookbooks
+
+### `GOLEM_COOKBOOKS_LOCATIONS`
+
+Defines the ordered list of cookbooks to search for [recipes](/docs/advanced/recipes/).
+
+``` text
+GOLEM_COOKBOOKS_LOCATIONS=<location_1>|<location_2>|...
+```
 
 Examples:
 
 ``` text
-GOLEM_RECIPES_REPOSITORIES=/home/user/recipes
-GOLEM_RECIPES_REPOSITORIES=/home/user/recipes|https://github.com/GolemCpp/recipes.git
+GOLEM_COOKBOOKS_LOCATIONS=/home/user/recipes
+GOLEM_COOKBOOKS_LOCATIONS=directory+/home/user/recipes|git+https://github.com/GolemCpp/recipes.git
 ```
 
-## Overrides
+## Overlays
 
-### `GOLEM_OVERRIDES_REPOSITORY`
+### `GOLEM_OVERLAYS_LOCATIONS`
 
-Defines a repository or local directory containing `overrides.json`.
+Defines the ordered list of overlays contributing an `overrides.json`.
 
 ``` text
-GOLEM_OVERRIDES_REPOSITORY=<repository_or_directory>
+GOLEM_OVERLAYS_LOCATIONS=<location_1>|<location_2>|...
 ```
 
-- The value may be a Git-cloneable repository URL or a local directory path.
-- Local directory paths are normalized internally to `file://...` URLs.
-- If the local directory is not a Git repository, Golem recopies it into the cache on each `golem resolve`.
+Overlays are **layered in order**: a later overlay overwrites only the fields it defines, so it
+refines the ones before it rather than replacing them. See
+[Dependencies](/docs/advanced/dependencies/#overlays).
 
 Example:
 
 ``` text
-GOLEM_OVERRIDES_REPOSITORY=/home/user/overrides
+GOLEM_OVERLAYS_LOCATIONS=/home/user/company-overlay|/home/user/my-overlay
 ```
 
 ### `GOLEM_OVERRIDES_CONFIGURATION`
 
-Defines the path to a `overrides.json` file directly.
+Defines the path to a `overrides.json` file directly. An explicit file names the overrides outright
+and stands in for the whole overlay stack.
 
 ``` text
 GOLEM_OVERRIDES_CONFIGURATION=/home/user/overrides.json
