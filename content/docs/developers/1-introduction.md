@@ -171,16 +171,14 @@ What a kind still defines for itself is data, not mechanism:
 
 - `def source_for(item):` — the `Source` its object denotes. A dependency returns `dep.to_source()`;
   the other kinds are handed a `Source` already.
-- `def source_path(root):` — where the fetched content sits under the resource root. The root itself,
-  except for a dependency, whose root also holds what was built from the source, so the source gets
-  a `source/` subdirectory of its own.
+- `def source_path(root):` — where the fetched content sits under the resource root. Every kind keeps
+  it in a `source/` subdirectory.
 - `def policy_for(item):` — the `FetchPolicy` above.
 - `def prepare(item):` — run before a fresh fetch and never before a refresh. A dependency resolves
   its version here, since its policy is built from the result.
 
 Adding a resource kind therefore means a `ResourceManager` subclass with a `resource_for`, plus
 whichever of those four the kind does not take from the defaults.
-for the one that overrides none.
 
 ### What an overlay carries
 

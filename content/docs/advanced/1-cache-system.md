@@ -49,6 +49,8 @@ A cached resource is a directory holding what Golem fetched plus what it built f
 └── <build-slug>/          artifacts, per platform/compiler/variant
 ```
 
+Note that every resource kind has at least `.golem-manifest.json` and `source/` in its cache location.
+
 ## Controlling the locations
 
 ### Default cache directory
