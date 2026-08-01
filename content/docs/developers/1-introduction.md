@@ -74,7 +74,7 @@ To do so, Golem uses `git ls-remote --tags` and `git ls-remote --heads` to searc
 **Cloning the dependency in the cache** consists of:
 1. Generating a source ID corresponding to the dependency and adding to it the short commit hash (8 first characters). See `def generate_id(url):` and `def make_repository_base(cls, location, reference):` in [source.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/source.py).
 2. Determining where the dependency must be cached. See `def resolve_cache_directory(self, resource):` in [cache_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/cache_manager.py).
-3. Cloning the repository in the cache. See `def make_repo_ready(self, dep, should_clean=False):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
+3. Fetching the source into the cache. See `def make_repo_ready(self, dep, should_clean=False):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py), which asks the dependency's manager to do it — see [Fetching a source](#fetching-a-source) below.
 
 Example of a cloned repository in a cached dependency: `json@com.github.nlohmann+65ee6845\source`
 
@@ -132,3 +132,65 @@ Example of a configuration file: `json@com.github.nlohmann+65ee6845\w64mshdshd\c
 This file contains all of what's needed when linking against the target `json` of the dependency `json@com.github.nlohmann`.
 
 Once resolved, the dependencies can be built with `golem dependencies`. An `include` directory will be added in the dependency's cache directory to contain the headers meant to be used by the calling project. The artifacts will be built and stored in the artifact directory.
+
+### Fetching a source
+
+Dependencies, cookbooks, overlays and tools are all obtained the same way, so getting a source into
+the cache lives once, in `class ResourceManager` in
+[resource_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/resource_manager.py).
+Each kind subclasses it and says only what is different about itself.
+
+`def install(self, cached_resource, item, fetch=True, refresh=True):` is the entry point:
+
+- A resource that is not there yet is **staged**: it is fetched into a sibling `.tmp` directory, its
+  manifest is written, and the whole thing is swapped into place in one step. A build interrupted
+  half-way therefore never leaves a partial resource behind.
+- A resource already there is **refreshed** in place, keeping its cache root.
+- `fetch=False` resolves where the resource lives without touching the network or the disk, which is
+  what commands that only read the cache pass.
+
+What actually runs then depends on the kind of the [source](/docs/reference/environment-variables/#source-locations):
+a `directory` source is copied, and a `git` source runs the git sequence described by a
+`FetchPolicy`:
+
+| Field | What it asks for |
+| --- | --- |
+| `shallow` | Fetch only the requested commit instead of the whole history |
+| `checkout` | Checked out before the reset, when the ref to land on is not the one to check out |
+| `reference` | What to reset to; empty resets to the current `HEAD` |
+| `submodules` | Fetch and reset the submodules along with the resource |
+| `clean` | Discard local changes before refreshing |
+| `fetch_remote` | Whether refreshing consults the remote |
+
+A dependency is pinned to a resolved commit and is built from its working tree, so it asks for most
+of it: `checkout` the resolved version, `reference` the resolved hash, `submodules` and `clean` on,
+and no `fetch_remote` because a pinned resource cannot move. A cookbook or an overlay is only read,
+so it takes the defaults — a plain clone tracking `origin/<reference>`.
+
+What a kind still defines for itself is data, not mechanism:
+
+- `def source_for(item):` — the `Source` its object denotes. A dependency returns `dep.to_source()`;
+  the other kinds are handed a `Source` already.
+- `def source_path(root):` — where the fetched content sits under the resource root. The root itself,
+  except for a dependency, whose root also holds what was built from the source, so the source gets
+  a `source/` subdirectory of its own.
+- `def policy_for(item):` — the `FetchPolicy` above.
+- `def prepare(item):` — run before a fresh fetch and never before a refresh. A dependency resolves
+  its version here, since its policy is built from the result.
+
+Adding a resource kind therefore means a `ResourceManager` subclass with a `resource_for`, plus
+whichever of those four the kind does not take from the defaults.
+for the one that overrides none.
+
+### What an overlay carries
+
+An [overlay](/docs/advanced/dependencies/#overlays) is a source carrying configuration a project
+layers onto its own. `class OverlayManager` in
+[overlay_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/overlay_manager.py)
+reads it in two steps, which is what keeps it open to overlays carrying more than they do today:
+
+- `def install_overlays(self, sources, fetch=True):` returns where each configured overlay lives, in
+  the order it was configured. Anything an overlay may carry is read from these paths.
+- `def load_overrides(self, sources, project_dir, merged_path, fetch=True):` walks those paths for an
+  `overrides.json`, layers what it finds, and writes the result to `merged_path`.
+
