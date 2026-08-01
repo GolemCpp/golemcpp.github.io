@@ -165,20 +165,35 @@ a `directory` source is copied, and a `git` source runs the git sequence describ
 A dependency is pinned to a resolved commit and is built from its working tree, so it asks for most
 of it: `checkout` the resolved version, `reference` the resolved hash, `submodules` and `clean` on,
 and no `fetch_remote` because a pinned resource cannot move. A cookbook or an overlay is only read,
-so it takes the defaults — a plain clone tracking `origin/<reference>`.
+so it takes the defaults — a plain clone tracking `origin/<reference>`. A tool sits between the two:
+it lands on the exact commit its version resolved to and never drifts, but it is not pinned the way a
+dependency is, whose reference is part of its cache key. A tool is keyed by its name alone, so the
+same cache root is reused for whatever version is asked for next, and reaching a tag pushed after the
+clone is what its `fetch_remote` is for.
 
 What a kind still defines for itself is data, not mechanism:
 
-- `def source_for(item):` — the `Source` its object denotes. A dependency returns `dep.to_source()`;
-  the other kinds are handed a `Source` already.
+- `def source_for(item):` — the `Source` its object denotes. A dependency returns `dep.to_source()`,
+  a tool `tool.to_source()`; cookbooks and overlays are handed a `Source` already.
 - `def source_path(root):` — where the fetched content sits under the resource root. Every kind keeps
   it in a `source/` subdirectory.
 - `def policy_for(item):` — the `FetchPolicy` above.
-- `def prepare(item):` — run before a fresh fetch and never before a refresh. A dependency resolves
-  its version here, since its policy is built from the result.
+- `def resolve_version(item):` — see below.
 
-Adding a resource kind therefore means a `ResourceManager` subclass with a `resource_for`, plus
-whichever of those four the kind does not take from the defaults.
+### The install lifecycle
+
+`install` brackets the fetch with three hooks, all doing nothing by default, all called from
+`install` and nowhere else:
+
+- `def pre_install(item):` — run before a fresh fetch and never before a refresh. No kind needs it
+  today; a version is resolved earlier than this, as above.
+- `def pre_install_refresh(root, item):` — run before a refresh moves the source, to drop whatever
+  the kind made from the previous one.
+- `def post_install(root, item):` — what the kind makes from the source it now holds, beside it in
+  the resource root.
+
+Most kinds are built by a later command and fill in none of the last two. A **tool** is the exception:
+it is built as part of being installed, so `post_install` runs its build handler.
 
 ### What an overlay carries
 
