@@ -133,6 +133,29 @@ This file contains all of what's needed when linking against the target `json` o
 
 Once resolved, the dependencies can be built with `golem dependencies`. An `include` directory will be added in the dependency's cache directory to contain the headers meant to be used by the calling project. The artifacts will be built and stored in the artifact directory.
 
+### Only resolve reaches a remote
+
+Fetching is a resolve step. `golem resolve` fills the cache and `golem tools install` installs a
+tool, so those two may go online. Every other command reads what they put there. A `golem build`
+that reaches a remote means the cache was not ready, and saying so is more useful than filling it
+in on its own, so it stops with a message naming `golem resolve`.
+
+The rule is checked in `def validate_git_command(args, cwd):` in
+[helpers.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/helpers.py), which every
+git call already passes through. `clone`, `fetch`, `pull`, `push`, `ls-remote` and
+`submodule update` reach a remote; `init`, `checkout`, `reset`, `clean` and `submodule foreach` do
+not. Access is denied by default and opened for a block by
+[network.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/network.py):
+
+```python
+with network.allowed():
+    ...
+```
+
+Three places open it: the `resolve` command, the tool install, and a script a project declared for
+one of its targets. That last one is not Golem fetching a resource, so whatever it reaches is its
+own business.
+
 ### Fetching a source
 
 Dependencies, cookbooks, overlays and tools are all obtained the same way, so getting a source into
