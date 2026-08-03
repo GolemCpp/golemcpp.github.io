@@ -74,7 +74,7 @@ To do so, Golem uses `git ls-remote --tags` and `git ls-remote --heads` to searc
 **Cloning the dependency in the cache** consists of:
 1. Generating a source ID corresponding to the dependency and adding to it the short commit hash (8 first characters). See `def generate_id(url):` and `def make_repository_base(cls, location, reference):` in [source.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/source.py).
 2. Determining where the dependency must be cached. See `def resolve_cache_directory(self, resource):` in [cache_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/cache_manager.py).
-3. Fetching the source into the cache. See `def make_repo_ready(self, dep, should_clean=False):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py), which asks the dependency's manager to do it — see [Fetching a source](#fetching-a-source) below.
+3. Fetching the source into the cache. See `def run_dep_command(self, dep, command):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py), which asks the dependency's manager to install it — see [Fetching a source](#fetching-a-source) below.
 
 Example of a cloned repository in a cached dependency: `json@com.github.nlohmann+65ee6845\source`
 
@@ -140,14 +140,30 @@ the cache lives once, in `class ResourceManager` in
 [resource_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/resource_manager.py).
 Each kind subclasses it and says only what is different about itself.
 
-`def install(self, cached_resource, item, fetch=True, refresh=True):` is the entry point:
+There are two entry points, and which one to call depends on whether you mean to write.
 
-- A resource that is not there yet is **staged**: it is fetched into a sibling `.tmp` directory, its
+`def install(self, item, refresh=True, cached_resource=None):` writes. It takes the item the kind
+knows about, a dependency, a cookbook, an overlay or a tool, works out where it belongs on its own,
+and hands back the `CachedResource` naming it.
+
+- A resource that is not there yet is **staged**. It is fetched into a sibling `.tmp` directory, its
   manifest is written, and the whole thing is swapped into place in one step. A build interrupted
   half-way therefore never leaves a partial resource behind.
 - A resource already there is **refreshed** in place, keeping its cache root.
+- `refresh=False` hands an installed resource back untouched.
+- A **read-only** cache location is refused. Nothing is written there, whether the resource has to
+  be populated or refreshed.
+
+`def make_available(self, item, fetch=True, refresh=True):` reads, but installs too if the location
+is writable. It hands back the resource ready to use, either installed or kept as is from a
+read-only location. `make_available_all(items, ...)` covers a list. This is what cookbooks, overlays
+and tools call, since they are meant to work from a shared cache they may not write to.
+
 - `fetch=False` resolves where the resource lives without touching the network or the disk, which is
   what commands that only read the cache pass.
+- A read-only location holding the resource is kept as it stands, and nothing is fetched.
+- A read-only location that does not hold it raises, because there is nothing to serve there and
+  nothing may be written.
 
 What actually runs then depends on the kind of the [source](/docs/reference/environment-variables/#source-locations):
 a `directory` source is copied, and a `git` source runs the git sequence described by a
@@ -198,12 +214,14 @@ it is built as part of being installed, so `post_install` runs its build handler
 ### What an overlay carries
 
 An [overlay](/docs/advanced/dependencies/#overlays) is a source carrying configuration a project
-layers onto its own. `class OverlayManager` in
-[overlay_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/overlay_manager.py)
-reads it in two steps, which is what keeps it open to overlays carrying more than they do today:
+layers onto its own. Reading one takes two steps, which is what keeps it open to overlays carrying
+more than they do today:
 
-- `def install_overlays(self, sources, fetch=True):` returns where each configured overlay lives, in
-  the order it was configured. Anything an overlay may carry is read from these paths.
-- `def load_overrides(self, sources, project_dir, merged_path, fetch=True):` walks those paths for an
-  `overrides.json`, layers what it finds, and writes the result to `merged_path`.
+- `make_available_all(items, ...)`, the shared one from `ResourceManager`, returns the cached
+  resource of each configured overlay, in the order it was configured. Anything an overlay may
+  carry is read from `source_path` on those.
+- `def load_overrides(self, cached_overlays, project_dir, merged_path):` in
+  [overlay_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/overlay_manager.py)
+  walks them for an `overrides.json`, layers what it finds, and writes the result to `merged_path`.
+  It reads the overlays where they already are, so installing them stays the caller's step.
 

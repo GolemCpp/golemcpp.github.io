@@ -28,7 +28,8 @@ golem tools list [--available]
 
   Install or replace a supported tool. The tool is written into the first **writable** cache the
   [resolution policy](/docs/advanced/cache-system/#cache-resolution-policies) selects for it. If
-  that cache is read-only, the install is refused rather than silently written elsewhere.
+  the selected cache is read-only, a tool already there is reported as served and left untouched,
+  and one that is not there is refused rather than silently written elsewhere.
 
 - `uninstall <tool> [--yes]`
 
