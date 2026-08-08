@@ -55,9 +55,10 @@ finally the default cache location — the same
 
 Every resource newly stored in a cache carries a small `.golem-manifest.json`
 descriptor at its root. It records the resource **kind**, its **cache key**, the
-**source** it was obtained from, the **manifest schema version** (so the on-disk
-layout can evolve), and **created** / **last used** timestamps. This lets Golem
-manage cached resources without relying on their opaque directory names.
+**source** it was obtained from, what that **fetch** left there, the **manifest
+schema version** (so the on-disk layout can evolve), and **created** / **last
+used** timestamps. This lets Golem manage cached resources without relying on
+their opaque directory names.
 
 Every resource kind — dependency, cookbook, overlay, tool — describes its
 source the same way:
@@ -73,6 +74,25 @@ source the same way:
 - `type` — `git` for a cloned repository, `directory` for a copied local directory.
 - `location` — the repository URL, or the directory path.
 - `reference` — the resolved git reference; empty for a directory source.
+
+Where the source says what was **asked for**, `fetched` says what the root ended
+up **holding**:
+
+``` json
+{
+  "head": "8c391e04fe0c8e0f1e2dcb27dc23ee9c5ea5a1b1",
+  "mode": "blobless"
+}
+```
+
+- `head` — the commit the fetch landed on. A resource following a branch keeps
+  naming the same reference while landing somewhere new every time that branch
+  moves, so the source alone cannot say what is there.
+- `mode` — how much of the source was obtained (see
+  [`GOLEM_GIT_FETCH_MODE`](/docs/reference/environment-variables/#git)). This is
+  what lets a later `golem resolve` tell whether the root has to be converted
+  before it can serve what is being asked for. Empty for a directory source,
+  which has no history to obtain part of.
 
 The manifest is the source of truth for a resource's identity wherever it is
 stored, so a [minimized](/docs/advanced/cache-system/#path-minimization) resource

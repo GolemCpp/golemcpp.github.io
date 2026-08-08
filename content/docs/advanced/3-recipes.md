@@ -325,11 +325,25 @@ project.library(name='json-schema-validator',
 
 ### Calling Git
 
-To safely call Git commands Golem provides a convenient helper function:
+To safely call Git commands Golem provides three helper functions, differing in what they hand back
+and in what happens when the command fails:
 
 ``` python
 from golemcpp.golem import helpers
-helpers.call_git(['reset', '--hard'], cwd=root_of_git_repository)
+
+# Do it. Raises if it fails.
+helpers.run_git(['reset', '--hard'], cwd=root_of_git_repository)
+
+# Do it and give me what it said. Raises if it fails.
+head = helpers.read_git(['rev-parse', 'HEAD'], cwd=root_of_git_repository)
+
+# Do it and tell me whether it worked. Never raises.
+helpers.try_git(['clean', '-fxd'], cwd=root_of_git_repository)
 ```
 
-This makes sure the working directory is a Git repository before continuing and pass the arguments to `subprocess.call()`.
+Each one makes sure the working directory is a Git repository before continuing, and refuses a
+command that would reach a remote outside `golem resolve` or a build script (see
+[Only resolve reaches a remote](/docs/developers/introduction/#only-resolve-reaches-a-remote)).
+
+Use `run_git` when a failure should stop the recipe, `read_git` when the output is the point, and
+`try_git` for something that is allowed to fail — a `clean` in a tree that may not need one.

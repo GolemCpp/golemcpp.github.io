@@ -16,9 +16,9 @@ seo:
 Have a look at [examples/cache](https://github.com/GolemCpp/golem/tree/main/examples/cache) to find a working example illustrating the concepts described in this section.
 
 Every cached resource carries a `.golem-manifest.json` descriptor at its root
-recording its kind and the source it was obtained from. Use
-[golem cache](/docs/commands/golem-cache/) to list, size, and clean cached
-resources across the configured caches.
+recording its kind, the source it was obtained from and what that fetch left
+there. Use [golem cache](/docs/commands/golem-cache/) to list, size, and clean
+cached resources across the configured caches.
 
 ## How cache settings are resolved
 
@@ -43,13 +43,19 @@ A cached resource is a directory holding what Golem fetched plus what it built f
 
 ``` text
 <cache>/dependencies/json@com.github.nlohmann+65ee6845/
-├── .golem-manifest.json   the descriptor: kind, source, timestamps
+├── .golem-manifest.json   the descriptor: kind, source, what was fetched, timestamps
 ├── source/                the git clone (or the copied directory)
 ├── include/               headers exposed to the calling project
 └── <build-slug>/          artifacts, per platform/compiler/variant
 ```
 
 Note that every resource kind has at least `.golem-manifest.json` and `source/` in its cache location.
+
+Beside the root, not inside it, sits a `<root>.lock` file. It is how two Golems sharing a cache take
+a resource in turn instead of writing over each other: whoever holds it is fetching or refreshing,
+and the other says it is waiting. The lock is the operating system's own, so it is released when a
+Golem ends however it ends, and the empty file it leaves behind is not a resource — `golem cache`
+only counts directories.
 
 ## Controlling the locations
 

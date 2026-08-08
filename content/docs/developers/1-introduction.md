@@ -140,11 +140,13 @@ tool, so those two may go online. Every other command reads what they put there.
 that reaches a remote means the cache was not ready, and saying so is more useful than filling it
 in on its own, so it stops with a message naming `golem resolve`.
 
-The rule is checked in `def validate_git_command(args, cwd):` in
+The rule is checked in `def validate_git_command(params, cwd):` in
 [helpers.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/helpers.py), which every
 git call already passes through. `clone`, `fetch`, `pull`, `push`, `ls-remote` and
 `submodule update` reach a remote; `init`, `checkout`, `reset`, `clean` and `submodule foreach` do
-not. Access is denied by default and opened for a block by
+not. `submodule update --no-fetch` is the exception that proves it: the flag tells Git to work from
+the objects already there and to fail rather than go looking, which is how a pinned dependency is
+refreshed without a resolve. Access is denied by default and opened for a block by
 [network.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/network.py):
 
 ```python
@@ -156,12 +158,28 @@ Three places open it: the `resolve` command, the tool install, and a script a pr
 one of its targets. That last one is not Golem fetching a resource, so whatever it reaches is its
 own business.
 
+A command name is not always enough to tell. A [blobless](/docs/reference/environment-variables/#git)
+clone completes itself as it goes: any command can reach the remote for a blob it is missing, and
+no name says so. Outside a resolve Golem therefore sets `GIT_NO_LAZY_FETCH=1`, so Git fails there
+instead of quietly going online.
+
+Changing how much of a source a cache root holds by [migrating](#migrating-a-cached-root) it between
+fetch modes is a resolve step for the same reason. It may have to fetch what the root does not
+have. A `golem build` refreshing a root leaves its mode alone and works with what is there.
+
 ### Fetching a source
 
 Dependencies, cookbooks, overlays and tools are all obtained the same way, so getting a source into
 the cache lives once, in `class ResourceManager` in
 [resource_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/resource_manager.py).
 Each kind subclasses it and says only what is different about itself.
+
+The manager says *what* to obtain and brackets it with the install lifecycle; *how* a source is
+obtained belongs to a `Fetcher` in
+[fetcher.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/fetcher.py), which
+`fetcher_for` picks by reading the source: `GitFetcher` clones and refreshes a repository,
+`DirectoryFetcher` copies a directory. Another way of obtaining a source is another Fetcher beside
+those two.
 
 There are two entry points, and which one to call depends on whether you mean to write.
 
@@ -173,9 +191,13 @@ and hands back the `CachedResource` naming it.
   manifest is written, and the whole thing is swapped into place in one step. A build interrupted
   half-way therefore never leaves a partial resource behind.
 - A resource already there is **refreshed** in place, keeping its cache root.
-- `refresh=False` hands an installed resource back untouched.
+- `refresh=False` hands an installed resource back untouched, but only once it is in the fetch mode
+  being asked for. One that cannot be brought to it is obtained again, refresh or no refresh.
 - A **read-only** cache location is refused. Nothing is written there, whether the resource has to
   be populated or refreshed.
+- Two Golems sharing a cache take the root in turn. Both staging and refreshing are held for their
+  duration by an operating-system lock on a `<root>.lock` file beside it; the second one says it is
+  waiting rather than working on the same directory.
 
 `def make_available(self, item, fetch=True, refresh=True):` reads, but installs too if the location
 is writable. It hands back the resource ready to use, either installed or kept as is from a
@@ -194,21 +216,44 @@ a `directory` source is copied, and a `git` source runs the git sequence describ
 
 | Field | What it asks for |
 | --- | --- |
-| `shallow` | Fetch only the requested commit instead of the whole history |
+| `fetch_mode` | How much of the source to obtain: `blobless`, `full` or `shallow` |
+| `fetch_jobs` | How many submodules to obtain at once |
 | `checkout` | Checked out before the reset, when the ref to land on is not the one to check out |
 | `reference` | What to reset to; empty resets to the current `HEAD` |
-| `submodules` | Fetch and reset the submodules along with the resource |
-| `clean` | Discard local changes before refreshing |
 | `fetch_remote` | Whether refreshing consults the remote |
 
-A dependency is pinned to a resolved commit and is built from its working tree, so it asks for most
-of it: `checkout` the resolved version, `reference` the resolved hash, `submodules` and `clean` on,
-and no `fetch_remote` because a pinned resource cannot move. A cookbook or an overlay is only read,
-so it takes the defaults — a plain clone tracking `origin/<reference>`. A tool sits between the two:
-it lands on the exact commit its version resolved to and never drifts, but it is not pinned the way a
-dependency is, whose reference is part of its cache key. A tool is keyed by its name alone, so the
-same cache root is reused for whatever version is asked for next, and reaching a tag pushed after the
-clone is what its `fetch_remote` is for.
+Local changes are discarded before a refresh, and the submodules are carried, reset and synced along
+with it.
+
+A dependency is pinned to a resolved commit and is built from its working tree: `checkout` the
+resolved version, `reference` the resolved hash, and no `fetch_remote`, because a pinned resource
+cannot move. It is also the one kind that can ask for a `fetch_mode` of its own, through
+[`shallow`](/docs/project-file/definitions/#dependency) in the project file.
+
+A cookbook or an overlay is only read, so it takes the defaults and tracks its branch.
+
+A tool sits between the two: it lands on the exact commit its version resolved to and never drifts,
+but it is not pinned the way a dependency is, whose reference is part of its cache key. A tool is
+keyed by its name alone, so the same cache root is reused for whatever version is asked for next,
+and reaching a tag pushed after the clone is what its `fetch_remote` is for.
+
+The `reference` goes as the resource spells it (e.g. `main`, `v3.12.0`, a commit hash) and what it
+turns out to name is read from the repository once there is one to read it from, in
+`GitFetcher.resolved_reset_reference`: a tag first, then the branch on the remote, then the
+reference as given. A tag beats a branch of the same name. Leaving it to Git would answer nearly the
+same way and cannot be relied on to: a cache clone always carries a local branch, left behind by
+`clone` and never moved since, so a name meaning the remote's branch would land on whatever the
+clone happened to see.
+
+#### Migrating a cached root
+
+A root fetched one way can be brought to another without being obtained again. Git was upgraded and
+blobless became available, a dependency was switched to `shallow`, a cache was asked to become
+portable. `GitFetcher.migrate` converts it in place where that is cheaper and says so when it
+cannot, in which case the root is obtained again, which is always correct and only slower.
+
+What the root ends up holding is written to its manifest, so the conversion happens once. It is a
+resolve step: it may have to reach the remote, so it belongs to the command allowed to.
 
 What a kind still defines for itself is data, not mechanism:
 
@@ -216,7 +261,8 @@ What a kind still defines for itself is data, not mechanism:
   a tool `tool.to_source()`; cookbooks and overlays are handed a `Source` already.
 - `def source_path(root):` — where the fetched content sits under the resource root. Every kind keeps
   it in a `source/` subdirectory.
-- `def policy_for(item):` — the `FetchPolicy` above.
+- `def policy_for(self, item):` — the `FetchPolicy` above. Not a static one like its neighbours: it
+  reads the configured fetch mode and job count off the manager's `CacheConfiguration`.
 - `def resolve_version(item):` — see below.
 
 ### The install lifecycle

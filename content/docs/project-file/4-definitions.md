@@ -198,11 +198,45 @@ to it. Paths are relative to the project file and are normalized internally to `
 > want one field for both, and prefix it when the guess would be wrong — `location='git+./mylib'`
 > clones a local checkout rather than copying it.
 
-Optionally, `shallow` controls how the repository is cloned:
-- `True` orders to perform a shallow clone of the repository
-- `False` (default) orders to perform a regular clone of the repository
+Optionally, `shallow` controls how much of the repository is obtained:
+- `True` fetches the resolved commit and nothing around it
+- `False` (default) leaves the dependency to the configured
+  [fetch mode](/docs/reference/environment-variables/#git)
 
-This makes `shallow` a nice optimization parameter when the repository is heavy to clone. But at the moment, some limitations in Golem makes it impossible to enable this parameter for dependencies referring to Golem projects. It's a known issue requiring some work.
+Golem fetches every resource `blobless` by default. That is every commit and every tag, file content
+on demand. So the bulk of what a full clone used to cost is already saved without asking for
+anything. What `shallow` cuts on top of that is the history itself.
+
+`shallow` is the smallest of the three modes on disk. On Boost at `boost-1.89.0`, whose superproject
+carries 170 submodules, a `shallow` cache root comes to well under half what a full clone takes,
+and under a third of it counting only the repository data.
+
+What `shallow` costs is the history itself, and that is not free. A root holding one commit has
+nothing for `git describe --long --tags` to answer, because the commit arrives without its tag. So a
+dependency cannot derive its version from its history and has to be told it with `--force-version`.
+Golem projects allow to derive their version from their history, which makes it impossible to be the
+default mode.
+
+`shallow` is also slower to *obtain* on a repository with many submodules, since a depth-1 fetch is
+per repository: a superproject pays one round trip per submodule where a full clone pays one for
+everything. What it is not is slower to keep: a shallow root refreshes as quickly as any other, and
+stays the size it was.
+
+The modes also differ in what they are able to find. Every other mode clones `refs/heads/*` and
+`refs/tags/*` with their whole history and then looks for the reference among what arrived, where
+`shallow` asks the remote for it **by name**. So a commit that no branch and no tag reaches is
+missing from a blobless or full root, and the fetch stops and says so, while a shallow fetch may
+still obtain it.
+
+Do not build on that difference. A `version` has to name something the repository advertises. E.g. a
+tag, a branch, or a commit in their history. Anything else, such as a pull request's head or a
+commit force-pushed off its branch, is **not meant to be supported**: whether it can be obtained at
+all is the server's decision, and a commit no ref points at is one the remote's next garbage
+collection may remove.
+
+Reach for `shallow` when a repository is heavy and its history is of no use to the build. Leave the
+default alone otherwise: `blobless` already saves most of what a full clone costs and keeps
+`describe` working.
 
 Also, note that defining configuration parameters on a dependency definition will propagate these parameters to the targets referred to by the `name`, or the `targets` parameter if set. This allows the project to [customize the dependencies](/docs/project-file/advanced/#customization-of-dependencies).
 
@@ -223,6 +257,10 @@ To search for tags having a version looking format, Golem uses its own permissiv
 To handle an edge case regarding OpenSSL releases, the tags are sorted so that, while `1.1.1` matches both `OpenSSL_1_1_1j` and `OpenSSL_1_1_1k`, only the latest is picked.
 
 To further help into finding version tags, `version_regex` accepts a regex string to only keep the matching tags before processing them as versions.
+
+A **commit hash** has to be one that some branch or tag reaches, anywhere in their history counts,
+which is every commit a clone brings. A hash outside that, such as a pull request's head or a commit
+force-pushed off its branch, is not supported.
 
 ### Using a dependency
 
