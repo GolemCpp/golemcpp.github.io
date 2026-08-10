@@ -72,7 +72,7 @@ Resolving a dependency (`golem resolve`) consists of 4 steps:
 To do so, Golem uses `git ls-remote --tags` and `git ls-remote --heads` to search for a corresponding commit hash. See [dependency.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/dependency.py).
 
 **Cloning the dependency in the cache** consists of:
-1. Generating a source ID corresponding to the dependency and adding to it the short commit hash (8 first characters). See `def generate_id(url):` and `def make_repository_base(cls, location, reference):` in [source.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/source.py).
+1. Generating a source ID corresponding to the dependency and adding to it the abbreviated commit hash (8 first characters). See `def generate_id(url):`, `def get_cache_key(self):` and `def make_revision_component(revision):` in [source.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/source.py).
 2. Determining where the dependency must be cached. See `def resolve_cache_directory(self, resource):` in [cache_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/cache_manager.py).
 3. Fetching the source into the cache. See `def run_dep_command(self, dep, command):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py), which asks the dependency's manager to install it — see [Fetching a source](#fetching-a-source) below.
 
@@ -80,6 +80,13 @@ Example of a cloned repository in a cached dependency: `json@com.github.nlohmann
 
 - `json@com.github.nlohmann` : source ID
 - `65ee6845` : commit hash
+
+A cache key must be usable as a single directory name on every platform Golem runs on. A revision that is not a commit, a branch or a tag, which is what a cookbook or an overlay is cached at, is therefore spelled with the characters a directory name may hold, lowercased, then followed by `=` and a digest of the revision as written:
+
+- `recipes@com.github.golemcpp+main=0d6e4079` : the `main` branch of a cookbook
+- `lib@com.github.acme+release-1.2.3=88ded651` : the `release/1.2.3` tag
+
+The digest is what distinguishes two revisions the spelling would merge. `release/1.2.3` from `release-1.2.3`, or `V1.0` from `v1.0`, which are two tags in Git but one directory on Windows and macOS. A key carrying no `=` is therefore a commit, abbreviated the way Git abbreviates one itself.
 
 **Configuring the dependency** consists of:
 1. Determining the build location, which is a directory named after a condensed concatenation of characters designating the platform, architecture, compiler, runtime link, runtime variant on Windows, linking and variant information. See `def build_path(self, dep=None):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
