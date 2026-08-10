@@ -117,7 +117,10 @@ Example of a configuration file: `json@com.github.nlohmann+65ee6845\w64mshdshd\c
                 "location": "${GOLEM_CACHE_DIR}\\json@com.github.nlohmann+65ee6845\\source",
                 "path": "LICENSE.MIT",
                 "repository": "https://github.com/nlohmann/json.git",
-                "resolved_version": "\"v3.12.0\"",
+                "resolved": {
+                    "reference": "v3.12.0",
+                    "revision": "65ee68451d8eb2b5f3a30b410476ab83deb3289b"
+                },
                 "type": "license"
             }
         ],
