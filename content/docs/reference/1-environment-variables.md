@@ -124,7 +124,12 @@ a worktree, a submodule checkout). Spell the kind when the guess would be wrong.
 checkout you want copied rather than cloned. `git+` cannot turn a directory into a repository, and
 **refuses one that is not**, rather than failing later inside Git.
 
+- Any form `git clone` accepts works, including scp-style (`git@github.com:org/repo.git`) and
+  transport helpers (`hg::https://host/repo`). Golem hands Git what you wrote.
 - Local paths are relative to the project and normalized internally to `file://...` URLs.
+- Golem decides what is a path the way Git does, so a `:` before the first `/` makes a locator a
+  remote. A local path holding one needs Git's own escape hatch: write `./weird:name`, since
+  `weird:name` reads as the host `weird` even when the directory exists.
 - A prefix naming a kind Golem does not know is an error, not a path.
 
 A `git` location may name the **version** to obtain, after a `#`. It may be a branch to follow, a tag
@@ -132,8 +137,9 @@ to land on, or a commit. Golem reads which one it is from the repository itself,
 a branch of the same name**. A name that is neither is used as given, which is what a commit hash is.
 
 Everything after the first `#` is the version, so a namespaced ref such as `release/1.2.3` needs no
-escaping. But `#` is also a legal character in a path. If the path is valid, the kind consistent, while
-keeping the version-looking segment, the version segment becomes unneeded to resolve the location.
+escaping. But `#` is also a legal character in a path, so for a **local path** Golem tests the path
+exactly as written first, keeping any version-looking segment in the path. Only when nothing is there
+does Golem read what follows the `#` as the version. Every other form always splits at the first `#`.
 
 Naming no version leaves it to the setting what to follow, which for cookbooks and overlays is the
 default branch.

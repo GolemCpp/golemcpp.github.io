@@ -198,9 +198,11 @@ to it. Paths are relative to the project file and are normalized internally to `
 
 > [!NOTE]+
 > `repository` and `directory` state the kind by the field they are, so they never rely on
-> detection: `repository` declares a Git repository, local directory or not. Use `location` when you
-> want one field for both, and prefix it when the guess would be wrong — `location='git+./mylib'`
-> clones a local checkout rather than copying it.
+> detection and carry no `#version`: the whole value is the locator. `repository` must name
+> something Git can clone from, a local path included, and is **refused** when it does not.
+>
+> Use `location` when you want one field for both, or to name the version alongside it. Add
+> the prefix `directory+` or `git+` to control whether the resource must be copied or cloned.
 
 Optionally, `shallow` controls how much of the repository is obtained:
 - `True` fetches the resolved commit and nothing around it
