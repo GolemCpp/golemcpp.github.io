@@ -70,7 +70,7 @@ An **overlay** is a source carrying an `overrides.json` at its root. It is how a
 set of overrides without every project copying the same file.
 
 An overlay is named by a [source location](/docs/reference/environment-variables/#source-locations),
-`[<kind>+]<locator>`, so it may be a Git repository cloned into the cache or a local directory copied
+`[<kind>+]<locator>[#<version>]`, so it may be a Git repository cloned into the cache or a local directory copied
 into it:
 
 ``` bash

@@ -138,14 +138,14 @@ For cppfront setup, cache-backed installs, and lookup behavior, see [cppfront](/
 
   See [Dependencies](/docs/advanced/dependencies/#management-and-conflict-mitigation) to know more
 
-- `--overlay-location=[<kind>+]<locator>` (repeatable)
+- `--overlay-location=[<kind>+]<locator>[#<version>]` (repeatable)
 
   Add an [overlay](/docs/advanced/dependencies/#overlays) carrying an `overrides.json`. Pass the
   option once per overlay; they are layered in the order given.
 
   Default: `None`
 
-- `--cookbook-location=[<kind>+]<locator>` (repeatable)
+- `--cookbook-location=[<kind>+]<locator>[#<version>]` (repeatable)
 
   Add a [cookbook](/docs/advanced/recipes/#custom-cookbooks) to search for recipes. Pass the option
   once per cookbook; they are searched in the order given, replacing the default cookbook.

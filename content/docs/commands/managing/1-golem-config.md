@@ -103,7 +103,7 @@ setting's description, environment variable, command-line option and built-in de
 
 > [!NOTE]+
 > `cookbooks.locations` and `overlays.locations` take [source locations](/docs/reference/environment-variables/#source-locations):
-> `[<kind>+]<locator>`, where `<kind>` is `git` or `directory`. Without a prefix Golem works the kind
+> `[<kind>+]<locator>[#<version>]`, where `<kind>` is `git` or `directory`. Without a prefix Golem works the kind
 > out from the locator.
 
 The cache directory holds one subdirectory per resource kind: `dependencies/` for built dependencies, `cookbooks/` for cookbooks, `overlays/` for overlays, and `tools/` for installable tools. When [path minimization](/docs/advanced/cache-system/#path-minimization) is enabled (the default), new resources are instead stored flat at the cache root under a short hash, to keep paths short on long-path-limited toolchains.

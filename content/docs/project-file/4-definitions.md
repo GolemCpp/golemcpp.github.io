@@ -161,10 +161,14 @@ A dependency comes from **one of three** mutually exclusive sources:
 
 - `repository='<git-url>'` — a Git repository, **cloned** into the cache at the resolved `version`.
 - `directory='<path>'` — a local directory, **copied** into the cache as-is on each `golem resolve`.
-- `location='[<kind>+]<locator>'` — either of the two in one field, spelling its kind or leaving
+- `location='[<kind>+]<locator>[#<version>]'` — either of the two in one field, spelling its kind or leaving
   Golem to work it out. The same
   [source location](/docs/reference/environment-variables/#source-locations) syntax the
   `cookbooks.locations` and `overlays.locations` settings take.
+
+  A `location` may name the version after a `#`, which is the same thing as the `version` argument and
+  cannot be combined with it. A dependency asking for two versions is an error rather than a silent
+  choice between them. Naming none leaves `version` as it stands.
 
 ``` python
 # A dependency cloned from Git
@@ -184,7 +188,7 @@ project.dependency(name='json',
 project.dependency(name='mylib',
                    location='directory+./mylib')
 
-# Kind left to Golem: a local directory that is not a Git checkout is copied
+# Kind left to Golem: a local directory Git cannot clone from is copied
 project.dependency(name='mylib',
                    location='./mylib')
 ```

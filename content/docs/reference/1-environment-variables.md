@@ -110,7 +110,7 @@ key needs nothing set here.
 entry is a **location**, optionally prefixed by the **kind** of source it is:
 
 ``` text
-[<kind>+]<locator>
+[<kind>+]<locator>[#<version>]
 ```
 
 | Kind | Locator | Behaviour |
@@ -118,20 +118,31 @@ entry is a **location**, optionally prefixed by the **kind** of source it is:
 | `git` | Any form accepted by `git clone`, or a local path | **Cloned** into the cache, then updated with `git fetch` |
 | `directory` | A local path | **Copied** into the cache as-is, again on each `golem resolve` |
 
-Without a prefix, Golem works the kind out: a local directory that is not a Git checkout is
-`directory`, anything else is `git`. Spell the kind when the guess would be wrong — a local Git
-checkout you want copied rather than cloned, or a directory you want treated as a repository.
+Without a prefix, Golem works the kind out: a local directory Git cannot clone from is `directory`,
+anything else is `git`. Everything Git can clone from counts (e.g. a normal checkout, a bare repository,
+a worktree, a submodule checkout). Spell the kind when the guess would be wrong. `directory+` on a Git
+checkout you want copied rather than cloned. `git+` cannot turn a directory into a repository, and
+**refuses one that is not**, rather than failing later inside Git.
 
 - Local paths are relative to the project and normalized internally to `file://...` URLs.
 - A prefix naming a kind Golem does not know is an error, not a path.
 
-A `git` locator may name a branch to follow, a tag to land on, or a commit to pin to. Golem reads
-which one it is from the repository itself, and **a tag wins over a branch of the same name**. A
-name that is neither is used as given, which is what a commit hash is.
+A `git` location may name the **version** to obtain, after a `#`. It may be a branch to follow, a tag
+to land on, or a commit. Golem reads which one it is from the repository itself, and **a tag wins over
+a branch of the same name**. A name that is neither is used as given, which is what a commit hash is.
+
+Everything after the first `#` is the version, so a namespaced ref such as `release/1.2.3` needs no
+escaping. But `#` is also a legal character in a path. If the path is valid, the kind consistent, while
+keeping the version-looking segment, the version segment becomes unneeded to resolve the location.
+
+Naming no version leaves it to the setting what to follow, which for cookbooks and overlays is the
+default branch.
 
 ``` text
 GOLEM_COOKBOOKS_LOCATIONS=directory+/home/user/recipes
 GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git
+GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git#v2.1.0
+GOLEM_OVERLAYS_LOCATIONS=git+https://github.com/acme/golem-overlay.git#release/1.2.3
 ```
 
 ## Cookbooks

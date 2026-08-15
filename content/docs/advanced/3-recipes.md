@@ -55,7 +55,7 @@ GOLEM_COOKBOOKS_LOCATIONS=<location_1>|<location_2>|...
 ```
 
 - `<location>` A [source location](/docs/reference/environment-variables/#source-locations),
-  `[<kind>+]<locator>`: `git+` for a repository cloned into the cache, `directory+` for a local
+  `[<kind>+]<locator>[#<version>]`: `git+` for a repository cloned into the cache, `directory+` for a local
   directory copied into it. Without a prefix Golem works the kind out from the locator.
 - `|` Separator between cookbooks
 
