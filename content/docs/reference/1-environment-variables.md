@@ -144,10 +144,24 @@ does Golem read what follows the `#` as the version. Every other form always spl
 Naming no version leaves it to the setting what to follow, which for cookbooks and overlays is the
 default branch.
 
+The version may instead be a **semver range** (`^1.2.0`, `~1.2`, `>=1.0.0 <2.0.0`), which Golem
+matches against the tags the remote publishes.
+
+Whichever form it takes, the version is resolved during `golem resolve` and nowhere else, and a
+cookbook or overlay is cached under the version **you wrote** rather than under what it resolved to.
+So one entry keeps one cache directory and is re-pointed at each `golem resolve` — `^1.0.0` moves
+from `1.1.0` to `1.2.0` in place, exactly as `main` moves from commit to commit — and `golem
+configure` and `golem build` find that directory without reaching the network. Changing the version
+you wrote is what starts a new one.
+
+A range is re-resolved on every `golem resolve` rather than pinned, since a cookbook or an overlay
+has no per-project file to record what it picked. Use a tag when you want it to stay put.
+
 ``` text
 GOLEM_COOKBOOKS_LOCATIONS=directory+/home/user/recipes
 GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git
 GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git#v2.1.0
+GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git#^2.1.0
 GOLEM_OVERLAYS_LOCATIONS=git+https://github.com/acme/golem-overlay.git#release/1.2.3
 ```
 
