@@ -246,13 +246,10 @@ but it is not pinned the way a dependency is, whose commit is part of its cache 
 keyed by its name alone, so the same cache root is reused for whatever version is asked for next,
 and reaching a tag pushed after the clone is what its `fetch_remote` is for.
 
-The `revision` goes as the resource spells it (e.g. `main`, `v3.12.0`, a commit hash) and what it
-turns out to name is read from the repository once there is one to read it from, in
-`GitFetcher.resolved_reset_revision`: a tag first, then the branch on the remote, then the
-revision as given. A tag beats a branch of the same name. Leaving it to Git would answer nearly the
-same way and cannot be relied on to: a cache clone always carries a local branch, left behind by
-`clone` and never moved since, so a name meaning the remote's branch would land on whatever the
-clone happened to see.
+The `revision` a fetcher is handed is a **commit**. Resolution settled which one against the remote,
+so nothing in the fetch layer interprets a name, and a tag beating a branch of the same name is
+decided there rather than here. A shallow fetch is the one exception: it asks the remote for a single
+object by name, git writes no ref for it, and `FETCH_HEAD` is what the reset lands on.
 
 #### Migrating a cached root
 
