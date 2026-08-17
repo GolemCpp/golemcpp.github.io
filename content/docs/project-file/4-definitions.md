@@ -253,6 +253,7 @@ Regarding the `version`, multiple formats are accepted:
 - Branch name (e.g. `main`, `master`, `develop`)
 - Tag (e.g. `v1.0.0`)
 - Node SemVer to search a version tag. (e.g. `^3.0.0`)
+- Nothing at all, or `HEAD`, for the repository's default branch
 
 The **Node SemVer** format allows to define a search range of versions. This mechanism is inpired by what [NodeJS does](https://semver.npmjs.com/).
 
