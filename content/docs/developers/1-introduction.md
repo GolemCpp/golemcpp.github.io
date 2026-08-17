@@ -176,6 +176,32 @@ Changing how much of a source a cache root holds by [migrating](#migrating-a-cac
 fetch modes is a resolve step for the same reason. It may have to fetch what the root does not
 have. A `golem build` refreshing a root leaves its mode alone and works with what is there.
 
+### One remote, read once
+
+Resolving a version costs one round trip:
+
+```
+git ls-remote --symref <url> HEAD refs/heads/* refs/tags/*
+```
+
+That answers the default branch, every branch and every tag at once. What the version names is then
+decided from that answer alone, whether it is a ref looked up the way Git looks a bare name up, a
+tag matching a SemVer range, or a commit standing for itself.
+
+`golem resolve` recurses by spawning another `golem resolve` in each dependency's cache root, and
+each of those resolves the resources it needs for itself. The cookbook is the one every node of the
+tree reaches, so a project with two dependencies asked for it four times.
+
+What a remote advertised is therefore kept in `<build_dir>/golem/resolve`, one file per repository,
+holding what `ls-remote` printed. The outermost resolve empties that directory and names it in
+`GOLEM_RESOLVE_DIRECTORY`, which the resolves it spawns read so they write there too. Emptying it on
+the way in is the whole rule, so a later `golem resolve` reaches every remote again whatever the
+last one left behind.
+
+It is not a cache to build on and not a setting to configure. Only a resolve writes it, a file that
+cannot be read costs the round trip it was there to save and nothing else, and the directory is left
+behind afterwards only so it can be read when something has to be looked into.
+
 ### Fetching a source
 
 Dependencies, cookbooks, overlays and tools are all obtained the same way, so getting a source into
