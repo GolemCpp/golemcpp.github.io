@@ -133,8 +133,13 @@ checkout you want copied rather than cloned. `git+` cannot turn a directory into
 - A prefix naming a kind Golem does not know is an error, not a path.
 
 A `git` location may name the **version** to obtain, after a `#`. It may be a branch to follow, a tag
-to land on, or a commit. Golem reads which one it is from the repository itself, and **a tag wins over
-a branch of the same name**. A name that is neither is used as given, which is what a commit hash is.
+to land on, or a commit. Golem looks the name up in the repository the way Git looks one up, so **a
+tag wins over a branch of the same name**, exactly as `git rev-parse` answers. A name that is neither
+is used as given, which is what a commit hash is.
+
+Whichever form it takes, what Golem records is the commit a checkout lands on. An annotated tag
+therefore records the commit it points at, where `git rev-parse v1.2.0` on its own would answer the
+tag object.
 
 Everything after the first `#` is the version, so a namespaced ref such as `release/1.2.3` needs no
 escaping. But `#` is also a legal character in a path, so for a **local path** Golem tests the path
