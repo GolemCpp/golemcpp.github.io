@@ -67,12 +67,10 @@ Resolving a dependency (`golem resolve`) consists of 4 steps:
 3. Configuring the dependency before build
 4. Resolving the dependencies of the dependency if any (recursion)
 
-**Resolving the version** consists of interpreting version in the dependency definition found in the project file. This version can be a commit hash (no resolution needed), a branch name, a tag, or a Node SemVer to search a SemVer tag.
-
-To do so, Golem uses `git ls-remote --tags` and `git ls-remote --heads` to search for a corresponding commit hash. See [dependency.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/dependency.py).
+**Resolving the version** consists of interpreting version in the dependency definition found in the project file. This version can be a commit hash, a branch name, a tag, a Node SemVer to search a SemVer tag, or nothing at all, which asks for the repository's default branch.
 
 **Cloning the dependency in the cache** consists of:
-1. Generating a source ID corresponding to the dependency and adding to it the abbreviated commit hash (8 first characters). See `def generate_id(url):`, `def get_cache_key(self):` and `def make_revision_component(revision):` in [source.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/source.py).
+1. Generating a source ID corresponding to the dependency and adding to it the abbreviated commit hash (8 first characters). The ID is `def get_id(self):` in [locator.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/locator.py), which also names the recipe directories in the cookbook. The rest of the key is `def cache_key_for(cls, item):` and `def make_revision_component(revision):` in [resource_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/resource_manager.py), since what a key names depends on how the kind is pinned.
 2. Determining where the dependency must be cached. See `def resolve_cache_directory(self, resource):` in [cache_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/cache_manager.py).
 3. Fetching the source into the cache. See `def run_dep_command(self, dep, command):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py), which asks the dependency's manager to install it — see [Fetching a source](#fetching-a-source) below.
 
@@ -83,10 +81,11 @@ Example of a cloned repository in a cached dependency: `json@com.github.nlohmann
 
 A cache key must be usable as a single directory name on every platform Golem runs on. A revision that is not a commit, a branch or a tag, which is what a cookbook or an overlay is cached at, is therefore spelled with the characters a directory name may hold, lowercased, then followed by `=` and a digest of the revision as written:
 
+- `recipes@com.github.golemcpp` : a cookbook asking for no version, so the default branch
 - `recipes@com.github.golemcpp+main=0d6e4079` : the `main` branch of a cookbook
-- `lib@com.github.acme+release-1.2.3=88ded651` : the `release/1.2.3` tag
+- `lib@com.github.acme+release~1.2.3=88ded651` : the `release/1.2.3` tag
 
-The digest is what distinguishes two revisions the spelling would merge. `release/1.2.3` from `release-1.2.3`, or `V1.0` from `v1.0`, which are two tags in Git but one directory on Windows and macOS. A key carrying no `=` is therefore a commit, abbreviated the way Git abbreviates one itself.
+A character a directory name may not hold becomes `~`, so `release/1.2.3` still reads as itself rather than as a tag someone named `release-1.2.3`. The digest is what distinguishes two revisions the spelling would merge anyway, such as `V1.0` from `v1.0`, which are two tags in Git but one directory on Windows and macOS. A key carrying no `=` is therefore a commit, abbreviated the way Git abbreviates one itself, and a key with no `+` at all asked for no version.
 
 **Configuring the dependency** consists of:
 1. Determining the build location, which is a directory named after a condensed concatenation of characters designating the platform, architecture, compiler, runtime link, runtime variant on Windows, linking and variant information. See `def build_path(self, dep=None):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
@@ -243,14 +242,14 @@ cannot move. It is also the one kind that can ask for a `fetch_mode` of its own,
 A cookbook or an overlay is only read, so it takes the defaults and tracks its branch.
 
 A tool sits between the two: it lands on the exact commit its version resolved to and never drifts,
-but it is not pinned the way a dependency is, whose reference is part of its cache key. A tool is
+but it is not pinned the way a dependency is, whose commit is part of its cache key. A tool is
 keyed by its name alone, so the same cache root is reused for whatever version is asked for next,
 and reaching a tag pushed after the clone is what its `fetch_remote` is for.
 
-The `reference` goes as the resource spells it (e.g. `main`, `v3.12.0`, a commit hash) and what it
+The `revision` goes as the resource spells it (e.g. `main`, `v3.12.0`, a commit hash) and what it
 turns out to name is read from the repository once there is one to read it from, in
-`GitFetcher.resolved_reset_reference`: a tag first, then the branch on the remote, then the
-reference as given. A tag beats a branch of the same name. Leaving it to Git would answer nearly the
+`GitFetcher.resolved_reset_revision`: a tag first, then the branch on the remote, then the
+revision as given. A tag beats a branch of the same name. Leaving it to Git would answer nearly the
 same way and cannot be relied on to: a cache clone always carries a local branch, left behind by
 `clone` and never moved since, so a name meaning the remote's branch would land on whatever the
 clone happened to see.
