@@ -66,9 +66,15 @@ Ask for `i386` to get the 80386 baseline instead.
 A build is for whatever the compiler builds for, and `--arch` says which one to expect.
 `golem configure` fails when the compiler it selected builds for another.
 
-Only the x86 family carries flags that switch a compiler between targets, `-m32` and `-m64`. For
-every other architecture, choose the toolchain instead: name a cross compiler with
-`--check-cxx-compiler`, and Golem reads the target off it.
+How a request reaches a compiler depends on the toolchain:
+
+- **Visual Studio** ships several cross toolchains in one installation, so `--arch` picks among them
+  and nothing else is needed. `--arch=aarch64` on an x64 machine uses the ARM64 build tools, which
+  the Visual Studio installer offers as a component.
+- **The x86 family** on gcc and clang is reached with `-m32` and `-m64`, so `--arch=i686` works on an
+  x86_64 Linux only where the 32-bit userland is installed.
+- **Everything else** means choosing the toolchain: name a cross compiler with
+  `--check-cxx-compiler`, and Golem reads the target off it.
 
 A name absent from the tables above is passed through and checked against the compiler like any
 other, so a target Golem has never heard of still builds where the toolchain has one.
