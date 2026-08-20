@@ -22,11 +22,11 @@ configured to use, including any additional cache directories the project was
 configured with (see [Cache System](/docs/advanced/cache-system/)).
 
 ``` bash
-golem cache list [--kind=<kind>] [--cache=<path>] [--long] [--json]
+golem cache list [--kind=<kind>] [--cache=<path>] [--older-than=<age>] [--long] [--json]
 golem cache caches [--json]
-golem cache size [--kind=<kind>] [--cache=<path>]
-golem cache remove <path-or-regex> [--regex] [--dry-run] [--yes]
-golem cache purge [--kind=<kind>] [--cache=<path>] [--dry-run] [--yes]
+golem cache size [--kind=<kind>] [--cache=<path>] [--older-than=<age>]
+golem cache remove <path-or-regex> [--regex] [--older-than=<age>] [--dry-run] [--yes]
+golem cache purge [--kind=<kind>] [--cache=<path>] [--older-than=<age>] [--dry-run] [--yes]
 golem cache unidentified [--remove] [--dry-run] [--yes]
 ```
 
@@ -156,11 +156,23 @@ needs any more.
 
   Delete the resources whose cache key or path match the given pattern. The
   pattern is a substring by default, or a regular expression with `--regex`.
+  The pattern is required: selecting by age alone is what `purge --older-than`
+  does.
 
 - `purge`
 
-  Delete every resource from the caches. Restrict the scope with `--kind` or
-  `--cache`.
+  Delete every resource from the caches. Restrict the scope with `--kind`,
+  `--cache` or `--older-than`, and the confirmation says which of the two it is
+  about to do.
+
+  Reclaiming space is that last one, and the same selection previews with `list`
+  and adds up with `size`:
+
+  ``` bash
+  golem cache list --older-than=90d     # what would go
+  golem cache size --older-than=90d     # how much it would free
+  golem cache purge --older-than=90d    # take it
+  ```
 
 - `unidentified`
 
@@ -178,6 +190,19 @@ needs any more.
 - `--cache=<path>`
 
   Restrict the operation to a single configured cache location.
+
+- `--older-than=<age>`
+
+  Keep only the resources **last used** longer ago than `<age>`, written as a
+  number and a unit among `s`, `m`, `h`, `d`, `w` — the units an age is printed
+  with, so `90d ago` in a listing and `--older-than=90d` say the same thing
+  (`m` is minutes on both sides).
+
+  Resolving a resource counts as using it, so anything a project still builds
+  against stays out of the selection.
+
+  A resource nothing identifies carries no timestamp, therefore nothing can say
+  how old it is and `--older-than` never selects one; `unidentified` clears those.
 
 - `--regex`
 
