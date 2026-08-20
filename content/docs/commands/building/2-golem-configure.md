@@ -60,11 +60,15 @@ golem configure [options]
 
   Default: `shared`
 
-- `--arch=(x64|x86)`
+- `--arch=<architecture>`
 
-  Builds using the specfied architecture
+  Builds for the specified architecture, named as in [Architectures](/docs/reference/architectures/)
 
-  Default: `<your_os_arch>`
+  `golem configure` fails when the compiler it selects builds for another one. On the x86 family a
+  multilib toolchain is found by building with `-m32` or `-m64`, so `--arch=i686` works on an x86_64
+  Linux only where the 32-bit userland is installed.
+
+  Default: what the selected compiler builds for
 
 - `--check-c-compiler=<compiler>`
 

@@ -103,7 +103,7 @@ The template file is processed by replacing pre-defined keys found it the file u
 - `GOLEM_TMPL_RUNTIME`
 - `GOLEM_TMPL_RUNTIME_VERSION`
 - `GOLEM_TMPL_RUNTIME_VERSION_SEMVER`
-- `GOLEM_TMPL_ARCHITECTURE`
+- `GOLEM_TMPL_ARCHITECTURE` (e.g. `x86_64`, see [Architectures](/docs/reference/architectures/))
 - `GOLEM_TMPL_TARGET_ARTIFACT_BASENAME`
 
 ## Build number

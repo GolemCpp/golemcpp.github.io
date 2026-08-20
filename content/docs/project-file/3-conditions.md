@@ -20,7 +20,7 @@ task = project.program(name='hello-conditions',
                        source=['src'])
 task.when(osystem="windows", includes=['src/windows'])
 task.when(osystem="linux", includes=['src/linux'])
-task.when(osystem="osx", includes=['src/macos'])
+task.when(osystem="macos", includes=['src/macos'])
 ```
 
 `project.program()` returns a task, which is in fact a definition to build a program, and since it's a program it also is a configuration, therefore it can make use of the condition mechanism `.when()`. Here is how it works:
@@ -56,15 +56,20 @@ Here is a description of these condition parameters:
 
 - `runtime_variant` list of runtime variants (e.g. `'debug'`, `'release'`)
 
-- `arch` list of architectures (e.g. `'x86'`, `x64`)
+- `arch` list of architectures (e.g. `'x86_64'`, `'aarch64'`), named as in
+  [Architectures](/docs/reference/architectures/)
 
 - `compiler` list of compilers (e.g. `'msvc'`, `'gcc'`, `'clang'`)
 
-- `osystem` list of platforms (e.g. `'windows'`, `'osx'`, `'linux'`)
+- `osystem` list of platforms (e.g. `'windows'`, `'macos'`, `'linux'`)
 
 - `distribution` list of Linux distributions (e.g. `'debian'`)
 
 - `release` list of Linux distribution releases (e.g. `'trixie'`), requires `lsb_release` Python module
+
+`arch` accepts every spelling [Architectures](/docs/reference/architectures/) lists and matches it as
+the canonical name it stands for, so `arch='x64'` matches an `x86_64` build. `osystem` does the same,
+so `osystem='osx'` matches a macOS one.
 
 In our previous example, `task.when(osystem="windows", includes=['src/windows'])` adds `'src/windows'` to the `includes` parameter of the task only if the current platform is **Windows**.
 

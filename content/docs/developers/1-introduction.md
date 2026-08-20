@@ -88,7 +88,7 @@ A cache key must be usable as a single directory name on every platform Golem ru
 A character a directory name may not hold becomes `~`, so `release/1.2.3` still reads as itself rather than as a tag someone named `release-1.2.3`. The digest is what distinguishes two revisions the spelling would merge anyway, such as `V1.0` from `v1.0`, which are two tags in Git but one directory on Windows and macOS. A key carrying no `=` is therefore a commit, abbreviated the way Git abbreviates one itself, and a key with no `+` at all asked for no version.
 
 **Configuring the dependency** consists of:
-1. Determining the build location, which is a directory named after a condensed concatenation of characters designating the platform, architecture, compiler, runtime link, runtime variant on Windows, linking and variant information. See `def build_path(self, dep=None):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
+1. Determining the build location, which is a directory named after the build's own configuration: the operating system, the architecture, the compiler, the runtime link, the runtime variant, the linking and the variant. See `def build_path(self, dep=None):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
 2. Running `golem configure` with all the needed options on the dependency. See `def run_dep_command(self, dep, command):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
 
 When configuring the dependency, the build directory is setup.
@@ -99,12 +99,14 @@ When configuring the dependency, the build directory is setup.
 - Creating a configuration file to hold how a project can use the dependency.
 - Creating a `dependencies.json` file to hold the list of dependencies the dependency relies on.
 
-Example of an artifact directory in a cached dependency: `json@com.github.nlohmann+65ee6845\w64mshdshd\bin-da39a3ee`
+Example of an artifact directory in a cached dependency: `json@com.github.nlohmann+65ee6845\windows~x86_64~msvc-19.44.35211~sh~d~sh~d\bin-da39a3ee`
 
-- `w64mshdshd` : Windows, x64, msvc, shared runtime, debug runtime, shared linking, debug
+- `windows~x86_64~msvc-19.44.35211~sh~d~sh~d` : build slug, for Windows, x86_64, msvc, shared runtime, debug runtime, shared linking, debug
 - `da39a3ee` : dependency slug to isolate the artifacts
 
-Example of a configuration file: `json@com.github.nlohmann+65ee6845\w64mshdshd\conf\json@json@com.github.nlohmann.json`
+The build slug names every high-level input that decides whether one artifact can substitute for another, which is what keeps `-std=`, sanitizers and custom flags out of it. See `class BuildSlug` in [build_slug.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/build_slug.py).
+
+Example of a configuration file: `json@com.github.nlohmann+65ee6845\windows~x86_64~msvc-19.44.35211~sh~d~sh~d\conf\json@json@com.github.nlohmann.json`
 
 - `json@json@com.github.nlohmann.json` the name follows the format `<target>@<source_id>`
 

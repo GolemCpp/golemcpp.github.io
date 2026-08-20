@@ -196,6 +196,44 @@ When dealing with projects using a build system different from CMake, you may wa
 
 In any case, it is recommendend to have a look at the [recipes](https://github.com/GolemCpp/recipes) already available to write your own.
 
+### What the build targets
+
+Another build system has to be told what to build for, and each one spells an architecture its own
+way. Golem provides one function per spelling, available from the `context` object:
+
+``` python
+class Context:
+  def get_arch(self):
+  def vs_platform(self, arch=None):
+  def get_arch_for_linux(self, arch=None):
+```
+
+`get_arch()` returns the [canonical name](/docs/reference/architectures/) of the target, e.g.
+`'x86_64'`. Use it where the build system takes the same names Golem does, and to branch a recipe on
+what is being built.
+
+`vs_platform()` returns Visual Studio's name for the target, which is what MSBuild's `/p:Platform`
+and CMake's `-A` expect, e.g. `'x64'` and `'Win32'`. It raises where Visual Studio has no name for
+the target, so call it under `is_windows()`.
+
+`get_arch_for_linux()` returns Debian's name for the target, e.g. `'amd64'`, or `None` where there is
+none.
+
+Passing an architecture explicitly is what the `arch` parameter is for, on `vs_platform()` and on
+[`cmake_build()`](#cmake-projects) alike. Left unset, both use the target of the current build.
+
+``` python
+def script(context):
+    source_path = context.get_project_dir()
+    build_path = context.get_build_path()
+
+    opt_arch = ['-A', context.vs_platform()] if context.is_windows() else []
+
+    subprocess.call(['cmake', source_path] + opt_arch, cwd=build_path)
+```
+
+`cmake_build()` passes `-A` on its own, so a recipe calling it needs none of this.
+
 ### Building and using dependencies
 
 To build dependencies needed to build the library helper functions are provided, available from the `context` object:
