@@ -66,14 +66,20 @@ source the same way:
 ``` json
 {
   "type": "git",
-  "location": "https://github.com/nlohmann/json.git",
-  "reference": "v3.12.0"
+  "locator": "https://github.com/nlohmann/json.git",
+  "resolved": {
+    "reference": "v3.12.0",
+    "revision": "9cca280afe0c1e4f2b8a3d5c6e7f8091a2b3c4d5"
+  }
 }
 ```
 
 - `type` — `git` for a cloned repository, `directory` for a copied local directory.
-- `location` — the repository URL, or the directory path.
-- `reference` — the resolved git reference; empty for a directory source.
+- `locator` — the repository URL, or the directory URL.
+- `resolved.reference` — the resolved git reference; empty for a directory source.
+- `resolved.revision` — the commit that reference pointed at when it was resolved.
+  A branch keeps its name while moving from one commit to the next, so neither
+  stands in for the other.
 
 Where the source says what was **asked for**, `fetched` says what the root ended
 up **holding**:
@@ -96,17 +102,46 @@ up **holding**:
 
 The manifest is the source of truth for a resource's identity wherever it is
 stored, so a [minimized](/docs/advanced/cache-system/#path-minimization) resource
-kept flat at the cache root is still fully identified. A directory with **no**
-manifest is reported as **unidentified**, with the kind `unknown`.
+kept flat at the cache root is still fully identified.
+
+A resource is reported as **unidentified**, with the kind `unknown`, in two
+cases:
+
+- it carries **no manifest**,
+- it carries an **unreadable manifest** (should not happen).
+
+Nothing is lost when a resource is unidentified: its root is still where
+resolution looks for it, so the next `golem resolve` that needs it recognises
+what that root holds, refreshes it and writes a fresh manifest, after which it
+is identified again. `golem cache unidentified --remove` deletes the ones nothing
+needs any more.
 
 ## Subcommands
 
 - `list`
 
   List cached resources, **grouped per cache** (each cache location is a header,
-  writable or read-only). Every resource shows its kind, its source
-  (`<location> <reference>`), size and on-disk path. Add `--long` to also show the
-  created and last-used ages and the manifest version.
+  writable or read-only, saying how many resources it holds and how much space
+  they take). One line per resource, **most recently used first**:
+
+  ``` text
+  Cached resources:
+
+  /home/you/.cache/golem: 4 resource(s), 8.1 MiB
+    tool        cppfront                           v0.8.1 f31b4a2c   blobless    5.7 MiB  6h ago
+    dependency  json@com.github.nlohmann+9cca280a  v3.12.0 9cca280a  blobless    2.4 MiB  7h ago
+    overlay     overlay-a@fsys.tmp+                -                 directory  20.0 KiB  1d ago
+    dependency  fmt@com.github.fmtlib+aa11bb22     11.0.2 aa11bb22   blobless    4.0 KiB  9d ago  incomplete
+  ```
+
+  The columns are the resource **kind**, its **cache key**, the **version** it
+  holds, **how it was obtained** (the [fetch mode](/docs/reference/environment-variables/#git),
+  or `directory`), its **size** and how long ago it was **last used**. An
+  `incomplete` flag marks a root carrying a manifest but no source directory:
+  an install that never finished.
+
+  Add `--long` to follow every resource with its source, full commit, what the
+  fetch left there, when it was created, its manifest version and its path.
 
 - `caches`
 
@@ -129,8 +164,9 @@ manifest is reported as **unidentified**, with the kind `unknown`.
 
 - `unidentified`
 
-  List resources that have no valid manifest — for example legacy resources
-  stored before manifests existed. Add `--remove` to delete them.
+  List the resources whose manifest does not identify them (see
+  [Resource manifests](#resource-manifests)) — for example resources stored
+  before manifests existed. Add `--remove` to delete them.
 
 ## Options
 
@@ -149,12 +185,14 @@ manifest is reported as **unidentified**, with the kind `unknown`.
 
 - `--long`, `-l`
 
-  Show the created/last-used ages and manifest version in `list`.
+  Show the source, version, fetch, creation age, manifest version and path of
+  every resource `list` reports.
 
 - `--json`
 
   Emit machine-readable JSON instead of formatted text. Each resource carries its `kind`,
-  `cache_key`, `source`, `identified` flag, `manifest_version`, `cache_root` and path.
+  `cache_key`, `source`, `fetched`, `identified` and `installed` flags,
+  `manifest_version`, `cache_root`, `size_bytes`, timestamps and path.
 
 - `--dry-run`
 
