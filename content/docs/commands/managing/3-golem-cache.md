@@ -128,10 +128,10 @@ needs any more.
   Cached resources:
 
   /home/you/.cache/golem: 4 resource(s), 8.1 MiB
-    tool        cppfront                           v0.8.1 f31b4a2c   blobless    5.7 MiB  6h ago
-    dependency  json@com.github.nlohmann+9cca280a  v3.12.0 9cca280a  blobless    2.4 MiB  7h ago
-    overlay     overlay-a@fsys.tmp+                -                 directory  20.0 KiB  1d ago
-    dependency  fmt@com.github.fmtlib+aa11bb22     11.0.2 aa11bb22   blobless    4.0 KiB  9d ago  incomplete
+    tool        cppfront                          v0.8.1 f31b4a2   blobless    5.7 MiB  6h ago
+    dependency  json@com.github.nlohmann#9cca280  v3.12.0 9cca280  blobless    2.4 MiB  7h ago
+    overlay     overlay-a@fsys.tmp                -                directory  20.0 KiB  1d ago
+    dependency  fmt@com.github.fmtlib#aa11bb2     11.0.2 aa11bb2   blobless    4.0 KiB  9d ago  incomplete
   ```
 
   The columns are the resource **kind**, its **cache key**, the **version** it
