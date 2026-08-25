@@ -42,7 +42,7 @@ same layout.
 A cached resource is a directory holding what Golem fetched plus what it built from it:
 
 ``` text
-<cache>/dependencies/json@com.github.nlohmann#65ee684/
+<cache>/dependencies/@json@nlohmann@github.com#65ee684/
 ├── .golem-manifest.json   the descriptor: kind, source, what was fetched, timestamps
 ├── source/                the git clone (or the copied directory)
 ├── include/               headers exposed to the calling project
@@ -160,7 +160,7 @@ cache root**, under a short hash of `<kind>/<cache-key>` with no per-kind
 subdirectory:
 
 ``` text
-<cache>/dependencies/json@com.github.nlohmann#65ee684   ->   <cache>/3a33b297
+<cache>/dependencies/@json@nlohmann@github.com#65ee684   ->   <cache>/3a33b297
 ```
 
 It applies uniformly to every resource kind — dependencies, cookbooks,

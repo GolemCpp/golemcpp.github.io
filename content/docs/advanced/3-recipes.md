@@ -23,23 +23,53 @@ A collection of recipes is a **cookbook**.
 
 By default, Golem provides a [cookbook](https://github.com/GolemCpp/recipes) to find a corresponding project file for these dependencies unaware of Golem.
 
-Dependencies are uniquely identified by their repository URL. Their ID is constructed such as **https://github.com/nlohmann/json.git** becomes **json@com.github.nlohmann**.
-
-A cookbook contains directories named after these dependency IDs, and each directory contains a project file.
-
-This is how it looks like:
+A dependency is identified by its repository URL. A cookbook holds one directory
+per dependency, named after that [source identity](/docs/reference/source-identities/),
+and each directory holds a project file.
 
 ``` text
 .
-├── boost@com.github.boostorg/
+├── @boost@boostorg@github.com/
 │   └── golemfile.py
-├── json@com.github.nlohmann/
+├── @json@nlohmann@github.com/
 │   └── golemfile.py
-├── spdlog@com.github.gabime/
+├── @spdlog@gabime@github.com/
 │   └── golemfile.py
+├── README.md
 └── <etc>
     └── golemfile.py
 ```
+
+For a repository on a forge the identity reads `@<repository>@<owner>@<host>`,
+lowercased:
+
+| repository | recipe directory |
+| --- | --- |
+| `https://github.com/nlohmann/json.git` | `@json@nlohmann@github.com` |
+| `https://github.com/microsoft/GSL.git` | `@gsl@microsoft@github.com` |
+| `https://gitlab.com/group/subgroup/proj.git` | `@proj@group.subgroup@gitlab.com` |
+
+The leading `@` is what tells a recipe from everything else the repository holds,
+so a cookbook is free to carry a `README`, a licence or a CI configuration.
+
+Other shapes (e.g. an SSH clone, a path on your machine, a name Golem had to
+spell differently to make it a legal directory) read differently. You do not
+have to work them out because **when no recipe matches, Golem names the
+identity it looked for.**
+
+``` text
+ERROR: no recipe '@json@nlohmann@github.com' and no project file
+('golemfile.json' or 'golemfile.py').
+Searched 1 cookbook(s):
+  /home/you/.cache/golem/…/source
+```
+
+Name the directory what that message names, and the next run finds it. The full
+grammar is in [Source identities](/docs/reference/source-identities/).
+
+> [!NOTE]+
+> An identity names a source; it does not say where to fetch it. It is not
+> accepted as a dependency `location` today, so write the repository URL there.
 
 > [!NOTE]+
 > For now, there is no project file per version mechanism, but this is in the Roadmap.
@@ -59,8 +89,9 @@ GOLEM_COOKBOOKS_LOCATIONS=<location_1>|<location_2>|...
   directory copied into it. Without a prefix Golem works the kind out from the locator.
 - `|` Separator between cookbooks
 
-Cookbooks are searched in the order they are listed, and the first one holding a recipe for the
-dependency wins.
+Cookbooks are layered in the order they are listed, and the **last** one holding a recipe for the
+dependency wins, the same way [overlays](/docs/advanced/dependencies/#overlays) layer. So list
+your own cookbook after the default to override a recipe it ships, rather than before it.
 
 The same is available as the repeatable `--cookbook-location` option and as the
 `cookbooks.locations` setting — see [golem config](/docs/commands/golem-config/).
@@ -68,9 +99,12 @@ The same is available as the repeatable `--cookbook-location` option and as the
 Example:
 
 ``` bash
-GOLEM_COOKBOOKS_LOCATIONS=directory+/home/user/recipes|git+https://github.com/GolemCpp/recipes.git
+GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git|directory+/home/user/recipes
 golem configure --cookbook-location=./my-cookbook
 ```
+
+Here `/home/user/recipes` is listed last, so a recipe it holds is the one used, and every
+dependency it says nothing about falls back to the default cookbook.
 
 > [!NOTE]+
 > When a dependency is missing, or not building properly, it is recommended to fork the Golem [cookbook](https://github.com/GolemCpp/recipes), make the needed changes and create a Pull Request. Contributions are very welcome!

@@ -181,11 +181,14 @@ Defines the ordered list of cookbooks to search for [recipes](/docs/advanced/rec
 GOLEM_COOKBOOKS_LOCATIONS=<location_1>|<location_2>|...
 ```
 
+Cookbooks are layered in the order they are listed, and the last one holding a recipe wins.
+So a cookbook of your own goes **after** the one it overrides.
+
 Examples:
 
 ``` text
 GOLEM_COOKBOOKS_LOCATIONS=/home/user/recipes
-GOLEM_COOKBOOKS_LOCATIONS=directory+/home/user/recipes|git+https://github.com/GolemCpp/recipes.git
+GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git|directory+/home/user/recipes
 ```
 
 ## Overlays

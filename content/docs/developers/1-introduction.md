@@ -70,20 +70,20 @@ Resolving a dependency (`golem resolve`) consists of 4 steps:
 **Resolving the version** consists of interpreting version in the dependency definition found in the project file. This version can be a commit hash, a branch name, a tag, a Node SemVer to search a SemVer tag, or nothing at all, which asks for the repository's default branch.
 
 **Cloning the dependency in the cache** consists of:
-1. Generating a source ID corresponding to the dependency and adding to it the abbreviated commit hash (7 first characters, the floor Git itself abbreviates to). The ID is `def get_id(self):` in [locator.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/locator.py), which also names the recipe directories in the cookbook. The rest of the key is `def cache_key_for(cls, item):` and `def make_revision_part(revision):` in [resource_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/resource_manager.py), since what a key names depends on how the kind is pinned.
+1. Composing the source identity of the dependency and adding to it the abbreviated commit hash (7 first characters, the floor Git itself abbreviates to). The identity is `class SourceId:` in [source_id.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/source_id.py), which also names the recipe directories in the cookbook. The rest of the key is `def cache_key_for(cls, item):` and `def make_revision_part(revision):` in [resource_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/resource_manager.py), since what a key names depends on how the kind is pinned.
 2. Determining where the dependency must be cached. See `def resolve_cache_directory(self, resource):` in [cache_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/cache_manager.py).
 3. Fetching the source into the cache. See `def run_dep_command(self, dep, command):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py), which asks the dependency's manager to install it — see [Fetching a source](#fetching-a-source) below.
 
-Example of a cloned repository in a cached dependency: `json@com.github.nlohmann#65ee684\source`
+Example of a cloned repository in a cached dependency: `@json@nlohmann@github.com#65ee684\source`
 
-- `json@com.github.nlohmann` : source ID
+- `@json@nlohmann@github.com` : source identity, see [Source identities](/docs/reference/source-identities/)
 - `65ee684` : commit hash
 
 A cache key must be usable as a single directory name on every platform Golem runs on. A revision that is not a commit, a branch or a tag, which is what a cookbook or an overlay is cached at, is therefore spelled with the characters a directory name may hold, lowercased, then followed by `=` and a digest of the revision as written:
 
-- `recipes@com.github.golemcpp` : a cookbook asking for no version, so the default branch
-- `recipes@com.github.golemcpp#main=0d6e4079` : the `main` branch of a cookbook
-- `lib@com.github.acme#release~1.2.3=88ded651` : the `release/1.2.3` tag
+- `@recipes@golemcpp@github.com` : a cookbook asking for no version, so the default branch
+- `@recipes@golemcpp@github.com#main=0d6e4079` : the `main` branch of a cookbook
+- `@lib@acme@github.com#release~1.2.3=88ded651` : the `release/1.2.3` tag
 
 A character a directory name may not hold becomes `~`, so `release/1.2.3` still reads as itself rather than as a tag someone named `release-1.2.3`. The digest is what distinguishes two revisions the spelling would merge anyway, such as `V1.0` from `v1.0`, which are two tags in Git but one directory on Windows and macOS. A key carrying no `=` is therefore a commit, abbreviated the way Git abbreviates one itself, and a key with no `#` at all asked for no version.
 
@@ -99,23 +99,28 @@ When configuring the dependency, the build directory is setup.
 - Creating a configuration file to hold how a project can use the dependency.
 - Creating a `dependencies.json` file to hold the list of dependencies the dependency relies on.
 
-Example of an artifact directory in a cached dependency: `json@com.github.nlohmann#65ee684\windows~x86_64~msvc-19.44.35211~sh~d~sh~d\bin-da39a3ee`
+Example of an artifact directory in a cached dependency: `@json@nlohmann@github.com#65ee684\windows~x86_64~msvc-19.44.35211~sh~d~sh~d\bin-da39a3ee`
 
 - `windows~x86_64~msvc-19.44.35211~sh~d~sh~d` : build slug, for Windows, x86_64, msvc, shared runtime, debug runtime, shared linking, debug
 - `da39a3ee` : dependency slug to isolate the artifacts
 
 The build slug names every high-level input that decides whether one artifact can substitute for another, which is what keeps `-std=`, sanitizers and custom flags out of it. See `class BuildSlug` in [build_slug.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/build_slug.py).
 
-Example of a configuration file: `json@com.github.nlohmann#65ee684\windows~x86_64~msvc-19.44.35211~sh~d~sh~d\conf\json@json@com.github.nlohmann.json`
+Example of a configuration file: `@json@nlohmann@github.com#65ee684\windows~x86_64~msvc-19.44.35211~sh~d~sh~d\conf\@json@nlohmann@github.com\json.json`
 
-- `json@json@com.github.nlohmann.json` the name follows the format `<target>@<source_id>`
+Under `conf`, one path component per name: the source identity of the project that exported it, then the dependency, then the target. The file beside the dependency's directory is the dependency taken as a whole, and the files inside it are its targets.
+
+- `conf\<identity>\<dependency>.json` : the dependency as a whole
+- `conf\<identity>\<dependency>\<target>.json` : one of its targets
+
+A dependency name and a target name come from a project file and may hold anything, so each gets a component of its own rather than being joined into one name.
 
 ``` json
 {
     "configuration": {
         "artifacts": [
             {
-                "location": "${GOLEM_CACHE_DIR}\\json@com.github.nlohmann#65ee684\\source",
+                "location": "${GOLEM_CACHE_DIR}\\@json@nlohmann@github.com#65ee684\\source",
                 "path": "LICENSE.MIT",
                 "repository": "https://github.com/nlohmann/json.git",
                 "resolved": {
@@ -127,10 +132,10 @@ Example of a configuration file: `json@com.github.nlohmann#65ee684\windows~x86_6
         ],
         "header_only": true,
         "isystems": [
-            "${GOLEM_CACHE_DIR}\\json@com.github.nlohmann#65ee684\\include"
+            "${GOLEM_CACHE_DIR}\\@json@nlohmann@github.com#65ee684\\include"
         ],
         "licenses": [
-            "${GOLEM_CACHE_DIR}\\json@com.github.nlohmann#65ee684\\source\\LICENSE.MIT"
+            "${GOLEM_CACHE_DIR}\\@json@nlohmann@github.com#65ee684\\source\\LICENSE.MIT"
         ],
         "targets": [
             "json"
@@ -140,7 +145,7 @@ Example of a configuration file: `json@com.github.nlohmann#65ee684\windows~x86_6
 }
 ```
 
-This file contains all of what's needed when linking against the target `json` of the dependency `json@com.github.nlohmann`.
+This file contains all of what's needed when linking against the target `json` of the dependency `@json@nlohmann@github.com`.
 
 Once resolved, the dependencies can be built with `golem dependencies`. An `include` directory will be added in the dependency's cache directory to contain the headers meant to be used by the calling project. The artifacts will be built and stored in the artifact directory.
 
