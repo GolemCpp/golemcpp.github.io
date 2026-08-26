@@ -76,17 +76,17 @@ An explicit environment variable therefore still overrides a stored configuratio
 
 ## Settings
 
-| Key                                      | Environment variable                           | Command-line option                      | Default                                       |
-| ---------------------------------------- | ---------------------------------------------- | ---------------------------------------- | --------------------------------------------- |
-| `cache.directory`                        | `GOLEM_CACHE_DIRECTORY`                        | `--cache-directory`                      | `~/.cache/golem`                              |
-| `cache.additional-directories`           | `GOLEM_ADDITIONAL_CACHE_DIRECTORIES`           | `--additional-cache-directory`           | _(none)_                                      |
-| `cache.additional-read-only-directories` | `GOLEM_ADDITIONAL_READ_ONLY_CACHE_DIRECTORIES` | `--additional-read-only-cache-directory` | _(none)_                                      |
-| `cache.resolution-policy`                | `GOLEM_CACHE_RESOLUTION_POLICY`                | `--cache-resolution-policy`              | `strict`                                      |
-| `cache.minimization.enabled`             | `GOLEM_CACHE_MINIMIZATION_ENABLED`             | `--cache-minimization-enabled`           | `on`                                          |
-| `cache.minimization.length`              | `GOLEM_CACHE_MINIMIZATION_LENGTH`              | `--cache-minimization-length`            | `8`                                           |
-| `cookbooks.locations`                    | `GOLEM_COOKBOOKS_LOCATIONS`                    | `--cookbook-location`                    | `git+https://github.com/GolemCpp/recipes.git` |
-| `overlays.locations`                     | `GOLEM_OVERLAYS_LOCATIONS`                     | `--overlay-location`                     | _(none)_                                      |
-| `overrides.configuration`                | `GOLEM_OVERRIDES_CONFIGURATION`                | `--overrides-configuration`              | _(none)_                                      |
+| Key                                      | Environment variable                           | Command-line option                      | Default                                          |
+| ---------------------------------------- | ---------------------------------------------- | ---------------------------------------- | ------------------------------------------------ |
+| `cache.directory`                        | `GOLEM_CACHE_DIRECTORY`                        | `--cache-directory`                      | `~/.cache/golem`                                 |
+| `cache.additional-directories`           | `GOLEM_ADDITIONAL_CACHE_DIRECTORIES`           | `--additional-cache-directory`           | _(none)_                                         |
+| `cache.additional-read-only-directories` | `GOLEM_ADDITIONAL_READ_ONLY_CACHE_DIRECTORIES` | `--additional-read-only-cache-directory` | _(none)_                                         |
+| `cache.resolution-policy`                | `GOLEM_CACHE_RESOLUTION_POLICY`                | `--cache-resolution-policy`              | `strict`                                         |
+| `cache.minimization.enabled`             | `GOLEM_CACHE_MINIMIZATION_ENABLED`             | `--cache-minimization-enabled`           | `on`                                             |
+| `cache.minimization.length`              | `GOLEM_CACHE_MINIMIZATION_LENGTH`              | `--cache-minimization-length`            | `8`                                              |
+| `cookbooks.locations`                    | `GOLEM_COOKBOOKS_LOCATIONS`                    | `--cookbook-location`                    | `git+https://github.com/GolemCpp/recipes.git#v2` |
+| `overlays.locations`                     | `GOLEM_OVERLAYS_LOCATIONS`                     | `--overlay-location`                     | _(none)_                                         |
+| `overrides.configuration`                | `GOLEM_OVERRIDES_CONFIGURATION`                | `--overrides-configuration`              | _(none)_                                         |
 
 Run `golem config --help` to print this table for the version you have installed, including each setting's description, environment variable, command-line option and built-in default.
 

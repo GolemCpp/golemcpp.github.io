@@ -23,6 +23,8 @@ A collection of recipes is a **cookbook**.
 
 By default, Golem provides a [cookbook](https://github.com/GolemCpp/recipes) to find a corresponding project file for these dependencies unaware of Golem.
 
+That cookbook keeps one branch per [source identity](/docs/reference/source-identities/) grammar, and Golem reads the branch it spells: `#v2` for this version.
+
 A dependency is identified by its repository URL. A cookbook holds one directory per dependency, named after that [source identity](/docs/reference/source-identities/), and each directory holds a project file.
 
 ```text
@@ -83,7 +85,7 @@ The same is available as the repeatable `--cookbook-location` option and as the 
 Example:
 
 ```bash
-GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git|directory+/home/user/recipes
+GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git#v2|directory+/home/user/recipes
 golem configure --cookbook-location=./my-cookbook
 ```
 

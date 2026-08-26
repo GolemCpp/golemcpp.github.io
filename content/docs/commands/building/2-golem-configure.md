@@ -150,7 +150,7 @@ For cppfront setup, cache-backed installs, and lookup behavior, see [cppfront](/
 
   Add a [cookbook](/docs/advanced/recipes/#custom-cookbooks) to search for recipes. Pass the option once per cookbook; they are layered in the order given and the last one holding a recipe wins, replacing the default cookbook.
 
-  Default: `git+https://github.com/GolemCpp/recipes.git`
+  Default: `git+https://github.com/GolemCpp/recipes.git#v2`
 
 ## Cache System options
 

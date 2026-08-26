@@ -113,9 +113,9 @@ A range is re-resolved on every `golem resolve` rather than pinned, since a cook
 
 ```text
 GOLEM_COOKBOOKS_LOCATIONS=directory+/home/user/recipes
-GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git
-GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git#v2.1.0
-GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git#^2.1.0
+GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git#v2
+GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/acme/cookbook.git#v2.1.0
+GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/acme/cookbook.git#^2.1.0
 GOLEM_OVERLAYS_LOCATIONS=git+https://github.com/acme/golem-overlay.git#release/1.2.3
 ```
 
@@ -135,7 +135,7 @@ Examples:
 
 ```text
 GOLEM_COOKBOOKS_LOCATIONS=/home/user/recipes
-GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git|directory+/home/user/recipes
+GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git#v2|directory+/home/user/recipes
 ```
 
 ## Overlays
