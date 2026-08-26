@@ -1,0 +1,4 @@
+# Every text file is stored and checked out with LF, on every platform, so no
+# tool writing CRLF can put one in the repository. Binary files are detected
+# and left alone.
+* text=auto eol=lf
