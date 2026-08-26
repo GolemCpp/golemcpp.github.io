@@ -50,16 +50,40 @@ For a repository on a forge the identity reads `@<repository>@<owner>@<host>`, l
 
 The leading `@` is what tells a recipe from everything else the repository holds, so a cookbook is free to carry a `README`, a licence or a CI configuration.
 
-Other shapes (e.g. an SSH clone, a path on your machine, a name Golem had to spell differently to make it a legal directory) read differently. You do not have to work them out because **when no recipe matches, Golem names the identity it looked for.**
+Other shapes (e.g. an SSH clone, a path on your machine, a name Golem had to spell differently to make it a legal directory) read differently, and you do not have to work them out. Golem drops the last field of the identity and looks again, down to the bare name, so a recipe named at a shorter qualification still answers:
+
+| the dependency is cloned from      | the identity                        | the recipe that answers          |
+| ---------------------------------- | ----------------------------------- | -------------------------------- |
+| `https://github.com/nlohmann/json` | `@json@nlohmann@github.com`         | `@json@nlohmann@github.com`      |
+| `git@github.com:nlohmann/json.git` | `@json@nlohmann@github.com@scp.git` | `@json@nlohmann@github.com`      |
+| `https://git.corp/team/json.git`   | `@json@team@git.corp`               | `@json`, if a cookbook holds one |
+
+So a recipe is named at the qualification that makes it unambiguous, and no further: `@boost` for a package everyone means the same thing by, `@json@nlohmann` where the name alone is not enough, the host only where the owner would still be. The shorter the name, the more remotes one recipe serves (e.g. a fork, an internal mirror, an SSH clone) and the longer it is, the more narrowly it answers.
+
+**Every lookup says which recipe served it**, so a recipe answering at a shorter qualification is something you read rather than something you notice:
+
+```text
+@json@team@git.corp: served by @json (@recipes@golemcpp@github.com#v2=fb04dcb6)
+```
+
+**When nothing answers, Golem names the identity it looked for** and every cookbook it searched:
 
 ```text
 ERROR: no recipe '@json@nlohmann@github.com' and no project file
-('golemfile.json' or 'golemfile.py').
+('golemfile.py' or 'golemfile.json').
 Searched 1 cookbook(s):
   /home/you/.cache/golem/…/source
 ```
 
 Name the directory what that message names, and the next run finds it. The full grammar is in [Source identities](/docs/reference/source-identities/).
+
+A directory named right but holding no project file is an error rather than a miss, because Golem found what you named and cannot load it:
+
+```text
+ERROR: recipe '@json' in cookbook '@recipes@golemcpp@github.com#v2=fb04dcb6'
+holds no project file ('golemfile.py' or 'golemfile.json'):
+  /home/you/.cache/golem/…/source/@json
+```
 
 > [!NOTE]+ An identity names a source; it does not say where to fetch it. It is not accepted as a dependency `location` today, so write the repository URL there.
 
@@ -79,6 +103,8 @@ GOLEM_COOKBOOKS_LOCATIONS=<location_1>|<location_2>|...
 - `|` Separator between cookbooks
 
 Cookbooks are layered in the order they are listed, and the **last** one holding a recipe for the dependency wins, the same way [overlays](/docs/advanced/dependencies/#overlays) layer. So list your own cookbook after the default to override a recipe it ships, rather than before it.
+
+A cookbook is asked for every qualification before the next one is asked at all, so a later cookbook wins even when it names the recipe less specifically. A `@json` of yours listed last shadows the default cookbook's `@json@nlohmann@github.com`, which is what makes an override work without restating the full identity, and why an override you meant to be narrow should be named at the qualification you want it to catch.
 
 The same is available as the repeatable `--cookbook-location` option and as the `cookbooks.locations` setting — see [golem config](/docs/commands/golem-config/).
 

@@ -98,7 +98,7 @@ When configuring the dependency, the build directory is setup.
 
 **Preparation of the build directory** by `golem configure` consists of:
 
-- Determining if the project has a project file or a recipe (it not, error) See `def load_recipe(self):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
+- Determining if the project has a project file or a recipe (it not, error) See `def load_recipe(self):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py). Which recipe answers is `class RecipeResolver:` in [recipe_resolver.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/recipe_resolver.py): it probes every rung of the identity, most specific first, in each cookbook from the last listed to the first, and reads nothing off disk to decide.
 - Creating an artifact directory with a specific slug to avoid conflicts between projects asking for different build options. See `def make_dependencies_slug(self, dependencies):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
 - Creating a configuration file to hold how a project can use the dependency.
 - Creating a `dependencies.json` file to hold the list of dependencies the dependency relies on.
