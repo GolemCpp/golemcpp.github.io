@@ -28,6 +28,7 @@
 
 ## Editing Rules
 
+- **A paragraph is one line.** [.prettierrc.yaml](.prettierrc.yaml) sets `proseWrap: never`, therefore `npm run format` joins any line break made by hand inside a paragraph. Markdown renders a single newline as a space, so that wrapping never reached the page and only fought the renderers that wrap at their own width. A hard break — two trailing spaces, or a backslash — survives, so a break that is meant stays one.
 - Do not hand-edit [public](public), [resources/_gen](resources/_gen), or [hugo_stats.json](hugo_stats.json) unless the task is explicitly about generated output.
 - If a styling change depends on purge results, inspect [config/postcss.config.js](config/postcss.config.js) and the generated stats file.
 - Preserve existing Hugo front matter and Thulite structure when editing docs pages or layouts.
