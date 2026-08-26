@@ -19,7 +19,7 @@ Golem currently supports 2 formats: `golemfile.py` and `golemfile.json`. Only on
 
 Here are equivalent examples illustrating their structure:
 
-``` python {title="golemfile.py"}
+```python {title="golemfile.py"}
 def configure(project):
     project.dependency(name='json',
                        repository='https://github.com/nlohmann/json.git',
@@ -43,43 +43,44 @@ def configure(project):
 
 The Python version declares a `configure` function with a `project` parameter. This `project` holds the [definitions](/docs/project-file/definitions/) for [programs](/docs/project-file/definitions/#program), [libraries](/docs/project-file/definitions/#library), [exports](/docs/project-file/definitions/#export), [dependencies](/docs/project-file/definitions/#dependency) and [packages](/docs/project-file/definitions/#package).
 
-``` json {title="golemfile.json"}
+```json {title="golemfile.json"}
 {
-    "dependencies": [
-        {
-            "name": "json",
-            "repository": "https://github.com/nlohmann/json.git",
-            "version": "^3.0.0",
-            "shallow": true
-        }
-    ],
-    "targets": [
-        {
-            "name": "mylib",
-            "type": "library",
-            "includes": ["mylib/include"],
-            "source": ["mylib/src"],
-            "defines": ["FOO_API_EXPORT"]
-        },
-        {
-            "name": "hello",
-            "type": "program",
-            "source": ["src"],
-            "use": ["mylib"],
-            "deps": ["json"]
-        }
-    ],
-    "exports": [
-        {
-            "name": "mylib",
-            "includes": ["mylib/include"],
-            "defines": ["FOO_API_IMPORT"]
-        }
-    ]
+  "dependencies": [
+    {
+      "name": "json",
+      "repository": "https://github.com/nlohmann/json.git",
+      "version": "^3.0.0",
+      "shallow": true
+    }
+  ],
+  "targets": [
+    {
+      "name": "mylib",
+      "type": "library",
+      "includes": ["mylib/include"],
+      "source": ["mylib/src"],
+      "defines": ["FOO_API_EXPORT"]
+    },
+    {
+      "name": "hello",
+      "type": "program",
+      "source": ["src"],
+      "use": ["mylib"],
+      "deps": ["json"]
+    }
+  ],
+  "exports": [
+    {
+      "name": "mylib",
+      "includes": ["mylib/include"],
+      "defines": ["FOO_API_IMPORT"]
+    }
+  ]
 }
 ```
 
 The JSON version declares the same definitions but in multiple arrays for better readability.
+
 - `dependencies` contains all the [dependency](/docs/project-file/definitions/#dependency) definitions.
 - `targets` contains all the [program](/docs/project-file/definitions/#program) and [library](/docs/project-file/definitions/#library) definitions of the project.
 - `exports` contains all the [export](/docs/project-file/definitions/#export) definitions of the project, internally used by the project or meant to be used by other projects.
@@ -92,4 +93,5 @@ Also, to conditionally apply parameters on a configuration, Golem provides a sim
 ## Examples
 
 To learn with examples have a look at:
+
 - <https://github.com/GolemCpp/golem/tree/main/examples>

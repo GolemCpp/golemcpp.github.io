@@ -1,4 +1,4 @@
-``` python
+```python
 # define the library
 project.library(name='mylib', ...)
 

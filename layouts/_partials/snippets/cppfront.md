@@ -1,4 +1,4 @@
-``` python
+```python
 # golem tools install cppfront
 # golem configure --variant=debug
 project.program(

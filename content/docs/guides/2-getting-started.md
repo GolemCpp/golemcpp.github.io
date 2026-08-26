@@ -19,7 +19,7 @@ seo:
 
 Using **pipx** (recommended, creates a virtual environment):
 
-``` bash
+```bash
 pipx install golemcpp
 
 # Or install it for all users
@@ -28,13 +28,13 @@ pipx install --global golemcpp
 
 Alternatively, using **pip**:
 
-``` bash
+```bash
 pip install golemcpp
 ```
 
 Since Golem is evolving fast, to upgrade it run:
 
-``` bash
+```bash
 # When using pipx
 pipx upgrade golemcpp
 
@@ -51,7 +51,7 @@ Everything starts with `golemfile.py`. Create it at the root of your project dir
 
 Here is an example to compile a **Hello World** program:
 
-``` python {title="golemfile.py"}
+```python {title="golemfile.py"}
 def configure(project):
     project.program(name='hello',
                     source=['src'])
@@ -62,7 +62,7 @@ The project variable is the entry point to declare dependencies, libraries and p
 - `'hello'` is the name of the program being compiled (e.g. `hello.exe` or `hello-debug.exe`)
 - `'src'` is the directory where all source files are expected to be found (recursively) for 'hello'
 
-``` cpp {title="src/main.cpp"}
+```cpp {title="src/main.cpp"}
 #include <iostream>
 int main()
 {
@@ -77,7 +77,7 @@ Have a look at the full example in [examples/hello](https://github.com/GolemCpp/
 
 To build the program, run:
 
-``` bash
+```bash
 # For a debug build
 golem configure --variant=debug
 

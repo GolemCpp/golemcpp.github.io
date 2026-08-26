@@ -18,7 +18,7 @@ This command generates a starter `golemfile.py` in the current project directory
 
 The generated file is a normal Python project file with inline hints about the usual Golem workflow, including when to run `configure`, `resolve`, `dependencies`, and `build`.
 
-``` bash
+```bash
 golem init [--project-dir=<project_dir>] [--force]
 ```
 
@@ -41,14 +41,14 @@ golem init [--project-dir=<project_dir>] [--force]
 - The command creates only the project file. You still need to add your sources, for example `src/main.cpp`.
 - A common next step is:
 
-  ``` bash
+  ```bash
   golem configure --variant=debug
   golem build
   ```
 
 - If you later add dependencies with `project.dependency(...)`, run:
 
-  ``` bash
+  ```bash
   golem resolve
   golem dependencies
   golem build

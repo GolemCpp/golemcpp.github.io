@@ -1,4 +1,4 @@
-``` python
+```python
 # dependencies can be customized too
 task = project.dependency(...,
   version='main' # Follow branch 'main'

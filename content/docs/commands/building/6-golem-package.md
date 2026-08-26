@@ -18,11 +18,12 @@ This command generates the packages defined in the project file.
 
 Outputs the packages in `build/`, or depending on `golem configure`'s `--build-dir` option: `<build_dir>/`.
 
-``` bash
+```bash
 golem package
 ```
 
 For now, Golem can generate:
+
 - **MSI** files for Windows with WiX
 - **DMG** files for MacOS
 - **DEB** files for Debian-based distributions

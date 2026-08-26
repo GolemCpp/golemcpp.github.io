@@ -15,8 +15,7 @@ seo:
 
 A configuration is a set parameters common to [program](/docs/project-file/definitions/#program), [library](/docs/project-file/definitions/#library), [export](/docs/project-file/definitions/#export) and [dependency](/docs/project-file/definitions/#dependency) definitions.
 
-> [!TIP]+
-> All the list parameters can be set with single values, Golem makes them lists automatically if they are not.
+> [!TIP]+ All the list parameters can be set with single values, Golem makes them lists automatically if they are not.
 
 ## General parameters
 
@@ -39,9 +38,8 @@ A configuration is a set parameters common to [program](/docs/project-file/defin
 - `no_defaults` boolean
 
   Controls whether Golem applies its default build settings for the final target.
-
-  * `False` (default): apply Golem's default defines and compiler, linker and archiver flags for the current platform, compiler, architecture and variant.
-  * `True`: do not apply these defaults on the final target.
+  - `False` (default): apply Golem's default defines and compiler, linker and archiver flags for the current platform, compiler, architecture and variant.
+  - `True`: do not apply these defaults on the final target.
 
   This is useful when a target or dependency must fully control its own toolchain flags.
 
@@ -77,8 +75,8 @@ A configuration is a set parameters common to [program](/docs/project-file/defin
 ## Header-only libraries
 
 - `header_only` boolean
-  * `True`: no artifacts to expect
-  * `False`: artifacts to expect
+  - `True`: no artifacts to expect
+  - `False`: artifacts to expect
 
   Useful when exporting a library for the user target to know if has to expect artifacts or not.
 
@@ -107,8 +105,8 @@ There is an experimental command `golem requirements` to install all the needed 
 - `targets` list of targets to expect after a successfull build
 - `target_decorators` list of function pointers to decorate target names depending on the build options
 - `artifacts_generators` list of function pointers to generate artifact filenames from decorated targets
-- `artifacts_dev` list of development artifacts (e.g. *.lib, *.so) to expect after a successfull build
-- `artifacts_run` list of runtime artifacts (e.g. *.dll, *.so) to expect after a successfull build
+- `artifacts_dev` list of development artifacts (e.g. _.lib, _.so) to expect after a successfull build
+- `artifacts_run` list of runtime artifacts (e.g. _.dll, _.so) to expect after a successfull build
 
 ## Alternative ways to list files
 

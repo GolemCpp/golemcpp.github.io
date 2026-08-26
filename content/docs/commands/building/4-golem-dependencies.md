@@ -18,6 +18,6 @@ This command builds the dependencies needed to build the project.
 
 When defining **dependencies** in the project file, this command becomes **mandatory** after `golem resolve`, and expects it to have run successfully.
 
-``` bash
+```bash
 golem dependencies
 ```

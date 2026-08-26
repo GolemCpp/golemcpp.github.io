@@ -20,7 +20,8 @@ It can build projects like CMake does, or manage dependencies like Conan does. I
 Golem's main goal is to remove the noise in the project file, and favor the developers intents rather than the technical details when unneeded.
 
 Here is how a **golemfile.py** looks like:
-``` python {title="golemfile.py"}
+
+```python {title="golemfile.py"}
 def configure(project):
 
     project.dependency(name='json',

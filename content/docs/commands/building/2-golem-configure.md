@@ -18,7 +18,7 @@ This command allows you to configure how to build your project.
 
 The choices are saved, therefore it needs to be run only once. Modifying the project file will not require re-executing this command.
 
-``` bash
+```bash
 golem configure [options]
 ```
 
@@ -64,9 +64,7 @@ golem configure [options]
 
   Builds for the specified architecture, named as in [Architectures](/docs/reference/architectures/)
 
-  `golem configure` fails when the compiler it selects builds for another one. On the x86 family a
-  multilib toolchain is found by building with `-m32` or `-m64`, so `--arch=i686` works on an x86_64
-  Linux only where the 32-bit userland is installed.
+  `golem configure` fails when the compiler it selects builds for another one. On the x86 family a multilib toolchain is found by building with `-m32` or `-m64`, so `--arch=i686` works on an x86_64 Linux only where the 32-bit userland is installed.
 
   Default: what the selected compiler builds for
 
@@ -144,16 +142,13 @@ For cppfront setup, cache-backed installs, and lookup behavior, see [cppfront](/
 
 - `--overlay-location=[<kind>+]<locator>[#<version>]` (repeatable)
 
-  Add an [overlay](/docs/advanced/dependencies/#overlays) carrying an `overrides.json`. Pass the
-  option once per overlay; they are layered in the order given.
+  Add an [overlay](/docs/advanced/dependencies/#overlays) carrying an `overrides.json`. Pass the option once per overlay; they are layered in the order given.
 
   Default: `None`
 
 - `--cookbook-location=[<kind>+]<locator>[#<version>]` (repeatable)
 
-  Add a [cookbook](/docs/advanced/recipes/#custom-cookbooks) to search for recipes. Pass the option
-  once per cookbook; they are layered in the order given and the last one holding a recipe wins,
-  replacing the default cookbook.
+  Add a [cookbook](/docs/advanced/recipes/#custom-cookbooks) to search for recipes. Pass the option once per cookbook; they are layered in the order given and the last one holding a recipe wins, replacing the default cookbook.
 
   Default: `git+https://github.com/GolemCpp/recipes.git`
 

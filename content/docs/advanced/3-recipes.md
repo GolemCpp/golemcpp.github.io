@@ -23,11 +23,9 @@ A collection of recipes is a **cookbook**.
 
 By default, Golem provides a [cookbook](https://github.com/GolemCpp/recipes) to find a corresponding project file for these dependencies unaware of Golem.
 
-A dependency is identified by its repository URL. A cookbook holds one directory
-per dependency, named after that [source identity](/docs/reference/source-identities/),
-and each directory holds a project file.
+A dependency is identified by its repository URL. A cookbook holds one directory per dependency, named after that [source identity](/docs/reference/source-identities/), and each directory holds a project file.
 
-``` text
+```text
 .
 ├── @boost@boostorg@github.com/
 │   └── golemfile.py
@@ -40,39 +38,30 @@ and each directory holds a project file.
     └── golemfile.py
 ```
 
-For a repository on a forge the identity reads `@<repository>@<owner>@<host>`,
-lowercased:
+For a repository on a forge the identity reads `@<repository>@<owner>@<host>`, lowercased:
 
-| repository | recipe directory |
-| --- | --- |
-| `https://github.com/nlohmann/json.git` | `@json@nlohmann@github.com` |
-| `https://github.com/microsoft/GSL.git` | `@gsl@microsoft@github.com` |
+| repository                                   | recipe directory                  |
+| -------------------------------------------- | --------------------------------- |
+| `https://github.com/nlohmann/json.git`       | `@json@nlohmann@github.com`       |
+| `https://github.com/microsoft/GSL.git`       | `@gsl@microsoft@github.com`       |
 | `https://gitlab.com/group/subgroup/proj.git` | `@proj@group.subgroup@gitlab.com` |
 
-The leading `@` is what tells a recipe from everything else the repository holds,
-so a cookbook is free to carry a `README`, a licence or a CI configuration.
+The leading `@` is what tells a recipe from everything else the repository holds, so a cookbook is free to carry a `README`, a licence or a CI configuration.
 
-Other shapes (e.g. an SSH clone, a path on your machine, a name Golem had to
-spell differently to make it a legal directory) read differently. You do not
-have to work them out because **when no recipe matches, Golem names the
-identity it looked for.**
+Other shapes (e.g. an SSH clone, a path on your machine, a name Golem had to spell differently to make it a legal directory) read differently. You do not have to work them out because **when no recipe matches, Golem names the identity it looked for.**
 
-``` text
+```text
 ERROR: no recipe '@json@nlohmann@github.com' and no project file
 ('golemfile.json' or 'golemfile.py').
 Searched 1 cookbook(s):
   /home/you/.cache/golem/…/source
 ```
 
-Name the directory what that message names, and the next run finds it. The full
-grammar is in [Source identities](/docs/reference/source-identities/).
+Name the directory what that message names, and the next run finds it. The full grammar is in [Source identities](/docs/reference/source-identities/).
 
-> [!NOTE]+
-> An identity names a source; it does not say where to fetch it. It is not
-> accepted as a dependency `location` today, so write the repository URL there.
+> [!NOTE]+ An identity names a source; it does not say where to fetch it. It is not accepted as a dependency `location` today, so write the repository URL there.
 
-> [!NOTE]+
-> For now, there is no project file per version mechanism, but this is in the Roadmap.
+> [!NOTE]+ For now, there is no project file per version mechanism, but this is in the Roadmap.
 
 A `golemfile.py` can use scripting to handle any build system, any situation.
 
@@ -80,34 +69,27 @@ A `golemfile.py` can use scripting to handle any build system, any situation.
 
 To replace the default Golem cookbook, or search several cookbooks, set:
 
-``` text
+```text
 GOLEM_COOKBOOKS_LOCATIONS=<location_1>|<location_2>|...
 ```
 
-- `<location>` A [source location](/docs/reference/environment-variables/#source-locations),
-  `[<kind>+]<locator>[#<version>]`: `git+` for a repository cloned into the cache, `directory+` for a local
-  directory copied into it. Without a prefix Golem works the kind out from the locator.
+- `<location>` A [source location](/docs/reference/environment-variables/#source-locations), `[<kind>+]<locator>[#<version>]`: `git+` for a repository cloned into the cache, `directory+` for a local directory copied into it. Without a prefix Golem works the kind out from the locator.
 - `|` Separator between cookbooks
 
-Cookbooks are layered in the order they are listed, and the **last** one holding a recipe for the
-dependency wins, the same way [overlays](/docs/advanced/dependencies/#overlays) layer. So list
-your own cookbook after the default to override a recipe it ships, rather than before it.
+Cookbooks are layered in the order they are listed, and the **last** one holding a recipe for the dependency wins, the same way [overlays](/docs/advanced/dependencies/#overlays) layer. So list your own cookbook after the default to override a recipe it ships, rather than before it.
 
-The same is available as the repeatable `--cookbook-location` option and as the
-`cookbooks.locations` setting — see [golem config](/docs/commands/golem-config/).
+The same is available as the repeatable `--cookbook-location` option and as the `cookbooks.locations` setting — see [golem config](/docs/commands/golem-config/).
 
 Example:
 
-``` bash
+```bash
 GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git|directory+/home/user/recipes
 golem configure --cookbook-location=./my-cookbook
 ```
 
-Here `/home/user/recipes` is listed last, so a recipe it holds is the one used, and every
-dependency it says nothing about falls back to the default cookbook.
+Here `/home/user/recipes` is listed last, so a recipe it holds is the one used, and every dependency it says nothing about falls back to the default cookbook.
 
-> [!NOTE]+
-> When a dependency is missing, or not building properly, it is recommended to fork the Golem [cookbook](https://github.com/GolemCpp/recipes), make the needed changes and create a Pull Request. Contributions are very welcome!
+> [!NOTE]+ When a dependency is missing, or not building properly, it is recommended to fork the Golem [cookbook](https://github.com/GolemCpp/recipes), make the needed changes and create a Pull Request. Contributions are very welcome!
 
 ## Writing a recipe
 
@@ -115,7 +97,7 @@ dependency it says nothing about falls back to the default cookbook.
 
 The simplest example of a recipe would be a header-only library:
 
-``` python
+```python
 def configure(project):
 
     project.export(name='json',
@@ -144,7 +126,7 @@ Most of the time, projects use a specific build system to build libraries and po
 
 Golem provides a `scripts` parameter when defining a library to freely specify how to build it.
 
-``` python
+```python
 def configure(project):
     project.library(name='mylibrary',
                     scripts=[script])
@@ -166,7 +148,7 @@ The script builds the library, and the library definition (`project.library(...)
 
 CMake being a de facto standard, Golem provides a helper function to build a CMake project, available from the `context` object:
 
-``` python
+```python
 class Context:
   def cmake_build(self,
       source_path=None,
@@ -189,7 +171,7 @@ Note that if the library has dependencies, it is still needed to explicitly buil
 
 Here is an example using CMake related helper functions in a script method to be added to the related library definition:
 
-``` python
+```python
 def script(context):
     context.build_dependency('json')
 
@@ -223,6 +205,7 @@ def script(context):
 ### Other build systems
 
 When dealing with projects using a build system different from CMake, you may want to use:
+
 - `subprocess.call()` to run commands
 - Helper functions to [build and use dependencies](#building-and-using-dependencies)
 - Helper functions to [export built artifacts and headers](#exporting-artifacts-and-headers)
@@ -232,31 +215,24 @@ In any case, it is recommendend to have a look at the [recipes](https://github.c
 
 ### What the build targets
 
-Another build system has to be told what to build for, and each one spells an architecture its own
-way. Golem provides one function per spelling, available from the `context` object:
+Another build system has to be told what to build for, and each one spells an architecture its own way. Golem provides one function per spelling, available from the `context` object:
 
-``` python
+```python
 class Context:
   def get_arch(self):
   def vs_platform(self, arch=None):
   def get_arch_for_linux(self, arch=None):
 ```
 
-`get_arch()` returns the [canonical name](/docs/reference/architectures/) of the target, e.g.
-`'x86_64'`. Use it where the build system takes the same names Golem does, and to branch a recipe on
-what is being built.
+`get_arch()` returns the [canonical name](/docs/reference/architectures/) of the target, e.g. `'x86_64'`. Use it where the build system takes the same names Golem does, and to branch a recipe on what is being built.
 
-`vs_platform()` returns Visual Studio's name for the target, which is what MSBuild's `/p:Platform`
-and CMake's `-A` expect, e.g. `'x64'` and `'Win32'`. It raises where Visual Studio has no name for
-the target, so call it under `is_windows()`.
+`vs_platform()` returns Visual Studio's name for the target, which is what MSBuild's `/p:Platform` and CMake's `-A` expect, e.g. `'x64'` and `'Win32'`. It raises where Visual Studio has no name for the target, so call it under `is_windows()`.
 
-`get_arch_for_linux()` returns Debian's name for the target, e.g. `'amd64'`, or `None` where there is
-none.
+`get_arch_for_linux()` returns Debian's name for the target, e.g. `'amd64'`, or `None` where there is none.
 
-Passing an architecture explicitly is what the `arch` parameter is for, on `vs_platform()` and on
-[`cmake_build()`](#cmake-projects) alike. Left unset, both use the target of the current build.
+Passing an architecture explicitly is what the `arch` parameter is for, on `vs_platform()` and on [`cmake_build()`](#cmake-projects) alike. Left unset, both use the target of the current build.
 
-``` python
+```python
 def script(context):
     source_path = context.get_project_dir()
     build_path = context.get_build_path()
@@ -272,7 +248,7 @@ def script(context):
 
 To build dependencies needed to build the library helper functions are provided, available from the `context` object:
 
-``` python
+```python
 class Context:
   def build_dependency(self, dep_name):
   def find_dependency(self, dep_name):
@@ -286,7 +262,7 @@ class Context:
 
 Once the target is built, to export the artifacts and headers helper functions are provided, available from the `context` object:
 
-``` python
+```python
 class Context:
   def export_binaries(self, build_path=None, recursively=False):
   def export_headers(self, source_path, include_path=None):
@@ -348,6 +324,7 @@ To accurately specify how Golem should expect the artifacts built by another bui
   Example: For a library with decorated_target = 'mylib' and expected artifacts ['mylib.lib', 'mylib.dll'], the artifact generator adds the expected extensions to decorated_target as a list of filenames.
 
 Both provide `context` which provides a lot of helper functions, among them:
+
 - `context.artifact_prefix(config)` returns the expected prefix for a library artifact.
 
   E.g. 'lib' on Linux, such as 'libssl.so'
@@ -356,10 +333,9 @@ Both provide `context` which provides a lot of helper functions, among them:
 
   E.g. ['.so'] on Linux or ['.dylib'] on macOS or ['.dll', '.lib'] on Windows
 
-
 Here is a more elaborate example:
 
-``` python
+```python
 def target_decorator(target_name, config, context):
     # Avoid default behavior where -debug is added,
     # and leave it as target_name in all cases.
@@ -397,10 +373,9 @@ project.library(name='json-schema-validator',
 
 ### Calling Git
 
-To safely call Git commands Golem provides three helper functions, differing in what they hand back
-and in what happens when the command fails:
+To safely call Git commands Golem provides three helper functions, differing in what they hand back and in what happens when the command fails:
 
-``` python
+```python
 from golemcpp.golem import helpers
 
 # Do it. Raises if it fails.
@@ -413,9 +388,6 @@ head = helpers.read_git(['rev-parse', 'HEAD'], cwd=root_of_git_repository)
 helpers.try_git(['clean', '-fxd'], cwd=root_of_git_repository)
 ```
 
-Each one makes sure the working directory is a Git repository before continuing, and refuses a
-command that would reach a remote outside `golem resolve` or a build script (see
-[Only resolve reaches a remote](/docs/developers/introduction/#only-resolve-reaches-a-remote)).
+Each one makes sure the working directory is a Git repository before continuing, and refuses a command that would reach a remote outside `golem resolve` or a build script (see [Only resolve reaches a remote](/docs/developers/introduction/#only-resolve-reaches-a-remote)).
 
-Use `run_git` when a failure should stop the recipe, `read_git` when the output is the point, and
-`try_git` for something that is allowed to fail — a `clean` in a tree that may not need one.
+Use `run_git` when a failure should stop the recipe, `read_git` when the output is the point, and `try_git` for something that is allowed to fail — a `clean` in a tree that may not need one.

@@ -16,6 +16,6 @@ seo:
 
 This command deletes the build directory.
 
-``` bash
+```bash
 golem distclean
 ```

@@ -17,7 +17,7 @@ seo:
 
 Here is how to define a program:
 
-``` python
+```python
 task = project.program(name='hello',
                        source=['src'],
                        <any other configuration parameter>)
@@ -32,6 +32,7 @@ This `task` can make use of the [condition mechanism](/docs/project-file/conditi
 ### Examples
 
 To learn more about programs with examples have a look at:
+
 - <https://github.com/GolemCpp/golem/tree/main/examples/hello>
 - <https://github.com/GolemCpp/golem/tree/main/examples/minimal>
 
@@ -39,7 +40,7 @@ To learn more about programs with examples have a look at:
 
 Here is how to define a library:
 
-``` python
+```python
 task = project.library(name='mylib',
                        source=['src'],
                        <any other configuration parameter>)
@@ -54,6 +55,7 @@ This `task` can make use of the [condition mechanism](/docs/project-file/conditi
 ### Examples
 
 To learn more about libraries with examples have a look at:
+
 - <https://github.com/GolemCpp/golem/tree/main/examples/minimal>
 
 ## Export
@@ -62,7 +64,7 @@ An export definition allows a `library` to be used by another target. This defin
 
 Here is how to define an export:
 
-``` python
+```python
 task = project.export(name='mylib',
                       includes=['mylib/include'],
                       <any other configuration parameter>)
@@ -84,7 +86,7 @@ An export has to have a name matching the library it is exporting.
 
 A target (e.g. program or library) needing to link against a library has to refer to the corresponding export by using the `use` parameter. And another export definition can also refer to it similarly, if needed.
 
-``` python
+```python
 project.library(name='mylib',
                 includes=['mylib/include'],
                 source=['mylib/src'])
@@ -103,7 +105,7 @@ In this example, the program `'hello'` is built with an additional include direc
 
 Since a library definition is meant to be built, if the library is intended to be header-only, the library definition can be skipped, and remains an export definition with `header_only=True`.
 
-``` python
+```python
 project.export(name='foo',
                includes=['foo/include'],
                header_only=True)
@@ -118,6 +120,7 @@ In this situation, no library is built, and program `'hello'` is able to use the
 ### Examples
 
 To learn more about exports with examples have a look at:
+
 - <https://github.com/GolemCpp/golem/tree/main/examples/minimal>
 
 ## Additional parameters for targets
@@ -136,7 +139,7 @@ The recipe may exist in the [default cookbook](/docs/advanced/recipes/#the-defau
 
 Here is how to define a dependency:
 
-``` python
+```python
 task = project.dependency(name='json',
                           repository='https://github.com/nlohmann/json.git',
                           version='^3.0.0',
@@ -161,16 +164,11 @@ A dependency comes from **one of three** mutually exclusive sources:
 
 - `repository='<git-url>'` — a Git repository, **cloned** into the cache at the resolved `version`.
 - `directory='<path>'` — a local directory, **copied** into the cache as-is on each `golem resolve`.
-- `location='[<kind>+]<locator>[#<version>]'` — either of the two in one field, spelling its kind or leaving
-  Golem to work it out. The same
-  [source location](/docs/reference/environment-variables/#source-locations) syntax the
-  `cookbooks.locations` and `overlays.locations` settings take.
+- `location='[<kind>+]<locator>[#<version>]'` — either of the two in one field, spelling its kind or leaving Golem to work it out. The same [source location](/docs/reference/environment-variables/#source-locations) syntax the `cookbooks.locations` and `overlays.locations` settings take.
 
-  A `location` may name the version after a `#`, which is the same thing as the `version` argument and
-  cannot be combined with it. A dependency asking for two versions is an error rather than a silent
-  choice between them. Naming none leaves `version` as it stands.
+  A `location` may name the version after a `#`, which is the same thing as the `version` argument and cannot be combined with it. A dependency asking for two versions is an error rather than a silent choice between them. Naming none leaves `version` as it stands.
 
-``` python
+```python
 # A dependency cloned from Git
 project.dependency(name='json',
                    repository='https://github.com/nlohmann/json.git',
@@ -193,62 +191,37 @@ project.dependency(name='mylib',
                    location='./mylib')
 ```
 
-A `directory` has no version to resolve, so `version`, `version_regex` and `shallow` do not apply
-to it. Paths are relative to the project file and are normalized internally to `file://...` URLs.
+A `directory` has no version to resolve, so `version`, `version_regex` and `shallow` do not apply to it. Paths are relative to the project file and are normalized internally to `file://...` URLs.
 
-> [!NOTE]+
-> `repository` and `directory` state the kind by the field they are, so they never rely on
-> detection and carry no `#version`: the whole value is the locator. `repository` must name
-> something Git can clone from, a local path included, and is **refused** when it does not.
+> [!NOTE]+ `repository` and `directory` state the kind by the field they are, so they never rely on detection and carry no `#version`: the whole value is the locator. `repository` must name something Git can clone from, a local path included, and is **refused** when it does not.
 >
-> Use `location` when you want one field for both, or to name the version alongside it. Add
-> the prefix `directory+` or `git+` to control whether the resource must be copied or cloned.
+> Use `location` when you want one field for both, or to name the version alongside it. Add the prefix `directory+` or `git+` to control whether the resource must be copied or cloned.
 
 Optionally, `shallow` controls how much of the repository is obtained:
+
 - `True` fetches the resolved commit and nothing around it
-- `False` (default) leaves the dependency to the configured
-  [fetch mode](/docs/reference/environment-variables/#git)
+- `False` (default) leaves the dependency to the configured [fetch mode](/docs/reference/environment-variables/#git)
 
-Golem fetches every resource `blobless` by default. That is every commit and every tag, file content
-on demand. So the bulk of what a full clone used to cost is already saved without asking for
-anything. What `shallow` cuts on top of that is the history itself.
+Golem fetches every resource `blobless` by default. That is every commit and every tag, file content on demand. So the bulk of what a full clone used to cost is already saved without asking for anything. What `shallow` cuts on top of that is the history itself.
 
-`shallow` is the smallest of the three modes on disk. On Boost at `boost-1.89.0`, whose superproject
-carries 170 submodules, a `shallow` cache root comes to well under half what a full clone takes,
-and under a third of it counting only the repository data.
+`shallow` is the smallest of the three modes on disk. On Boost at `boost-1.89.0`, whose superproject carries 170 submodules, a `shallow` cache root comes to well under half what a full clone takes, and under a third of it counting only the repository data.
 
-What `shallow` costs is the history itself, and that is not free. A root holding one commit has
-nothing for `git describe --long --tags` to answer, because the commit arrives without its tag. So a
-dependency cannot derive its version from its history and has to be told it with `--force-version`.
-Golem projects allow to derive their version from their history, which makes it impossible to be the
-default mode.
+What `shallow` costs is the history itself, and that is not free. A root holding one commit has nothing for `git describe --long --tags` to answer, because the commit arrives without its tag. So a dependency cannot derive its version from its history and has to be told it with `--force-version`. Golem projects allow to derive their version from their history, which makes it impossible to be the default mode.
 
-`shallow` is also slower to *obtain* on a repository with many submodules, since a depth-1 fetch is
-per repository: a superproject pays one round trip per submodule where a full clone pays one for
-everything. What it is not is slower to keep: a shallow root refreshes as quickly as any other, and
-stays the size it was.
+`shallow` is also slower to _obtain_ on a repository with many submodules, since a depth-1 fetch is per repository: a superproject pays one round trip per submodule where a full clone pays one for everything. What it is not is slower to keep: a shallow root refreshes as quickly as any other, and stays the size it was.
 
-The modes also differ in what they are able to find. Every other mode clones `refs/heads/*` and
-`refs/tags/*` with their whole history and then looks for the reference among what arrived, where
-`shallow` asks the remote for it **by name**. So a commit that no branch and no tag reaches is
-missing from a blobless or full root, and the fetch stops and says so, while a shallow fetch may
-still obtain it.
+The modes also differ in what they are able to find. Every other mode clones `refs/heads/*` and `refs/tags/*` with their whole history and then looks for the reference among what arrived, where `shallow` asks the remote for it **by name**. So a commit that no branch and no tag reaches is missing from a blobless or full root, and the fetch stops and says so, while a shallow fetch may still obtain it.
 
-Do not build on that difference. A `version` has to name something the repository advertises. E.g. a
-tag, a branch, or a commit in their history. Anything else, such as a pull request's head or a
-commit force-pushed off its branch, is **not meant to be supported**: whether it can be obtained at
-all is the server's decision, and a commit no ref points at is one the remote's next garbage
-collection may remove.
+Do not build on that difference. A `version` has to name something the repository advertises. E.g. a tag, a branch, or a commit in their history. Anything else, such as a pull request's head or a commit force-pushed off its branch, is **not meant to be supported**: whether it can be obtained at all is the server's decision, and a commit no ref points at is one the remote's next garbage collection may remove.
 
-Reach for `shallow` when a repository is heavy and its history is of no use to the build. Leave the
-default alone otherwise: `blobless` already saves most of what a full clone costs and keeps
-`describe` working.
+Reach for `shallow` when a repository is heavy and its history is of no use to the build. Leave the default alone otherwise: `blobless` already saves most of what a full clone costs and keeps `describe` working.
 
 Also, note that defining configuration parameters on a dependency definition will propagate these parameters to the targets referred to by the `name`, or the `targets` parameter if set. This allows the project to [customize the dependencies](/docs/project-file/advanced/#customization-of-dependencies).
 
 ### Version formats
 
 Regarding the `version`, multiple formats are accepted:
+
 - Commit hash
 - Branch name (e.g. `main`, `master`, `develop`)
 - Tag (e.g. `v1.0.0`)
@@ -265,9 +238,7 @@ To handle an edge case regarding OpenSSL releases, the tags are sorted so that, 
 
 To further help into finding version tags, `version_regex` accepts a regex string to only keep the matching tags before processing them as versions.
 
-A **commit hash** has to be one that some branch or tag reaches, anywhere in their history counts,
-which is every commit a clone brings. A hash outside that, such as a pull request's head or a commit
-force-pushed off its branch, is not supported.
+A **commit hash** has to be one that some branch or tag reaches, anywhere in their history counts, which is every commit a clone brings. A hash outside that, such as a pull request's head or a commit force-pushed off its branch, is not supported.
 
 ### Using a dependency
 
@@ -275,7 +246,7 @@ A target (e.g. program or library) needing to link against a library in another 
 
 Here is an example:
 
-``` python
+```python
 project.dependency(name='json',
                    repository='https://github.com/nlohmann/json.git',
                    version='^3.0.0',
@@ -292,7 +263,7 @@ In this example, the program `'hello'` refers to a dependency by setting `deps=[
 
 Using dependencies requires to run additional commands when building the project:
 
-``` bash
+```bash
 golem configure
 
 # Here are the additional commands needed to retrieve
@@ -310,6 +281,7 @@ To understand the role of theses commands, have a closer look at [`golem resolve
 ### Examples
 
 To learn more about dependencies with examples have a look at:
+
 - <https://github.com/GolemCpp/golem/tree/main/examples/minimal>
 - <https://github.com/GolemCpp/golem/tree/main/examples/dependencies>
 - <https://github.com/GolemCpp/golem/tree/main/examples/cache>
@@ -318,6 +290,7 @@ To learn more about dependencies with examples have a look at:
 ## Package
 
 A package definition allows to package targets with all the needed dependencies into various formats:
+
 - **MSI** files for Windows with WiX
 - **DMG** files for MacOS
 - **DEB** files for Debian-based distributions
@@ -326,7 +299,7 @@ Other formats are to come.
 
 Here is how to define a package:
 
-``` python
+```python
 package = project.package(name='hello-package',
                           targets=[
                               'hello-package'
@@ -358,7 +331,7 @@ The version is retrieved by searching the latest Git tag set on the project. But
 
 Here is how to define a Debian package:
 
-``` python
+```python
 package.deb(prefix='/usr/local',
             subdirectory='share/example/hello-package',
             skeleton='dist/deb/skeleton',
@@ -389,12 +362,11 @@ Requires `fakeroot`, `patchelf` and `strip`.
 
 **control** parameters refer to parameters expected in the main [control](https://www.debian.org/doc/debian-policy/ch-controlfields.html#debian-source-package-template-control-files-debian-control) file. Although some parameters are automatically generated for this file, such as the version, the architecture, and the package name. Also, `depends` adds packages to the existing list found in `package` parameters on the different definitions referred by the package targets.
 
-
 ### MSI package
 
 Here is how to define a MSI installer:
 
-``` python
+```python
 package.msi(skeleton=None,
             project="dist/msi/wix",
             extensions=['WixUIExtension'],
@@ -418,7 +390,7 @@ Requires [WiX 3](https://docs.firegiant.com/wix/wix3/) programs in the PATH (`ca
 
 Here is how to define a DMG image:
 
-``` python
+```python
 package.dmg(name='hello-package',
             skeleton='dist/dmg/skeleton',
             background='dist/dmg/background.png')
@@ -434,8 +406,7 @@ Qt provides the needed tools to package a Qt application on **Windows** and **ma
 
 But Qt doesn't provide such a tool on **Linux**. Instead, Golem relies on the existence of [`linuxdeployqt`](https://github.com/probonopd/linuxdeployqt) in the PATH, an independent project.
 
-> [!NOTE]+
-> **linuxdeployqt** only accepts to run on systems with an old enough glibc version. But removing this requirement only requires to comment the check in the program's main.cpp.
+> [!NOTE]+ **linuxdeployqt** only accepts to run on systems with an old enough glibc version. But removing this requirement only requires to comment the check in the program's main.cpp.
 
 ### Package hook
 
@@ -443,7 +414,7 @@ A hooking mechanism is available to access the prepared artifacts. This allows t
 
 Here is how to define a hook:
 
-``` python
+```python
 package.hook(custom_action)
 
 def custom_action(context):
@@ -510,4 +481,5 @@ Here is what a `System` object contains:
 ### Examples
 
 To learn more about packages with examples have a look at:
+
 - <https://github.com/GolemCpp/golem/tree/main/examples/package>

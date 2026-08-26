@@ -69,5 +69,5 @@ For the cache-backed lookup, Golem searches every configured cache location — 
 ## Examples
 
 To learn with examples have a look at:
-- <https://github.com/GolemCpp/golem/tree/main/examples/cppfront>
 
+- <https://github.com/GolemCpp/golem/tree/main/examples/cppfront>

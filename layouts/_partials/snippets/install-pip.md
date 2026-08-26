@@ -1,3 +1,3 @@
-``` bash {title=""}
+```bash {title=""}
 pip install golemcpp
 ```

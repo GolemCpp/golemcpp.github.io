@@ -1,4 +1,4 @@
-``` python
+```python
 # golem configure --qtdir=<path>
 project.program(
   name='hello-qt',

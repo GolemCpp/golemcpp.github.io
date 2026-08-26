@@ -20,7 +20,7 @@ If any dependency is needed, the artifacts are expected to be built using `golem
 
 Outputs the artifacts in `build/bin`, or depending on `golem configure`'s `--build-dir` option: `<build_dir>/bin`.
 
-``` bash
+```bash
 golem build [options]
 ```
 

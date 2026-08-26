@@ -1,4 +1,4 @@
-``` python
+```python
 # triggers the recipe mechanism
 project.dependency(
   name='json',

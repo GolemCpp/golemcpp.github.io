@@ -16,7 +16,7 @@ seo:
 
 `golem config` gets and sets Golem settings, at either a global (per-user) scope or a local (per-project) scope, similar to `git config`.
 
-``` bash
+```bash
 golem config <key> [<value>] [--global | --local]
 golem config --unset <key> [--global | --local]
 golem config --list [--global | --local]
@@ -32,10 +32,10 @@ golem config --list [--global | --local]
 
   User configuration, stored per platform:
 
-  | Platform | Location |
-  | --- | --- |
+  | Platform      | Location                                                                |
+  | ------------- | ----------------------------------------------------------------------- |
   | Linux / macOS | `~/.config/golem/config.json` (or `$XDG_CONFIG_HOME/golem/config.json`) |
-  | Windows | `%APPDATA%\golem\config.json` |
+  | Windows       | `%APPDATA%\golem\config.json`                                           |
 
   Run `golem config --help` to print the exact location used on your machine.
 
@@ -70,47 +70,35 @@ Every setting is read the same way, whatever the command asking for it, with the
 5. Global config
 6. Built-in default
 
-- **Option persisted by `golem configure`** — the options a project was configured with are stored in
-  its build directory, so a later command reaching that build directory honours them without you
-  re-passing them. This is what makes `golem cache` and `golem tools` operate on the caches the
-  project was configured with (point them at a non-default build directory with `--build-dir=<path>`).
+- **Option persisted by `golem configure`** — the options a project was configured with are stored in its build directory, so a later command reaching that build directory honours them without you re-passing them. This is what makes `golem cache` and `golem tools` operate on the caches the project was configured with (point them at a non-default build directory with `--build-dir=<path>`).
 
-An explicit environment variable therefore still overrides a stored configuration value, and a stored
-value overrides the built-in default.
+An explicit environment variable therefore still overrides a stored configuration value, and a stored value overrides the built-in default.
 
 ## Settings
 
-| Key | Environment variable | Command-line option | Default |
-| --- | --- | --- | --- |
-| `cache.directory` | `GOLEM_CACHE_DIRECTORY` | `--cache-directory` | `~/.cache/golem` |
-| `cache.additional-directories` | `GOLEM_ADDITIONAL_CACHE_DIRECTORIES` | `--additional-cache-directory` | *(none)* |
-| `cache.additional-read-only-directories` | `GOLEM_ADDITIONAL_READ_ONLY_CACHE_DIRECTORIES` | `--additional-read-only-cache-directory` | *(none)* |
-| `cache.resolution-policy` | `GOLEM_CACHE_RESOLUTION_POLICY` | `--cache-resolution-policy` | `strict` |
-| `cache.minimization.enabled` | `GOLEM_CACHE_MINIMIZATION_ENABLED` | `--cache-minimization-enabled` | `on` |
-| `cache.minimization.length` | `GOLEM_CACHE_MINIMIZATION_LENGTH` | `--cache-minimization-length` | `8` |
-| `cookbooks.locations` | `GOLEM_COOKBOOKS_LOCATIONS` | `--cookbook-location` | `git+https://github.com/GolemCpp/recipes.git` |
-| `overlays.locations` | `GOLEM_OVERLAYS_LOCATIONS` | `--overlay-location` | *(none)* |
-| `overrides.configuration` | `GOLEM_OVERRIDES_CONFIGURATION` | `--overrides-configuration` | *(none)* |
+| Key                                      | Environment variable                           | Command-line option                      | Default                                       |
+| ---------------------------------------- | ---------------------------------------------- | ---------------------------------------- | --------------------------------------------- |
+| `cache.directory`                        | `GOLEM_CACHE_DIRECTORY`                        | `--cache-directory`                      | `~/.cache/golem`                              |
+| `cache.additional-directories`           | `GOLEM_ADDITIONAL_CACHE_DIRECTORIES`           | `--additional-cache-directory`           | _(none)_                                      |
+| `cache.additional-read-only-directories` | `GOLEM_ADDITIONAL_READ_ONLY_CACHE_DIRECTORIES` | `--additional-read-only-cache-directory` | _(none)_                                      |
+| `cache.resolution-policy`                | `GOLEM_CACHE_RESOLUTION_POLICY`                | `--cache-resolution-policy`              | `strict`                                      |
+| `cache.minimization.enabled`             | `GOLEM_CACHE_MINIMIZATION_ENABLED`             | `--cache-minimization-enabled`           | `on`                                          |
+| `cache.minimization.length`              | `GOLEM_CACHE_MINIMIZATION_LENGTH`              | `--cache-minimization-length`            | `8`                                           |
+| `cookbooks.locations`                    | `GOLEM_COOKBOOKS_LOCATIONS`                    | `--cookbook-location`                    | `git+https://github.com/GolemCpp/recipes.git` |
+| `overlays.locations`                     | `GOLEM_OVERLAYS_LOCATIONS`                     | `--overlay-location`                     | _(none)_                                      |
+| `overrides.configuration`                | `GOLEM_OVERRIDES_CONFIGURATION`                | `--overrides-configuration`              | _(none)_                                      |
 
-Run `golem config --help` to print this table for the version you have installed, including each
-setting's description, environment variable, command-line option and built-in default.
+Run `golem config --help` to print this table for the version you have installed, including each setting's description, environment variable, command-line option and built-in default.
 
-> [!NOTE]+
-> A list setting (`cache.additional-directories`, `cache.additional-read-only-directories`,
-> `cookbooks.locations`, `overlays.locations`) takes a `|`-separated list of entries when set through
-> an environment variable or the configuration store, and is passed once per entry when set through
-> its repeatable command-line option.
+> [!NOTE]+ A list setting (`cache.additional-directories`, `cache.additional-read-only-directories`, `cookbooks.locations`, `overlays.locations`) takes a `|`-separated list of entries when set through an environment variable or the configuration store, and is passed once per entry when set through its repeatable command-line option.
 
-> [!NOTE]+
-> `cookbooks.locations` and `overlays.locations` take [source locations](/docs/reference/environment-variables/#source-locations):
-> `[<kind>+]<locator>[#<version>]`, where `<kind>` is `git` or `directory`. Without a prefix Golem works the kind
-> out from the locator.
+> [!NOTE]+ `cookbooks.locations` and `overlays.locations` take [source locations](/docs/reference/environment-variables/#source-locations): `[<kind>+]<locator>[#<version>]`, where `<kind>` is `git` or `directory`. Without a prefix Golem works the kind out from the locator.
 
 The cache directory holds one subdirectory per resource kind: `dependencies/` for built dependencies, `cookbooks/` for cookbooks, `overlays/` for overlays, and `tools/` for installable tools. When [path minimization](/docs/advanced/cache-system/#path-minimization) is enabled (the default), new resources are instead stored flat at the cache root under a short hash, to keep paths short on long-path-limited toolchains.
 
 ## Example
 
-``` bash
+```bash
 # Point the cache at a shared directory for every project
 golem config --global cache.directory /opt/golem-cache
 

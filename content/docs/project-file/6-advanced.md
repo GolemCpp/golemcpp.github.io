@@ -22,7 +22,7 @@ Target definitions such as [programs](/docs/project-file/definitions/#program), 
 
 Here how to define a template definition:
 
-``` python
+```python
 # Example 1 (in a target definition)
 templates = [
   'src/version.h.template'
@@ -57,9 +57,9 @@ templates = [
 
   Default is `None`:
   - If the output file has for extension `'.cpp'`, `'.cxx'`, `'.c'`, `'.cc'`:
-    * Builds the output file
+    - Builds the output file
   - If the output file has for extension `'.hpp'`, `'.hxx'`, `'.h'`, `'.hh'`:
-    * Adds the output directory to the includes
+    - Adds the output directory to the includes
 
   If `False`, won't add the output file to the build, even if the extension matches the extensions mentioned above.
 
@@ -115,6 +115,7 @@ To enable the use of the build number, set `project.enable_build_number = True`.
 When enabled, Golem searches for an environment variable `BUILD_NUMBER` and expects its value to be an integer.
 
 The build number is used for different purposes:
+
 - To generate the filename of packages
 - As a replacable key in template files
 - To set the **buildmetadata** component on the **SemVer** version of the project
@@ -126,6 +127,7 @@ TODO
 ### Examples
 
 To learn with examples have a look at:
+
 - <https://github.com/GolemCpp/golem/tree/main/examples/advanced>
 
 ## Customization of dependencies
@@ -135,4 +137,5 @@ TODO
 ### Examples
 
 To learn with examples have a look at:
+
 - <https://github.com/GolemCpp/golem/tree/main/examples/advanced>

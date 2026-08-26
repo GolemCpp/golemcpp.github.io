@@ -24,7 +24,7 @@ Being the one command allowed to reach a remote is also what makes it the one th
 
 When a dependency, a cookbook or an overlay is a `directory` [source](/docs/reference/environment-variables/#source-locations), `golem resolve` recopies that directory into the cache on each run, because it cannot track changes the way it tracks a Git repository.
 
-``` bash
+```bash
 golem resolve [options]
 ```
 

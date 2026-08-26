@@ -1,4 +1,4 @@
-``` python
+```python
 # all my compiler flags
 # can be extracted into a dependency
 task = project.export(name='global',

@@ -16,6 +16,6 @@ seo:
 
 This command cleans up the objects built with `golem build`.
 
-``` bash
+```bash
 golem clean
 ```

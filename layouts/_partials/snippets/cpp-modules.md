@@ -1,4 +1,4 @@
-``` python
+```python
 # .cppm/.ixx/.cxxm sources are processed
 # import std; is supported
 # exporting modules from .so/.dll is supported
