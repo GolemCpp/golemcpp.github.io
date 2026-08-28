@@ -202,7 +202,7 @@ There are two entry points, and which one to call depends on whether you mean to
 - A read-only location holding the resource is kept as it stands, and nothing is fetched.
 - A read-only location that does not hold it raises, because there is nothing to serve there and nothing may be written.
 
-What actually runs then depends on the kind of the [source](/docs/reference/environment-variables/#source-locations): a `directory` source is copied, and a `git` source runs the git sequence described by a `FetchPolicy`:
+What actually runs then depends on the kind of the [source](/docs/reference/source-locations/): a `directory` source is copied, and a `git` source runs the git sequence described by a `FetchPolicy`:
 
 | Field          | What it asks for                                                                  |
 | -------------- | --------------------------------------------------------------------------------- |

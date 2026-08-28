@@ -92,7 +92,7 @@ Run `golem config --help` to print this table for the version you have installed
 
 > [!NOTE]+ A list setting (`cache.additional-directories`, `cache.additional-read-only-directories`, `cookbooks.locations`, `overlays.locations`) takes a `|`-separated list of entries when set through an environment variable or the configuration store, and is passed once per entry when set through its repeatable command-line option.
 
-> [!NOTE]+ `cookbooks.locations` and `overlays.locations` take [source locations](/docs/reference/environment-variables/#source-locations): `[<kind>+]<locator>[#<version>]`, where `<kind>` is `git` or `directory`. Without a prefix Golem works the kind out from the locator.
+> [!NOTE]+ `cookbooks.locations` and `overlays.locations` take [source locations](/docs/reference/source-locations/): `[<kind>+]<locator>[#<version>]`, where `<kind>` is `git` or `directory`. Without a prefix Golem works the kind out from the locator.
 
 The cache directory holds one subdirectory per resource kind: `dependencies/` for built dependencies, `cookbooks/` for cookbooks, `overlays/` for overlays, and `tools/` for installable tools. When [path minimization](/docs/advanced/cache-system/#path-minimization) is enabled (the default), new resources are instead stored flat at the cache root under a short hash, to keep paths short on long-path-limited toolchains.
 

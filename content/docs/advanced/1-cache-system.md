@@ -44,6 +44,8 @@ A cached resource is a directory holding what Golem fetched plus what it built f
 
 Note that every resource kind has at least `.golem-manifest.json` and `source/` in its cache location.
 
+The directory name is a [source identity](/docs/reference/source-identities/) and the version it landed on. Golem composes that identity from the locator.
+
 Beside the root, not inside it, sits a `<root>.lock` file. It is how two Golems sharing a cache take a resource in turn instead of writing over each other: whoever holds it is fetching or refreshing, and the other says it is waiting. The lock is the operating system's own, so it is released when a Golem ends however it ends, and the empty file it leaves behind is not a resource — `golem cache` only counts directories.
 
 ## Controlling the locations

@@ -4,7 +4,7 @@ description: ""
 summary: ""
 date: 2026-08-25T19:00:41+02:00
 draft: false
-weight: 10003
+weight: 10004
 toc: true
 seo:
   title: "" # custom title (optional)
@@ -105,6 +105,22 @@ https://host.xz:8443/org/repo.git            @repo@org@host.xz=62c09d99
 
 The first has a literal `.` in the owner, which is joined with `.`, so the digest is what keeps `group.subgroup` off `group/subgroup`. The second names a port `https` does not imply, and two ports on one host are two servers.
 
-## Not a location, yet
+## Identity as location
 
-An identity names a source; it does not say where to fetch it. Writing `location='@json@nlohmann@github.com'` in a project file does not work today. Use the repository URL. Resolving a dependency by identity through a cookbook is on the Roadmap.
+An identity names a source; it does not name where to fetch it. A [dependency](/docs/project-file/definitions/#dependency) may name one, and the cookbooks supply the rest:
+
+```python
+project.dependency(name='json', location='@json@nlohmann@github.com', version='^3.0.0')
+```
+
+Golem asks the cookbooks for a [recipe](/docs/advanced/recipes/) named at that identity, or at any shorter part of it, and clones the locator that recipe declares. Only a dependency may do this. A cookbook and an overlay name where they come from, so they take a locator and nothing else.
+
+Regarding the cache entry, Golem composes the identity from that locator, exactly as it does for a URL. Nothing is filled in from the name you wrote:
+
+| `location`                             | cloned from                            | cache entry                 |
+| -------------------------------------- | -------------------------------------- | --------------------------- |
+| `@json`                                | `https://github.com/nlohmann/json.git` | `@json@nlohmann@github.com` |
+| `@json@nlohmann@github.com`            | `https://github.com/nlohmann/json.git` | `@json@nlohmann@github.com` |
+| `https://github.com/nlohmann/json.git` | as written                             | `@json@nlohmann@github.com` |
+
+A recipe serves a shorter name than its locator composes, which is what lets one recipe build a library wherever it was cloned from. A location asks a different question. It asks for a location the recipe may know. If it doesn't, the identity is refused.

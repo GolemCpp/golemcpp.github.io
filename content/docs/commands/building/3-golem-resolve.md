@@ -22,7 +22,7 @@ This is the only command requiring a network access, although Golem can be setup
 
 Being the one command allowed to reach a remote is also what makes it the one that can change how much of a repository a cache root holds. A root fetched under one [fetch mode](/docs/reference/environment-variables/#git) and asked for under another is converted here. Every other command works with the root in the shape it is in.
 
-When a dependency, a cookbook or an overlay is a `directory` [source](/docs/reference/environment-variables/#source-locations), `golem resolve` recopies that directory into the cache on each run, because it cannot track changes the way it tracks a Git repository.
+When a dependency, a cookbook or an overlay is a `directory` [source](/docs/reference/source-locations/), `golem resolve` recopies that directory into the cache on each run, because it cannot track changes the way it tracks a Git repository.
 
 ```bash
 golem resolve [options]

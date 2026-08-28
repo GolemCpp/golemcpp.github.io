@@ -164,7 +164,9 @@ A dependency comes from **one of three** mutually exclusive sources:
 
 - `repository='<git-url>'` — a Git repository, **cloned** into the cache at the resolved `version`.
 - `directory='<path>'` — a local directory, **copied** into the cache as-is on each `golem resolve`.
-- `location='[<kind>+]<locator>[#<version>]'` — either of the two in one field, spelling its kind or leaving Golem to work it out. The same [source location](/docs/reference/environment-variables/#source-locations) syntax the `cookbooks.locations` and `overlays.locations` settings take.
+- `location='...'` — one field for either of the two above, and the only one that may name the source by identity instead of where it is. It takes two shapes:
+  - `'[<kind>+]<locator>[#<version>]'` — where the source is, spelling its kind or leaving Golem to work it out. The [source location](/docs/reference/source-locations/) syntax the `cookbooks.locations` and `overlays.locations` settings take.
+  - `'<identity>[#<version>]'` — which source it is, leaving the cookbooks to supply the locator. A [source identity](/docs/reference/source-identities/), which only a dependency may name. See [Location by identity](#location-by-identity).
 
   A `location` may name the version after a `#`, which is the same thing as the `version` argument and cannot be combined with it. A dependency asking for two versions is an error rather than a silent choice between them. Naming none leaves `version` as it stands.
 
@@ -196,6 +198,20 @@ A `directory` has no version to resolve, so `version`, `version_regex` and `shal
 > [!NOTE]+ `repository` and `directory` state the kind by the field they are, so they never rely on detection and carry no `#version`: the whole value is the locator. `repository` must name something Git can clone from, a local path included, and is **refused** when it does not.
 >
 > Use `location` when you want one field for both, or to name the version alongside it. Add the prefix `directory+` or `git+` to control whether the resource must be copied or cloned.
+
+### Location by identity
+
+`location='@boost'` names the source and not where it is. Golem searches the cookbooks for a [recipe](/docs/advanced/recipes/#source-locators) named `@boost`, and clones the locator that recipe declares.
+
+```python
+project.dependency(name='boost', location='@boost', version='^1.87.0')
+```
+
+The version works as it does in any other location, so `location='@boost#^1.87.0'` matches `^1.87.0` against the tags the repository the recipe named publishes.
+
+Golem composes the identity from that locator, never from the name you wrote. So `location='@boost'` and `repository='https://github.com/boostorg/boost.git'` land in one cache entry, `@boost@boostorg@github.com#<commit>`.
+
+A recipe named `@boost` allows to build boost, wherever it was cloned from. But a location asks a different question. It asks for a location the recipe may know. If it doesn't, the identity is refused. E.g. `@boost@somefork@github.com` finds the `@boost` recipe, whose `locator` and `mirrors` are all boostorg's, so it is **refused**. Write `repository=` with a URL for the fork, and the same recipe still builds it.
 
 Optionally, `shallow` controls how much of the repository is obtained:
 

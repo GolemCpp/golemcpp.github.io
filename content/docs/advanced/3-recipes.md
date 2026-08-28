@@ -30,7 +30,8 @@ A dependency is identified by its repository URL. A cookbook holds one directory
 ```text
 .
 ├── @boost@boostorg@github.com/
-│   └── golemfile.py
+│   ├── golemfile.py
+│   └── recipe.json        manifest file (default source, mirrors, etc.)
 ├── @json@nlohmann@github.com/
 │   └── golemfile.py
 ├── @spdlog@gabime@github.com/
@@ -85,7 +86,7 @@ holds no project file ('golemfile.py' or 'golemfile.json'):
   /home/you/.cache/golem/…/source/@json
 ```
 
-> [!NOTE]+ An identity names a source; it does not say where to fetch it. It is not accepted as a dependency `location` today, so write the repository URL there.
+> [!NOTE]+ A recipe may also declare where its source comes from, in a `recipe.json`. A dependency can then be written as `location='@json'` rather than as the URL, and Golem clones what the recipe declares. See [Source locators](#source-locators).
 
 > [!NOTE]+ For now, there is no project file per version mechanism, but this is in the Roadmap.
 
@@ -99,7 +100,7 @@ To replace the default Golem cookbook, or search several cookbooks, set:
 GOLEM_COOKBOOKS_LOCATIONS=<location_1>|<location_2>|...
 ```
 
-- `<location>` A [source location](/docs/reference/environment-variables/#source-locations), `[<kind>+]<locator>[#<version>]`: `git+` for a repository cloned into the cache, `directory+` for a local directory copied into it. Without a prefix Golem works the kind out from the locator.
+- `<location>` A [source location](/docs/reference/source-locations/), `[<kind>+]<locator>[#<version>]`: `git+` for a repository cloned into the cache, `directory+` for a local directory copied into it. Without a prefix Golem works the kind out from the locator.
 - `|` Separator between cookbooks
 
 Cookbooks are layered in the order they are listed, and the **last** one holding a recipe for the dependency wins, the same way [overlays](/docs/advanced/dependencies/#overlays) layer. So list your own cookbook after the default to override a recipe it ships, rather than before it.
@@ -120,6 +121,37 @@ Here `/home/user/recipes` is listed last, so a recipe it holds is the one used, 
 > [!NOTE]+ When a dependency is missing, or not building properly, it is recommended to fork the Golem [cookbook](https://github.com/GolemCpp/recipes), make the needed changes and create a Pull Request. Contributions are very welcome!
 
 ## Writing a recipe
+
+### Source locators
+
+A recipe directory may hold a `recipe.json` beside its `golemfile.py`, declaring where the source it builds comes from:
+
+```json
+{
+  "version": 1,
+  "locator": "https://github.com/boostorg/boost.git",
+  "mirrors": ["https://gitlab.com/boostorg/boost.git"]
+}
+```
+
+`locator` is the default source, so write the official remote there. It has to agree with the recipe's name: `https://github.com/boostorg/boost.git` composes `@boost@boostorg@github.com`, so the recipe may be called `@boost`, `@boost@boostorg` or `@boost@boostorg@github.com`.
+
+A recipe declaring a `locator` can be named as a dependency's [location](/docs/project-file/definitions/#dependency). A consumer writes `location='@boost'`, and Golem clones what the recipe declares. A recipe without a `recipe.json` is still found by name and still builds the dependency; it just cannot be named that way.
+
+`mirrors` are the other locators the same source is reachable at. None of them is a default. Declaring mirrors allows a dependency to refer to the source by an identity the locator does not match: `@boost@boostorg@gitlab.com` states `gitlab.com` where the locator states `github.com`, so Golem clones the mirror.
+
+**The locator serves every identity it does not contradict. A mirror serves the identity naming it exactly.**
+
+| The consumer writes          | Golem clones                            |
+| ---------------------------- | --------------------------------------- |
+| `@boost`                     | `https://github.com/boostorg/boost.git` |
+| `@boost@boostorg`            | `https://github.com/boostorg/boost.git` |
+| `@boost@boostorg@gitlab.com` | `https://gitlab.com/boostorg/boost.git` |
+| `@boost@myfork@gitlab.com`   | `REFUSED`                               |
+
+`@boost` and `@boost@boostorg` name no host, so they contradict neither remote and the locator serves both. A recipe declaring only mirrors has no locator to serve them, therefore its short name cannot be used as a location at all.
+
+A `locator` may be a path relative to the recipe directory.
 
 ### Header-only libraries
 
