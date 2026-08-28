@@ -59,7 +59,7 @@ These are the same target written another way, so either can be used anywhere:
 
 ## Asking for an architecture
 
-A build is for whatever the compiler builds for, and `--arch` says which one to expect. `golem configure` fails when the compiler it selected builds for another.
+A build is for whatever the compiler builds for, and `--arch` names which one to expect. `golem configure` fails when the compiler it selected builds for another.
 
 How a request reaches a compiler depends on the toolchain:
 

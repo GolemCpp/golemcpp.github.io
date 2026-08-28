@@ -98,7 +98,7 @@ When configuring the dependency, the build directory is setup.
 
 **Preparation of the build directory** by `golem configure` consists of:
 
-- Determining if the project has a project file or a recipe (it not, error) See `def load_recipe(self):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py). Which recipe answers is `class RecipeResolver:` in [recipe_resolver.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/recipe_resolver.py): it probes every rung of the identity, most specific first, in each cookbook from the last listed to the first, and reads nothing off disk to decide.
+- Determining if the project has a project file or a recipe (it not, error) See `def load_recipe(self):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py). Which recipe serves is decided by `class RecipeResolver:` in [recipe_resolver.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/recipe_resolver.py): it probes every rung of the identity, most specific first, in each cookbook from the last listed to the first, and reads nothing off disk to decide.
 - Creating an artifact directory with a specific slug to avoid conflicts between projects asking for different build options. See `def make_dependencies_slug(self, dependencies):` in [context.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/context.py).
 - Creating a configuration file to hold how a project can use the dependency.
 - Creating a `dependencies.json` file to hold the list of dependencies the dependency relies on.
@@ -149,9 +149,9 @@ Once resolved, the dependencies can be built with `golem dependencies`. An `incl
 
 ### Only resolve reaches a remote
 
-Fetching is a resolve step. `golem resolve` fills the cache and `golem tools install` installs a tool, so those two may go online. Every other command reads what they put there. A `golem build` that reaches a remote means the cache was not ready, and saying so is more useful than filling it in on its own, so it stops with a message naming `golem resolve`.
+Fetching is a resolve step. `golem resolve` fills the cache and `golem tools install` installs a tool, so those two may go online. Every other command reads what they put there. A `golem build` that reaches a remote means the cache was not ready, and reporting that is more useful than filling it in on its own, so it stops with a message naming `golem resolve`.
 
-The rule is checked in `def validate_git_command(params, cwd):` in [helpers.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/helpers.py), which every git call already passes through. `clone`, `fetch`, `pull`, `push`, `ls-remote` and `submodule update` reach a remote; `init`, `checkout`, `reset`, `clean` and `submodule foreach` do not. `submodule update --no-fetch` is the exception that proves it: the flag tells Git to work from the objects already there and to fail rather than go looking, which is how a pinned dependency is refreshed without a resolve. Access is denied by default and opened for a block by [network.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/network.py):
+The rule is checked in `def validate_git_command(params, cwd):` in [helpers.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/helpers.py), which every git call already passes through. `clone`, `fetch`, `pull`, `push`, `ls-remote` and `submodule update` reach a remote; `init`, `checkout`, `reset`, `clean` and `submodule foreach` do not. `submodule update --no-fetch` is the exception that proves it: the flag restricts Git to the objects already there and to fail rather than go looking, which is how a pinned dependency is refreshed without a resolve. Access is denied by default and opened for a block by [network.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/network.py):
 
 ```python
 with network.allowed():
@@ -160,7 +160,7 @@ with network.allowed():
 
 Three places open it: the `resolve` command, the tool install, and a script a project declared for one of its targets. That last one is not Golem fetching a resource, so whatever it reaches is its own business.
 
-A command name is not always enough to tell. A [blobless](/docs/reference/environment-variables/#git) clone completes itself as it goes: any command can reach the remote for a blob it is missing, and no name says so. Outside a resolve Golem therefore sets `GIT_NO_LAZY_FETCH=1`, so Git fails there instead of quietly going online.
+A command name is not always enough to tell. A [blobless](/docs/reference/environment-variables/#git) clone completes itself as it goes: any command can reach the remote for a blob it is missing, and no name marks which. Outside a resolve Golem therefore sets `GIT_NO_LAZY_FETCH=1`, so Git fails there instead of quietly going online.
 
 Changing how much of a source a cache root holds by [migrating](#migrating-a-cached-root) it between fetch modes is a resolve step for the same reason. It may have to fetch what the root does not have. A `golem build` refreshing a root leaves its mode alone and works with what is there.
 
@@ -172,7 +172,7 @@ Resolving a version costs one round trip:
 git ls-remote --symref <url> HEAD refs/heads/* refs/tags/*
 ```
 
-That answers the default branch, every branch and every tag at once. What the version names is then decided from that answer alone, whether it is a ref looked up the way Git looks a bare name up, a tag matching a SemVer range, or a commit standing for itself.
+That returns the default branch, every branch and every tag at once. What the version names is then decided from that alone, whether it is a ref looked up the way Git looks a bare name up, a tag matching a SemVer range, or a commit standing for itself.
 
 `golem resolve` recurses by spawning another `golem resolve` in each dependency's cache root, and each of those resolves the resources it needs for itself. The cookbook is the one every node of the tree reaches, so a project with two dependencies asked for it four times.
 
@@ -182,9 +182,9 @@ It is not a cache to build on and not a setting to configure. Only a resolve wri
 
 ### Fetching a source
 
-Dependencies, cookbooks, overlays and tools are all obtained the same way, so getting a source into the cache lives once, in `class ResourceManager` in [resource_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/resource_manager.py). Each kind subclasses it and says only what is different about itself.
+Dependencies, cookbooks, overlays and tools are all obtained the same way, so getting a source into the cache lives once, in `class ResourceManager` in [resource_manager.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/resource_manager.py). Each kind subclasses it and defines only what is different about itself.
 
-The manager says _what_ to obtain and brackets it with the install lifecycle; _how_ a source is obtained belongs to a `Fetcher` in [fetcher.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/fetcher.py), which `fetcher_for` picks by reading the source: `GitFetcher` clones and refreshes a repository, `DirectoryFetcher` copies a directory. Another way of obtaining a source is another Fetcher beside those two.
+The manager decides _what_ to obtain and brackets it with the install lifecycle; _how_ a source is obtained belongs to a `Fetcher` in [fetcher.py](https://github.com/GolemCpp/golem/blob/main/src/golemcpp/golem/fetcher.py), which `fetcher_for` picks by reading the source: `GitFetcher` clones and refreshes a repository, `DirectoryFetcher` copies a directory. Another way of obtaining a source is another Fetcher beside those two.
 
 There are two entry points, and which one to call depends on whether you mean to write.
 
@@ -194,7 +194,7 @@ There are two entry points, and which one to call depends on whether you mean to
 - A resource already there is **refreshed** in place, keeping its cache root.
 - `refresh=False` hands an installed resource back untouched, but only once it is in the fetch mode being asked for. One that cannot be brought to it is obtained again, refresh or no refresh.
 - A **read-only** cache location is refused. Nothing is written there, whether the resource has to be populated or refreshed.
-- Two Golems sharing a cache take the root in turn. Both staging and refreshing are held for their duration by an operating-system lock on a `<root>.lock` file beside it; the second one says it is waiting rather than working on the same directory.
+- Two Golems sharing a cache take the root in turn. Both staging and refreshing are held for their duration by an operating-system lock on a `<root>.lock` file beside it; the second one reports that it is waiting rather than working on the same directory.
 
 `def make_available(self, item, fetch=True, refresh=True):` reads, but installs too if the location is writable. It hands back the resource ready to use, either installed or kept as is from a read-only location. `make_available_all(items, ...)` covers a list. This is what cookbooks, overlays and tools call, since they are meant to work from a shared cache they may not write to.
 
@@ -224,7 +224,7 @@ The `revision` a fetcher is handed is a **commit**. Resolution settled which one
 
 #### Migrating a cached root
 
-A root fetched one way can be brought to another without being obtained again. Git was upgraded and blobless became available, a dependency was switched to `shallow`, a cache was asked to become portable. `GitFetcher.migrate` converts it in place where that is cheaper and says so when it cannot, in which case the root is obtained again, which is always correct and only slower.
+A root fetched one way can be brought to another without being obtained again. Git was upgraded and blobless became available, a dependency was switched to `shallow`, a cache was asked to become portable. `GitFetcher.migrate` converts it in place where that is cheaper and reports when it cannot, in which case the root is obtained again, which is always correct and only slower.
 
 What the root ends up holding is written to its manifest, so the conversion happens once. It is a resolve step: it may have to reach the remote, so it belongs to the command allowed to.
 

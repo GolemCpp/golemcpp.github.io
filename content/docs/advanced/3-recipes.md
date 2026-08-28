@@ -49,25 +49,25 @@ For a repository on a forge the identity reads `@<repository>@<owner>@<host>`, l
 | `https://github.com/microsoft/GSL.git`       | `@gsl@microsoft@github.com`       |
 | `https://gitlab.com/group/subgroup/proj.git` | `@proj@group.subgroup@gitlab.com` |
 
-The leading `@` is what tells a recipe from everything else the repository holds, so a cookbook is free to carry a `README`, a licence or a CI configuration.
+The leading `@` distinguishes a recipe from everything else the repository holds, so a cookbook is free to carry a `README`, a licence or a CI configuration.
 
-Other shapes (e.g. an SSH clone, a path on your machine, a name Golem had to spell differently to make it a legal directory) read differently, and you do not have to work them out. Golem drops the last field of the identity and looks again, down to the bare name, so a recipe named at a shorter qualification still answers:
+Other shapes (e.g. an SSH clone, a path on your machine, a name Golem had to spell differently to make it a legal directory) read differently, and you do not have to work them out. Golem drops the last field of the identity and looks again, down to the bare name, so a recipe named at a shorter qualification still serves it:
 
-| the dependency is cloned from      | the identity                        | the recipe that answers          |
+| the dependency is cloned from      | the identity                        | the recipe that serves           |
 | ---------------------------------- | ----------------------------------- | -------------------------------- |
 | `https://github.com/nlohmann/json` | `@json@nlohmann@github.com`         | `@json@nlohmann@github.com`      |
 | `git@github.com:nlohmann/json.git` | `@json@nlohmann@github.com@scp.git` | `@json@nlohmann@github.com`      |
 | `https://git.corp/team/json.git`   | `@json@team@git.corp`               | `@json`, if a cookbook holds one |
 
-So a recipe is named at the qualification that makes it unambiguous, and no further: `@boost` for a package everyone means the same thing by, `@json@nlohmann` where the name alone is not enough, the host only where the owner would still be. The shorter the name, the more remotes one recipe serves (e.g. a fork, an internal mirror, an SSH clone) and the longer it is, the more narrowly it answers.
+So a recipe is named at the qualification that makes it unambiguous, and no further: `@boost` for a package everyone means the same thing by, `@json@nlohmann` where the name alone is not enough, the host only where the owner would still be. The shorter the name, the more remotes one recipe serves (e.g. a fork, an internal mirror, an SSH clone) and the longer it is, the more narrowly it serves.
 
-**Every lookup says which recipe served it**, so a recipe answering at a shorter qualification is something you read rather than something you notice:
+**Every lookup reports which recipe served it**, so a recipe serving at a shorter qualification is something you read rather than something you notice:
 
 ```text
 @json@team@git.corp: served by @json (@recipes@golemcpp@github.com#v2=fb04dcb6)
 ```
 
-**When nothing answers, Golem names the identity it looked for** and every cookbook it searched:
+**When nothing serves it, Golem names the identity it looked for** and every cookbook it searched:
 
 ```text
 ERROR: no recipe '@json@nlohmann@github.com' and no project file
@@ -116,7 +116,7 @@ GOLEM_COOKBOOKS_LOCATIONS=git+https://github.com/GolemCpp/recipes.git#v2|directo
 golem configure --cookbook-location=./my-cookbook
 ```
 
-Here `/home/user/recipes` is listed last, so a recipe it holds is the one used, and every dependency it says nothing about falls back to the default cookbook.
+Here `/home/user/recipes` is listed last, so a recipe it holds is the one used, and every dependency it holds no recipe for falls back to the default cookbook.
 
 > [!NOTE]+ When a dependency is missing, or not building properly, it is recommended to fork the Golem [cookbook](https://github.com/GolemCpp/recipes), make the needed changes and create a Pull Request. Contributions are very welcome!
 

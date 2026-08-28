@@ -80,7 +80,7 @@ Several overlays are **layered in the order they are configured**. For each depe
 [{ "repository": "https://github.com/nlohmann/json.git", "version": "^3.11.0" }]
 ```
 
-With `overlays.locations` set to the company overlay then yours, the JSON library resolves to `^3.11.0` — your version wins — and keeps the `release` variant the company overlay set, because your overlay says nothing about it.
+With `overlays.locations` set to the company overlay then yours, the JSON library resolves to `^3.11.0` — your version wins — and keeps the `release` variant the company overlay set, because your overlay sets nothing for it.
 
 Entries are matched on the source they override, so the same dependency declared with `repository` in one overlay and `directory` in another are two distinct entries.
 

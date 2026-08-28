@@ -13,7 +13,7 @@ seo:
   noindex: false # false (default) or true
 ---
 
-Golem names a directory after the source it holds: the recipe directory in a [cookbook](/docs/advanced/recipes/), the cache root of a dependency, the file an `ls-remote` answer is kept in. That name is a **source identity**, and it is derived from the repository URL alone.
+Golem names a directory after the source it holds: the recipe directory in a [cookbook](/docs/advanced/recipes/), the cache root of a dependency, the file a remote's advertisement is kept in. That name is a **source identity**, and it is derived from the repository URL alone.
 
 This page is the grammar. If you are writing a recipe and only need the directory name for one library, [Recipes](/docs/advanced/recipes/) has the short answer.
 
@@ -30,9 +30,9 @@ This page is the grammar. If you are writing a recipe and only need the director
 | `<host>`    | The hostname, in the order you type it.                                                               |
 | `<rooting>` | What the path is relative to. Empty for the ordinary case.                                            |
 
-An identity leads with `@`. That is what tells a recipe from the other things a cookbook repository holds (e.g. a `README`, an `AGENTS.md`, a `.github/`) so a directory without one is not a recipe.
+An identity leads with `@`. That distinguishes a recipe from the other things a cookbook repository holds (e.g. a `README`, an `AGENTS.md`, a `.github/`) so a directory without one is not a recipe.
 
-Every field is lowercase. A directory name is case-insensitive on Windows and macOS, therefore case cannot be what tells two recipes apart.
+Every field is lowercase. A directory name is case-insensitive on Windows and macOS, therefore case cannot distinguish two recipes.
 
 ```text
 https://github.com/nlohmann/json.git         @json@nlohmann@github.com
@@ -43,7 +43,7 @@ ftps://host.xz/repo.git                      @repo@@host.xz
 
 ## What is discarded
 
-A scheme is a road to a server rather than a different server, therefore it is not part of the identity. So is a port the scheme already implies, a `.git` suffix a server adds by convention, and the user on an absolute URL, who says who authenticates rather than which repository it is.
+A scheme is a road to a server rather than a different server, therefore it is not part of the identity. So is a port the scheme already implies, a `.git` suffix a server adds by convention, and the user on an absolute URL, which names who authenticates rather than which repository it is.
 
 ```text
 https://github.com/nlohmann/json.git
@@ -55,9 +55,9 @@ ssh://alice@github.com/nlohmann/json.git
 
 All five are `@json@nlohmann@github.com`.
 
-## What the rooting says
+## What the rooting names
 
-Most locators name a path from the one root a host has, and leave this empty. Two forms name another root, therefore they have to say so.
+Most locators name a path from the one root a host has, and leave this empty. Two forms name another root, therefore they have to spell it.
 
 | rooting          | when                                                                                            |
 | ---------------- | ----------------------------------------------------------------------------------------------- |
@@ -75,11 +75,11 @@ C:/proj/mylib               @mylib@proj@_local_@drive.c
 ext::sh -c foo              @ext@@_nohost_@=3c7d39aa
 ```
 
-`git@github.com:o/r.git` and `https://github.com/o/r.git` are therefore two identities, and two cache entries. A forge serves both spellings from one store, but a plain Git server serving `/home/git/team/proj.git` over SSH and `/srv/git/team/proj.git` over HTTPS serves two repositories, and nothing in the URL says which you are looking at. Merging them wrongly would put two repositories in one cache root without saying so; keeping them apart costs a second fetch, visibly. Use [`url.<base>.insteadOf`](https://git-scm.com/docs/git-config#Documentation/git-config.txt-urlltbasegtinsteadOf) if you want one spelling everywhere.
+`git@github.com:o/r.git` and `https://github.com/o/r.git` are therefore two identities, and two cache entries. A forge serves both spellings from one store, but a plain Git server serving `/home/git/team/proj.git` over SSH and `/srv/git/team/proj.git` over HTTPS serves two repositories, and nothing in the URL distinguishes them. Merging them wrongly would put two repositories in one cache root with nothing to show for it; keeping them apart costs a second fetch, visibly. Use [`url.<base>.insteadOf`](https://git-scm.com/docs/git-config#Documentation/git-config.txt-urlltbasegtinsteadOf) if you want one spelling everywhere.
 
 ## Local paths
 
-A path on this machine has no host, so the host field says `_local_`.
+A path on this machine has no host, so the host field holds `_local_`.
 
 ```text
 file:///srv/git/mylib       @mylib@srv.git@_local_

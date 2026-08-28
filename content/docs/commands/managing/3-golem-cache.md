@@ -61,7 +61,7 @@ Every resource kind — dependency, cookbook, overlay, tool — describes its so
 - `resolved.reference` — the resolved git reference; empty for a directory source.
 - `resolved.revision` — the commit that reference pointed at when it was resolved. A branch keeps its name while moving from one commit to the next, so neither stands in for the other.
 
-Where the source says what was **asked for**, `fetched` says what the root ended up **holding**:
+Where the source names what was **asked for**, `fetched` names what the root ended up **holding**:
 
 ```json
 {
@@ -70,7 +70,7 @@ Where the source says what was **asked for**, `fetched` says what the root ended
 }
 ```
 
-- `head` — the commit the fetch landed on. A resource following a branch keeps naming the same reference while landing somewhere new every time that branch moves, so the source alone cannot say what is there.
+- `head` — the commit the fetch landed on. A resource following a branch keeps naming the same reference while landing somewhere new every time that branch moves, so the source alone cannot name what is there.
 - `mode` — how much of the source was obtained (see [`GOLEM_GIT_FETCH_MODE`](/docs/reference/environment-variables/#git)). This is what lets a later `golem resolve` tell whether the root has to be converted before it can serve what is being asked for. Empty for a directory source, which has no history to obtain part of.
 
 The manifest is the source of truth for a resource's identity wherever it is stored, so a [minimized](/docs/advanced/cache-system/#path-minimization) resource kept flat at the cache root is still fully identified.
@@ -86,7 +86,7 @@ Nothing is lost when a resource is unidentified: its root is still where resolut
 
 - `list`
 
-  List cached resources, **grouped per cache** (each cache location is a header, writable or read-only, saying how many resources it holds and how much space they take). One line per resource, **most recently used first**:
+  List cached resources, **grouped per cache** (each cache location is a header, writable or read-only, with how many resources it holds and how much space they take). One line per resource, **most recently used first**:
 
   ```text
   Cached resources:
@@ -116,7 +116,7 @@ Nothing is lost when a resource is unidentified: its root is still where resolut
 
 - `purge`
 
-  Delete every resource from the caches. Restrict the scope with `--kind`, `--cache` or `--older-than`, and the confirmation says which of the two it is about to do.
+  Delete every resource from the caches. Restrict the scope with `--kind`, `--cache` or `--older-than`, and the confirmation names which of the two it is about to do.
 
   Reclaiming space is that last one, and the same selection previews with `list` and adds up with `size`:
 
@@ -142,11 +142,11 @@ Nothing is lost when a resource is unidentified: its root is still where resolut
 
 - `--older-than=<age>`
 
-  Keep only the resources **last used** longer ago than `<age>`, written as a number and a unit among `s`, `m`, `h`, `d`, `w` — the units an age is printed with, so `90d ago` in a listing and `--older-than=90d` say the same thing (`m` is minutes on both sides).
+  Keep only the resources **last used** longer ago than `<age>`, written as a number and a unit among `s`, `m`, `h`, `d`, `w` — the units an age is printed with, so `90d ago` in a listing and `--older-than=90d` mean the same thing (`m` is minutes on both sides).
 
   Resolving a resource counts as using it, so anything a project still builds against stays out of the selection.
 
-  A resource nothing identifies carries no timestamp, therefore nothing can say how old it is and `--older-than` never selects one; `unidentified` clears those.
+  A resource nothing identifies carries no timestamp, therefore its age is unknown and `--older-than` never selects one; `unidentified` clears those.
 
 - `--regex`
 

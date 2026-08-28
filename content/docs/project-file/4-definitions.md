@@ -222,11 +222,11 @@ Golem fetches every resource `blobless` by default. That is every commit and eve
 
 `shallow` is the smallest of the three modes on disk. On Boost at `boost-1.89.0`, whose superproject carries 170 submodules, a `shallow` cache root comes to well under half what a full clone takes, and under a third of it counting only the repository data.
 
-What `shallow` costs is the history itself, and that is not free. A root holding one commit has nothing for `git describe --long --tags` to answer, because the commit arrives without its tag. So a dependency cannot derive its version from its history and has to be told it with `--force-version`. Golem projects allow to derive their version from their history, which makes it impossible to be the default mode.
+What `shallow` costs is the history itself, and that is not free. A root holding one commit gives `git describe --long --tags` nothing to work from, because the commit arrives without its tag. So a dependency cannot derive its version from its history and has to be told it with `--force-version`. Golem projects allow to derive their version from their history, which makes it impossible to be the default mode.
 
 `shallow` is also slower to _obtain_ on a repository with many submodules, since a depth-1 fetch is per repository: a superproject pays one round trip per submodule where a full clone pays one for everything. What it is not is slower to keep: a shallow root refreshes as quickly as any other, and stays the size it was.
 
-The modes also differ in what they are able to find. Every other mode clones `refs/heads/*` and `refs/tags/*` with their whole history and then looks for the reference among what arrived, where `shallow` asks the remote for it **by name**. So a commit that no branch and no tag reaches is missing from a blobless or full root, and the fetch stops and says so, while a shallow fetch may still obtain it.
+The modes also differ in what they are able to find. Every other mode clones `refs/heads/*` and `refs/tags/*` with their whole history and then looks for the reference among what arrived, where `shallow` asks the remote for it **by name**. So a commit that no branch and no tag reaches is missing from a blobless or full root, and the fetch stops and names it, while a shallow fetch may still obtain it.
 
 Do not build on that difference. A `version` has to name something the repository advertises. E.g. a tag, a branch, or a commit in their history. Anything else, such as a pull request's head or a commit force-pushed off its branch, is **not meant to be supported**: whether it can be obtained at all is the server's decision, and a commit no ref points at is one the remote's next garbage collection may remove.
 

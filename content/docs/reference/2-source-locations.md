@@ -13,7 +13,7 @@ seo:
   noindex: false # false (default) or true
 ---
 
-A **location** says where a source comes from. Golem reads one wherever a resource is named: the [`GOLEM_COOKBOOKS_LOCATIONS`](/docs/reference/environment-variables/#cookbooks) and [`GOLEM_OVERLAYS_LOCATIONS`](/docs/reference/environment-variables/#overlays) settings, and a [dependency](/docs/project-file/definitions/#dependency)'s `location`.
+A **location** names where a source comes from. Golem reads one wherever a resource is named: the [`GOLEM_COOKBOOKS_LOCATIONS`](/docs/reference/environment-variables/#cookbooks) and [`GOLEM_OVERLAYS_LOCATIONS`](/docs/reference/environment-variables/#overlays) settings, and a [dependency](/docs/project-file/definitions/#dependency)'s `location`.
 
 ```text
 [<kind>+]<locator>[#<version>]
@@ -68,7 +68,7 @@ A dependency's `location` takes one further shape: a [source identity](/docs/ref
 
 Only a dependency may name one. See [Identity as location](/docs/reference/source-identities/#identity-as-location).
 
-A cookbook and an overlay say where they come from, so they take the shape above and nothing else.
+A cookbook and an overlay name where they come from, so they take the shape above and nothing else.
 
 Examples:
 
