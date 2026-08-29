@@ -70,8 +70,7 @@ So a recipe is named at the qualification that makes it unambiguous, and no furt
 **When nothing serves it, Golem names the identity it looked for** and every cookbook it searched:
 
 ```text
-ERROR: no recipe '@json@nlohmann@github.com' and no project file
-('golemfile.py' or 'golemfile.json').
+ERROR: no recipe '@json@nlohmann@github.com'.
 Searched 1 cookbook(s):
   /home/you/.cache/golem/…/source
 ```
@@ -103,7 +102,7 @@ GOLEM_COOKBOOKS_LOCATIONS=<location_1>|<location_2>|...
 - `<location>` A [source location](/docs/reference/source-locations/), `[<kind>+]<locator>[#<version>]`: `git+` for a repository cloned into the cache, `directory+` for a local directory copied into it. Without a prefix Golem works the kind out from the locator.
 - `|` Separator between cookbooks
 
-Cookbooks are layered in the order they are listed, and the **last** one holding a recipe for the dependency wins, the same way [overlays](/docs/advanced/dependencies/#overlays) layer. So list your own cookbook after the default to override a recipe it ships, rather than before it.
+Cookbooks are layered in the order they are listed, and the **last** one holding a recipe for the dependency wins, the same way [overlays](/docs/advanced/dependencies/#overlays) layer. So list your own cookbook after the default to override a recipe it ships, rather than before it. A recipe of yours replaces the one it shadows outright, unless it declares an [`overrides`](#inheriting-a-recipe) and inherits the rest.
 
 A cookbook is asked for every qualification before the next one is asked at all, so a later cookbook wins even when it names the recipe less specifically. A `@json` of yours listed last shadows the default cookbook's `@json@nlohmann@github.com`, which is what makes an override work without restating the full identity, and why an override you meant to be narrow should be named at the qualification you want it to catch.
 
@@ -152,6 +151,47 @@ A recipe declaring a `locator` can be named as a dependency's [location](/docs/p
 `@boost` and `@boost@boostorg` name no host, so they contradict neither remote and the locator serves both. A recipe declaring only mirrors has no locator to serve them, therefore its short name cannot be used as a location at all.
 
 A `locator` may be a path relative to the recipe directory.
+
+### Inheriting a recipe
+
+> Reminder: Declared cookbooks are ordered. When looking up a recipe, a later cookbook wins.
+
+A recipe in a cookbook can **shadow** another recipe of the same name in a second cookbook declared earlier in the list. Therefore, it **replaces** everything the second one was declaring. `overrides` allows to make it a delta over the conflicting recipe instead.
+
+```json
+{
+  "version": 1,
+  "locator": "https://git.corp/mirror/boost.git",
+  "overrides": "@boost"
+}
+```
+
+That recipe changes the default locator boost is cloned from and inherits everything else from the `@boost` it overrides. E.g. the `golemfile.py`. Nothing is restated, so it keeps working as the recipe below it changes.
+
+**Everything comes from the most derived recipe declaring it**, and the fields are independent of each other. The `locator`, the `mirrors` and the project file are each taken from the first recipe in the chain naming one. So a delta declaring only `mirrors` adds them and leaves the locator to the recipe below, and a delta declaring only a `locator` keeps the mirrors below it.
+
+Golem reports the whole chain, most derived first:
+
+```text
+@boost: served by @boost (my-cookbook) -> @boost (@recipes@golemcpp@github.com#v2=fb04dcb6)
+```
+
+**`overrides` names an identity, and it is searched from the overriding recipe's own cookbook downward**. It is never searched in a cookbook listed after it, only cookbooks declared earlier in the list. So what a base cookbook's recipe means never changes with what is layered on top of it.
+
+A recipe passes over itself, which is what lets `@boost` override `@boost`: it finds the `@boost` of the cookbook below rather than itself. But that does not end the search in its own cookbook, e.g. `@json@nlohmann@github.com` overriding its own name finds a `@json` sitting beside it. So one cookbook can hold a general recipe and a delta on it.
+
+Two mistakes are refused rather than worked around. An `overrides` no cookbook at or below it holds:
+
+```text
+ERROR: recipe '@boost' in cookbook 'my-cookbook' overrides '@bosot', and no
+cookbook at or below it holds one.
+```
+
+And a cycle, where a chain reaches a recipe it already used:
+
+```text
+ERROR: cycle in cookbook 'my-cookbook': @a@b@c -> @a@b -> @a@b@c
+```
 
 ### Header-only libraries
 
