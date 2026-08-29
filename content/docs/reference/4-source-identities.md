@@ -110,7 +110,7 @@ The first has a literal `.` in the owner, which is joined with `.`, so the diges
 An identity names a source; it does not name where to fetch it. A [dependency](/docs/project-file/definitions/#dependency) may name one, and the cookbooks supply the rest:
 
 ```python
-project.dependency(name='json', location='@json@nlohmann@github.com', version='^3.0.0')
+project.dependency(name="json", location="@json@nlohmann@github.com", version="^3.0.0")
 ```
 
 Golem asks the cookbooks for a [recipe](/docs/advanced/recipes/) named at that identity, or at any shorter part of it, and clones the locator that recipe declares. Only a dependency may do this. A cookbook and an overlay name where they come from, so they take a locator and nothing else.

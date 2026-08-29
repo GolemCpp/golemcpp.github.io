@@ -53,8 +53,7 @@ Here is an example to compile a **Hello World** program:
 
 ```python {title="golemfile.py"}
 def configure(project):
-    project.program(name='hello',
-                    source=['src'])
+    project.program(name="hello", source=["src"])
 ```
 
 The project variable is the entry point to declare dependencies, libraries and programs that make up the project.

@@ -200,10 +200,12 @@ The simplest example of a recipe would be a header-only library:
 ```python
 def configure(project):
 
-    project.export(name='json',
-                   includes=['single_include'],
-                   header_only=True,
-                   licenses=['LICENSE.MIT'])
+    project.export(
+        name="json",
+        includes=["single_include"],
+        header_only=True,
+        licenses=["LICENSE.MIT"],
+    )
 ```
 
 Here we specify what headers to export and give a target name.
@@ -228,14 +230,14 @@ Golem provides a `scripts` parameter when defining a library to freely specify h
 
 ```python
 def configure(project):
-    project.library(name='mylibrary',
-                    scripts=[script])
+    project.library(name="mylibrary", scripts=[script])
 
-    project.export(name='mylibrary',
-                   includes=['include'])
+    project.export(name="mylibrary", includes=["include"])
+
 
 def script(context):
-  # build script
+    # build script
+    ...
 ```
 
 The script builds the library, and the library definition (`project.library(...)`) expects to find artifacts with a specific naming.
@@ -250,17 +252,19 @@ CMake being a de facto standard, Golem provides a helper function to build a CMa
 
 ```python
 class Context:
-  def cmake_build(self,
-      source_path=None,
-      build_path=None,
-      targets=None,
-      variant=None,
-      link=None,
-      arch=None,
-      options=None,
-      install_prefix=None,
-      prefix_path=None,
-      env=None):
+    def cmake_build(
+        self,
+        source_path=None,
+        build_path=None,
+        targets=None,
+        variant=None,
+        link=None,
+        arch=None,
+        options=None,
+        install_prefix=None,
+        prefix_path=None,
+        env=None,
+    ): ...
 ```
 
 `cmake_build()` runs CMake commands to configure and build the project.
@@ -273,33 +277,34 @@ Here is an example using CMake related helper functions in a script method to be
 
 ```python
 def script(context):
-    context.build_dependency('json')
+    context.build_dependency("json")
 
-    json = context.find_dependency('json')
+    json = context.find_dependency("json")
     if not json:
         raise Exception("Error: Can't find json dependency")
 
     source_path = context.get_project_dir()
 
-    cmake_env = {
-        'NLOHMANN_JSON_VERSION': json.resolved.reference
-    }
+    cmake_env = {"NLOHMANN_JSON_VERSION": json.resolved.reference}
 
     cmake_options = []
 
     if context.is_windows():
-        cmake_options.append('-DCMAKE_CXX_FLAGS=/std:c++17')
+        cmake_options.append("-DCMAKE_CXX_FLAGS=/std:c++17")
 
-    context.cmake_build(source_path=source_path,
-                    targets=['nlohmann_json_schema_validator'],
-                    options=cmake_options,
-                    env=cmake_env)
+    context.cmake_build(
+        source_path=source_path,
+        targets=["nlohmann_json_schema_validator"],
+        options=cmake_options,
+        env=cmake_env,
+    )
 
     context.export_binaries(recursively=True)
 
     context.export_file_to_headers(
-        file_path=os.path.join(source_path, 'src', 'nlohmann', 'json-schema.hpp'),
-        include_path=os.path.join('include', 'json-schema-validator'))
+        file_path=os.path.join(source_path, "src", "nlohmann", "json-schema.hpp"),
+        include_path=os.path.join("include", "json-schema-validator"),
+    )
 ```
 
 ### Other build systems
@@ -319,9 +324,9 @@ Another build system has to be told what to build for, and each one spells an ar
 
 ```python
 class Context:
-  def get_arch(self):
-  def vs_platform(self, arch=None):
-  def get_arch_for_linux(self, arch=None):
+    def get_arch(self): ...
+    def vs_platform(self, arch=None): ...
+    def get_arch_for_linux(self, arch=None): ...
 ```
 
 `get_arch()` returns the [canonical name](/docs/reference/architectures/) of the target, e.g. `'x86_64'`. Use it where the build system takes the same names Golem does, and to branch a recipe on what is being built.
@@ -337,9 +342,9 @@ def script(context):
     source_path = context.get_project_dir()
     build_path = context.get_build_path()
 
-    opt_arch = ['-A', context.vs_platform()] if context.is_windows() else []
+    opt_arch = ["-A", context.vs_platform()] if context.is_windows() else []
 
-    subprocess.call(['cmake', source_path] + opt_arch, cwd=build_path)
+    subprocess.call(["cmake", source_path] + opt_arch, cwd=build_path)
 ```
 
 `cmake_build()` passes `-A` on its own, so a recipe calling it needs none of this.
@@ -350,8 +355,8 @@ To build dependencies needed to build the library helper functions are provided,
 
 ```python
 class Context:
-  def build_dependency(self, dep_name):
-  def find_dependency(self, dep_name):
+    def build_dependency(self, dep_name): ...
+    def find_dependency(self, dep_name): ...
 ```
 
 `build_dependency()` builds the dependency corresponding to `dep_name` and returns a configuration object.
@@ -364,13 +369,13 @@ Once the target is built, to export the artifacts and headers helper functions a
 
 ```python
 class Context:
-  def export_binaries(self, build_path=None, recursively=False):
-  def export_headers(self, source_path, include_path=None):
-  def export_file_to_headers(self, file_path, include_path=None):
+    def export_binaries(self, build_path=None, recursively=False): ...
+    def export_headers(self, source_path, include_path=None): ...
+    def export_file_to_headers(self, file_path, include_path=None): ...
 
-  def make_out_path(self):
-  def prepare_include_export(self, include_path=None):
-  def get_project_dir(self):
+    def make_out_path(self): ...
+    def prepare_include_export(self, include_path=None): ...
+    def get_project_dir(self): ...
 ```
 
 `export_binaries()` copies the artifacts from `build_path` to the output path where the artifacts are expected be found.
@@ -441,34 +446,48 @@ def target_decorator(target_name, config, context):
     # and leave it as target_name in all cases.
     return target_name
 
+
 def artifacts_generator(decorated_target, config, context):
     artifacts = []
     for suffix in context.artifact_suffix(config):
         artifact = context.artifact_prefix(config) + decorated_target + suffix
         artifacts.append(artifact)
-        if suffix == '.so':
+        if suffix == ".so":
             # Linux
-            artifacts.append('{}.{}'.format(artifact,
-                                            context.version.minor))
-            artifacts.append('{}.{}.{}.{}'.format(artifact,
-                                                  context.version.major,
-                                                  context.version.minor,
-                                                  context.version.patch))
-        elif suffix == '.dylib':
+            artifacts.append("{}.{}".format(artifact, context.version.minor))
+            artifacts.append(
+                "{}.{}.{}.{}".format(
+                    artifact,
+                    context.version.major,
+                    context.version.minor,
+                    context.version.patch,
+                )
+            )
+        elif suffix == ".dylib":
             # macOS
             basename_prefix = context.artifact_prefix(config) + decorated_target
-            artifacts.append('{}.{}.dylib'.format(basename_prefix, context.version.minor))
-            artifacts.append('{}.{}.{}.{}.dylib'.format(
-                basename_prefix, context.version.major,
-                context.version.minor, context.version.patch))
+            artifacts.append(
+                "{}.{}.dylib".format(basename_prefix, context.version.minor)
+            )
+            artifacts.append(
+                "{}.{}.{}.{}.dylib".format(
+                    basename_prefix,
+                    context.version.major,
+                    context.version.minor,
+                    context.version.patch,
+                )
+            )
     return artifacts
 
-project.library(name='json-schema-validator',
-                targets=['nlohmann_json_schema_validator'],
-                scripts=[script],
-                deps=['json'],
-                target_decorators=[target_decorator],
-                artifacts_generators=[artifacts_generator])
+
+project.library(
+    name="json-schema-validator",
+    targets=["nlohmann_json_schema_validator"],
+    scripts=[script],
+    deps=["json"],
+    target_decorators=[target_decorator],
+    artifacts_generators=[artifacts_generator],
+)
 ```
 
 ### Calling Git
@@ -479,13 +498,13 @@ To safely call Git commands Golem provides three helper functions, differing in 
 from golemcpp.golem import helpers
 
 # Do it. Raises if it fails.
-helpers.run_git(['reset', '--hard'], cwd=root_of_git_repository)
+helpers.run_git(["reset", "--hard"], cwd=root_of_git_repository)
 
 # Do it and give me what it said. Raises if it fails.
-head = helpers.read_git(['rev-parse', 'HEAD'], cwd=root_of_git_repository)
+head = helpers.read_git(["rev-parse", "HEAD"], cwd=root_of_git_repository)
 
 # Do it and tell me whether it worked. Never raises.
-helpers.try_git(['clean', '-fxd'], cwd=root_of_git_repository)
+helpers.try_git(["clean", "-fxd"], cwd=root_of_git_repository)
 ```
 
 Each one makes sure the working directory is a Git repository before continuing, and refuses a command that would reach a remote outside `golem resolve` or a build script (see [Only resolve reaches a remote](/docs/developers/introduction/#only-resolve-reaches-a-remote)).

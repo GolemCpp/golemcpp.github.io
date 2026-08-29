@@ -24,24 +24,32 @@ Here is how a **golemfile.py** looks like:
 ```python {title="golemfile.py"}
 def configure(project):
 
-    project.dependency(name='json',
-                       repository='https://github.com/nlohmann/json.git',
-                       version='^3.0.0',
-                       shallow=True)
+    project.dependency(
+        name="json",
+        repository="https://github.com/nlohmann/json.git",
+        version="^3.0.0",
+        shallow=True,
+    )
 
-    project.library(name='mylib',
-                    includes=['mylib/include'],
-                    source=['mylib/src'],
-                    defines=['FOO_API_EXPORT'])
+    project.library(
+        name="mylib",
+        includes=["mylib/include"],
+        source=["mylib/src"],
+        defines=["FOO_API_EXPORT"],
+    )
 
-    project.export(name='mylib',
-                   includes=['mylib/include'],
-                   defines=['FOO_API_IMPORT'])
+    project.export(
+        name="mylib",
+        includes=["mylib/include"],
+        defines=["FOO_API_IMPORT"]
+    )
 
-    project.program(name='hello',
-                    source=['src'],
-                    use=['mylib'],
-                    deps=['json'])
+    project.program(
+        name="hello",
+        source=["src"],
+        use=["mylib"],
+        deps=["json"]
+    )
 ```
 
 But alternatively, you can also define an equivalent [golemfile.json](https://github.com/GolemCpp/golem/tree/main/examples/minimal/golemfile.json).

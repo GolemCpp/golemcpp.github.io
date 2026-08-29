@@ -1,3 +1,3 @@
-```python
+```text
 Coming soon!
 ```

@@ -21,24 +21,33 @@ Here are equivalent examples illustrating their structure:
 
 ```python {title="golemfile.py"}
 def configure(project):
-    project.dependency(name='json',
-                       repository='https://github.com/nlohmann/json.git',
-                       version='^3.0.0',
-                       shallow=True)
 
-    project.library(name='mylib',
-                    includes=['mylib/include'],
-                    source=['mylib/src'],
-                    defines=['FOO_API_EXPORT'])
+    project.dependency(
+        name="json",
+        repository="https://github.com/nlohmann/json.git",
+        version="^3.0.0",
+        shallow=True,
+    )
 
-    project.export(name='mylib',
-                   includes=['mylib/include'],
-                   defines=['FOO_API_IMPORT'])
+    project.library(
+        name="mylib",
+        includes=["mylib/include"],
+        source=["mylib/src"],
+        defines=["FOO_API_EXPORT"],
+    )
 
-    project.program(name='hello-minimal',
-                    source=['src'],
-                    use=['mylib'],
-                    deps=['json'])
+    project.export(
+        name="mylib",
+        includes=["mylib/include"],
+        defines=["FOO_API_IMPORT"]
+    )
+
+    project.program(
+        name="hello-minimal",
+        source=["src"],
+        use=["mylib"],
+        deps=["json"]
+    )
 ```
 
 The Python version declares a `configure` function with a `project` parameter. This `project` holds the [definitions](/docs/project-file/definitions/) for [programs](/docs/project-file/definitions/#program), [libraries](/docs/project-file/definitions/#library), [exports](/docs/project-file/definitions/#export), [dependencies](/docs/project-file/definitions/#dependency) and [packages](/docs/project-file/definitions/#package).

@@ -3,6 +3,8 @@
 task = project.program(...)
 
 # apply compiler flags only for gcc
-task.when(compiler='gcc',
-      cxxflags=['-fstack-protector-all'])
+task.when(
+  compiler="gcc",
+  cxxflags=["-fstack-protector-all"]
+)
 ```

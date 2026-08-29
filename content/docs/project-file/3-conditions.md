@@ -16,27 +16,28 @@ seo:
 Every [configuration](/docs/project-file/configurations) can make use of a condition mechanism to conditionally add parameters.
 
 ```python
-task = project.program(name='hello-conditions',
-                       source=['src'])
-task.when(osystem="windows", includes=['src/windows'])
-task.when(osystem="linux", includes=['src/linux'])
-task.when(osystem="macos", includes=['src/macos'])
+task = project.program(name="hello-conditions", source=["src"])
+task.when(osystem="windows", includes=["src/windows"])
+task.when(osystem="linux", includes=["src/linux"])
+task.when(osystem="macos", includes=["src/macos"])
 ```
 
 `project.program()` returns a task, which is in fact a definition to build a program, and since it's a program it also is a configuration, therefore it can make use of the condition mechanism `.when()`. Here is how it works:
 
 ```python
-def when(self,
-         variant=None,
-         link=None,
-         runtime_link=None,
-         runtime_variant=None,
-         osystem=None,
-         arch=None,
-         compiler=None,
-         distribution=None,
-         release=None,
-         <any configuration parameter>)
+def when(
+    self,
+    variant=None,
+    link=None,
+    runtime_link=None,
+    runtime_variant=None,
+    osystem=None,
+    arch=None,
+    compiler=None,
+    distribution=None,
+    release=None,
+    **kwargs,  # any configuration parameter
+): ...
 ```
 
 The `when()` function takes a list of parameters to express _when_ certain configuration parameters should be applied.

@@ -24,27 +24,18 @@ Here how to define a template definition:
 
 ```python
 # Example 1 (in a target definition)
-templates = [
-  'src/version.h.template'
-],
-#...
+templates = ["src/version.h.template"]
 
 # Import
 from golemcpp.golem.template import Template
 
 # Example 2 (in a target definition)
-templates = [
-  Template(source='src/version.h.template')
-],
-#...
+templates = [Template(source="src/version.h.template")]
 
 # Example 3 (in a target definition)
 templates = [
-  Template(source='manifest-data.json.in'
-           target='data/manifest.json',
-           build=False)
-],
-#...
+    Template(source="manifest-data.json.in", target="data/manifest.json", build=False)
+]
 ```
 
 - `source` string to specify the path to the template file

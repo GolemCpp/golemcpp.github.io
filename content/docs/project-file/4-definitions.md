@@ -18,9 +18,10 @@ seo:
 Here is how to define a program:
 
 ```python
-task = project.program(name='hello',
-                       source=['src'],
-                       <any other configuration parameter>)
+task = project.program(
+    name="hello",
+    source=["src"
+) # ...and any other configuration parameter
 ```
 
 `program()` requires a `name`, and accepts any [configuration parameters](/docs/project-file/configurations).
@@ -41,9 +42,10 @@ To learn more about programs with examples have a look at:
 Here is how to define a library:
 
 ```python
-task = project.library(name='mylib',
-                       source=['src'],
-                       <any other configuration parameter>)
+task = project.library(
+    name="mylib",
+    source=["src"]
+) # ...and any other configuration parameter
 ```
 
 `library()` requires a `name`, and accepts any [configuration parameters](/docs/project-file/configurations).
@@ -65,9 +67,10 @@ An export definition allows a `library` to be used by another target. This defin
 Here is how to define an export:
 
 ```python
-task = project.export(name='mylib',
-                      includes=['mylib/include'],
-                      <any other configuration parameter>)
+task = project.export(
+    name="mylib",
+    includes=["mylib/include"]
+) # ...and any other configuration parameter
 ```
 
 Similarly to `program` and `library`...
@@ -87,16 +90,22 @@ An export has to have a name matching the library it is exporting.
 A target (e.g. program or library) needing to link against a library has to refer to the corresponding export by using the `use` parameter. And another export definition can also refer to it similarly, if needed.
 
 ```python
-project.library(name='mylib',
-                includes=['mylib/include'],
-                source=['mylib/src'])
+project.library(
+    name="mylib",
+    includes=["mylib/include"],
+    source=["mylib/src"]
+)
 
-task = project.export(name='mylib',
-                      includes=['mylib/include'])
+task = project.export(
+    name="mylib",
+    includes=["mylib/include"]
+)
 
-project.program(name='hello',
-                source=['hello/src'],
-                use=['mylib'])
+project.program(
+    name="hello",
+    source=["hello/src"],
+    use=["mylib"]
+)
 ```
 
 In this example, the program `'hello'` is built with an additional include directory `'mylib/include'` pulled from the export definition it refers by `use=['mylib']`
@@ -106,13 +115,17 @@ In this example, the program `'hello'` is built with an additional include direc
 Since a library definition is meant to be built, if the library is intended to be header-only, the library definition can be skipped, and remains an export definition with `header_only=True`.
 
 ```python
-project.export(name='foo',
-               includes=['foo/include'],
-               header_only=True)
+project.export(
+    name="foo",
+    includes=["foo/include"],
+    header_only=True
+)
 
-project.program(name='hello',
-                source=['hello/src'],
-                use=['foo'])
+project.program(
+    name="hello",
+    source=["hello/src"],
+    use=["foo"]
+)
 ```
 
 In this situation, no library is built, and program `'hello'` is able to use the header-only library named `'foo'`.
@@ -140,12 +153,14 @@ The recipe may exist in the [default cookbook](/docs/advanced/recipes/#the-defau
 Here is how to define a dependency:
 
 ```python
-task = project.dependency(name='json',
-                          repository='https://github.com/nlohmann/json.git',
-                          version='^3.0.0',
-                          version_regex=None
-                          shallow=True,
-                          <any other configuration parameter>)
+task = project.dependency(
+    name="json",
+    repository="https://github.com/nlohmann/json.git",
+    version="^3.0.0",
+    version_regex=None,
+    shallow=True,
+)
+# ...and any other configuration parameter
 ```
 
 Similarly to `program` and `library`...
@@ -172,25 +187,22 @@ A dependency comes from **one of three** mutually exclusive sources:
 
 ```python
 # A dependency cloned from Git
-project.dependency(name='json',
-                   repository='https://github.com/nlohmann/json.git',
-                   version='^3.0.0')
+project.dependency(
+    name="json", repository="https://github.com/nlohmann/json.git", version="^3.0.0"
+)
 
 # A dependency living next to the project
-project.dependency(name='mylib',
-                   directory='./mylib')
+project.dependency(name="mylib", directory="./mylib")
 
 # The same two, named through `location`
-project.dependency(name='json',
-                   location='git+https://github.com/nlohmann/json.git',
-                   version='^3.0.0')
+project.dependency(
+    name="json", location="git+https://github.com/nlohmann/json.git", version="^3.0.0"
+)
 
-project.dependency(name='mylib',
-                   location='directory+./mylib')
+project.dependency(name="mylib", location="directory+./mylib")
 
 # Kind left to Golem: a local directory Git cannot clone from is copied
-project.dependency(name='mylib',
-                   location='./mylib')
+project.dependency(name="mylib", location="./mylib")
 ```
 
 A `directory` has no version to resolve, so `version`, `version_regex` and `shallow` do not apply to it. Paths are relative to the project file and are normalized internally to `file://...` URLs.
@@ -204,7 +216,7 @@ A `directory` has no version to resolve, so `version`, `version_regex` and `shal
 `location='@boost'` names the source and not where it is. Golem searches the cookbooks for a [recipe](/docs/advanced/recipes/#source-locators) named `@boost`, and clones the locator that recipe declares.
 
 ```python
-project.dependency(name='boost', location='@boost', version='^1.87.0')
+project.dependency(name="boost", location="@boost", version="^1.87.0")
 ```
 
 The version works as it does in any other location, so `location='@boost#^1.87.0'` matches `^1.87.0` against the tags the repository the recipe named publishes.
@@ -263,14 +275,18 @@ A target (e.g. program or library) needing to link against a library in another 
 Here is an example:
 
 ```python
-project.dependency(name='json',
-                   repository='https://github.com/nlohmann/json.git',
-                   version='^3.0.0',
-                   shallow=True)
+project.dependency(
+    name="json",
+    repository="https://github.com/nlohmann/json.git",
+    version="^3.0.0",
+    shallow=True,
+)
 
-project.program(name='hello',
-                source=['hello/src'],
-                deps=['json'])
+project.program(
+    name="hello",
+    source=["hello/src"],
+    deps=["json"]
+)
 ```
 
 In this example, the program `'hello'` refers to a dependency by setting `deps=['json']`. The program will be linked against a library defined in the project file or recipe corresponding to the dependency.
@@ -316,11 +332,9 @@ Other formats are to come.
 Here is how to define a package:
 
 ```python
-package = project.package(name='hello-package',
-                          targets=[
-                              'hello-package'
-                          ],
-                          stripping=True)
+package = project.package(
+    name="hello-package", targets=["hello-package"], stripping=True
+)
 
 package.deb(...)
 package.msi(...)
@@ -348,22 +362,22 @@ The version is retrieved by searching the latest Git tag set on the project. But
 Here is how to define a Debian package:
 
 ```python
-package.deb(prefix='/usr/local',
-            subdirectory='share/example/hello-package',
-            skeleton='dist/deb/skeleton',
-            control='dist/deb/DEBIAN',
-
-            # control parameters
-            section='misc',
-            priority='optional',
-            maintainer='John Doe',
-            description='Example program to illustrate how to package applications with Golem',
-            homepage='https://www.example.com/',
-            depends=['libssl'],
-
-            rpath=None,
-            templates=['share/applications/hello-package.desktop'],
-            copy_skeleton=None)
+package.deb(
+    prefix="/usr/local",
+    subdirectory="share/example/hello-package",
+    skeleton="dist/deb/skeleton",
+    control="dist/deb/DEBIAN",
+    # control parameters
+    section="misc",
+    priority="optional",
+    maintainer="John Doe",
+    description="Example program to illustrate how to package applications with Golem",
+    homepage="https://www.example.com/",
+    depends=["libssl"],
+    rpath=None,
+    templates=["share/applications/hello-package.desktop"],
+    copy_skeleton=None,
+)
 ```
 
 Requires `fakeroot`, `patchelf` and `strip`.
@@ -383,13 +397,15 @@ Requires `fakeroot`, `patchelf` and `strip`.
 Here is how to define a MSI installer:
 
 ```python
-package.msi(skeleton=None,
-            project="dist/msi/wix",
-            extensions=['WixUIExtension'],
-            parameters=None,
-            cultures=['en-us'],
-            installdir_id='INSTALLDIR',
-            installdir_files_id='INSTALLDIR_files')
+package.msi(
+    skeleton=None,
+    project="dist/msi/wix",
+    extensions=["WixUIExtension"],
+    parameters=None,
+    cultures=["en-us"],
+    installdir_id="INSTALLDIR",
+    installdir_files_id="INSTALLDIR_files",
+)
 ```
 
 Requires [WiX 3](https://docs.firegiant.com/wix/wix3/) programs in the PATH (`candle`, `heat`, `light`).
@@ -407,9 +423,11 @@ Requires [WiX 3](https://docs.firegiant.com/wix/wix3/) programs in the PATH (`ca
 Here is how to define a DMG image:
 
 ```python
-package.dmg(name='hello-package',
-            skeleton='dist/dmg/skeleton',
-            background='dist/dmg/background.png')
+package.dmg(
+    name="hello-package",
+    skeleton="dist/dmg/skeleton",
+    background="dist/dmg/background.png",
+)
 ```
 
 - `name` string to specify an alternative name for the package file
@@ -432,6 +450,7 @@ Here is how to define a hook:
 
 ```python
 package.hook(custom_action)
+
 
 def custom_action(context):
     for f in context.files:
