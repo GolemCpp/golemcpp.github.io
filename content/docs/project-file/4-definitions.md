@@ -18,7 +18,7 @@ seo:
 Here is how to define a program:
 
 ```python
-task = project.program(
+definition = project.program(
     name="hello",
     source=["src"
 ) # ...and any other configuration parameter
@@ -26,9 +26,9 @@ task = project.program(
 
 `program()` requires a `name`, and accepts any [configuration parameters](/docs/project-file/configurations).
 
-It returns a `task` definition holding all the important parameters to build the program.
+It returns a definition holding all the important parameters to build the program.
 
-This `task` can make use of the [condition mechanism](/docs/project-file/conditions) `when()` to define conditionnally certain parameters.
+This definition can make use of the [condition mechanism](/docs/project-file/conditions) `when()` to define conditionnally certain parameters.
 
 ### Examples
 
@@ -42,7 +42,7 @@ To learn more about programs with examples have a look at:
 Here is how to define a library:
 
 ```python
-task = project.library(
+definition = project.library(
     name="mylib",
     source=["src"]
 ) # ...and any other configuration parameter
@@ -50,9 +50,9 @@ task = project.library(
 
 `library()` requires a `name`, and accepts any [configuration parameters](/docs/project-file/configurations).
 
-It returns a `task` definition holding all the important parameters to build the library.
+It returns a definition holding all the important parameters to build the library.
 
-This `task` can make use of the [condition mechanism](/docs/project-file/conditions) `when()` to define conditionnally certain parameters.
+This definition can make use of the [condition mechanism](/docs/project-file/conditions) `when()` to define conditionnally certain parameters.
 
 ### Examples
 
@@ -67,7 +67,7 @@ An export definition allows a `library` to be used by another target. This defin
 Here is how to define an export:
 
 ```python
-task = project.export(
+definition = project.export(
     name="mylib",
     includes=["mylib/include"]
 ) # ...and any other configuration parameter
@@ -77,13 +77,15 @@ Similarly to `program` and `library`...
 
 `export()` requires a `name`, and accepts any [configuration parameters](/docs/project-file/configurations).
 
-It returns a `task` definition holding all the important parameters to build the library.
+It returns a definition holding all the important parameters to build the library.
 
-This `task` can make use of the [condition mechanism](/docs/project-file/conditions) `when()` to define conditionnally certain parameters.
+This definition can make use of the [condition mechanism](/docs/project-file/conditions) `when()` to define conditionnally certain parameters.
 
 But...
 
-An export has to have a name matching the library it is exporting.
+An export takes its name from the library it describes the usage. Where the project declares no library of that name, Golem supplies one, so a `header_only=True` export is enough. An export that is not header-only and whose library the project never declared is **refused**.
+
+An export's targets are a view of its library's. It may name fewer of them, and naming none takes all of them.
 
 ### Using a library
 
@@ -96,7 +98,7 @@ project.library(
     source=["mylib/src"]
 )
 
-task = project.export(
+definition = project.export(
     name="mylib",
     includes=["mylib/include"]
 )
@@ -136,9 +138,23 @@ To learn more about exports with examples have a look at:
 
 - <https://github.com/GolemCpp/golem/tree/main/examples/minimal>
 
-## Additional parameters for targets
+## Default exports
 
-Target definitions such as [programs](#program), [libraries](#library) and [exports](#export) can define an additional set of parameters:
+A project may declare which of its exports are meant to be consumed by other projects declaring it as a dependency:
+
+```python
+project.default(exports=["mylib"])
+```
+
+A consumer that declares a dependency without naming an `imports` or a `targets` gets that set instead of every export.
+
+But declaring no default on the project leaves the default to every export the project has.
+
+It is a fallback, never a gate. Anything the project exports can still be asked for.
+
+## Additional parameters for definitions
+
+Definitions such as [programs](#program), [libraries](#library) and [exports](#export) can define an additional set of parameters:
 
 - `templates` list of strings or `Template` objects to specify [template files](/docs/project-file/advanced/#template-files)
 
@@ -153,12 +169,14 @@ The recipe may exist in the [default cookbook](/docs/advanced/recipes/#the-defau
 Here is how to define a dependency:
 
 ```python
-task = project.dependency(
+definition = project.dependency(
     name="json",
     repository="https://github.com/nlohmann/json.git",
     version="^3.0.0",
     version_regex=None,
     shallow=True,
+    imports="json",
+    targets=["json"]
 )
 # ...and any other configuration parameter
 ```
@@ -167,9 +185,11 @@ Similarly to `program` and `library`...
 
 `dependency()` requires a `name`, and accepts any [configuration parameters](/docs/project-file/configurations).
 
-It returns a `task` definition holding all the important parameters to build the library.
+`name` labels the declaration, and it is what `deps=` refers to in a consumer definition. See [Using a dependency](#using-a-dependency).
 
-This `task` can make use of the [condition mechanism](/docs/project-file/conditions) `when()` to define conditionnally certain parameters.
+It returns a definition holding all the important parameters to build the library.
+
+This definition can make use of the [condition mechanism](/docs/project-file/conditions) `when()` to define conditionnally certain parameters.
 
 But...
 
@@ -211,6 +231,27 @@ A `directory` has no version to resolve, so `version`, `version_regex` and `shal
 >
 > Use `location` when you want one field for both, or to name the version alongside it. Add the prefix `directory+` or `git+` to control whether the resource must be copied or cloned.
 
+Optionally, a dependency definition can ask what to build:
+
+- `imports` names [exports](#export) of the dependency, and asks for every target each of them addresses.
+- `targets` names targets of the dependency.
+
+The two are a **union**, not one narrowing the other.
+
+```python
+# Every target the export `boost` publishes
+project.dependency(name="boost", location="@boost", version="*", imports="boost")
+
+# One target, wherever it comes from
+project.dependency(
+    name="boost", location="@boost", version="*", targets=["boost_system"]
+)
+```
+
+No asking for an import or a target asks the dependency for its [default exports](#default-exports), which is every export unless the dependency declares a smaller set.
+
+Also, note that defining configuration parameters on a dependency definition will propagate these parameters to the targets the dependency is asked for. This allows the project to [customize the dependencies](/docs/project-file/advanced/#customization-of-dependencies).
+
 ### Location by identity
 
 `location='@boost'` names the source and not where it is. Golem searches the cookbooks for a [recipe](/docs/advanced/recipes/#source-locators) named `@boost`, and clones the locator that recipe declares.
@@ -243,8 +284,6 @@ The modes also differ in what they are able to find. Every other mode clones `re
 Do not build on that difference. A `version` has to name something the repository advertises. E.g. a tag, a branch, or a commit in their history. Anything else, such as a pull request's head or a commit force-pushed off its branch, is **not meant to be supported**: whether it can be obtained at all is the server's decision, and a commit no ref points at is one the remote's next garbage collection may remove.
 
 Reach for `shallow` when a repository is heavy and its history is of no use to the build. Leave the default alone otherwise: `blobless` already saves most of what a full clone costs and keeps `describe` working.
-
-Also, note that defining configuration parameters on a dependency definition will propagate these parameters to the targets referred to by the `name`, or the `targets` parameter if set. This allows the project to [customize the dependencies](/docs/project-file/advanced/#customization-of-dependencies).
 
 ### Version formats
 

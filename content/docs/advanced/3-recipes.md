@@ -193,6 +193,33 @@ And a cycle, where a chain reaches a recipe it already used:
 ERROR: cycle in cookbook 'my-cookbook': @a@b@c -> @a@b -> @a@b@c
 ```
 
+### Defining the defaults for a consumer project
+
+A recipe may contain exports not meant to be used by a consumer project. And a consumer that names neither an `imports` nor a `targets` gets every one of those exports.
+
+To define a meaningful subset of exports meant to be used by consumer projects, a recipe can define a default set:
+
+```python
+def configure(project):
+    # ...
+    project.default(exports=["boost"])
+```
+
+To learn mode, see [default exports](/docs/project-file/definitions/#default-exports).
+
+### Building only what's asked
+
+A script is handed the request, so a library building several targets can build no more than was asked for:
+
+```python
+def script(context):
+    for target in context.get_targets_to_build():
+        # ...build that one
+        ...
+```
+
+`get_targets_to_build()` names the targets of the definition whose script is running, undecorated, narrowed to what the request named.
+
 ### Header-only libraries
 
 The simplest example of a recipe would be a header-only library:

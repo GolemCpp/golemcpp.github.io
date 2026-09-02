@@ -16,13 +16,13 @@ seo:
 Every [configuration](/docs/project-file/configurations) can make use of a condition mechanism to conditionally add parameters.
 
 ```python
-task = project.program(name="hello-conditions", source=["src"])
-task.when(osystem="windows", includes=["src/windows"])
-task.when(osystem="linux", includes=["src/linux"])
-task.when(osystem="macos", includes=["src/macos"])
+definition = project.program(name="hello-conditions", source=["src"])
+definition.when(osystem="windows", includes=["src/windows"])
+definition.when(osystem="linux", includes=["src/linux"])
+definition.when(osystem="macos", includes=["src/macos"])
 ```
 
-`project.program()` returns a task, which is in fact a definition to build a program, and since it's a program it also is a configuration, therefore it can make use of the condition mechanism `.when()`. Here is how it works:
+`project.program()` returns a definition to build a program, and since it's a program it also is a configuration, therefore it can make use of the condition mechanism `.when()`. Here is how it works:
 
 ```python
 def when(
@@ -68,7 +68,7 @@ Here is a description of these condition parameters:
 
 `arch` accepts every spelling [Architectures](/docs/reference/architectures/) lists and matches it as the canonical name it stands for, so `arch='x64'` matches an `x86_64` build. `osystem` does the same, so `osystem='osx'` matches a macOS one.
 
-In our previous example, `task.when(osystem="windows", includes=['src/windows'])` adds `'src/windows'` to the `includes` parameter of the task only if the current platform is **Windows**.
+In our previous example, `definition.when(osystem="windows", includes=['src/windows'])` adds `'src/windows'` to the `includes` parameter of the definition only if the current platform is **Windows**.
 
 ## Examples
 

@@ -34,6 +34,6 @@ golem build [options]
 
 - `--targets=<target1>,<target2>,...`
 
-  Select targets to build
+  Select targets to build. A [definition](/docs/project-file/definitions/) naming no `targets` builds one named after itself, so `--targets=mylib` selects the library `mylib`.
 
   Default: Select all the targets
