@@ -41,7 +41,7 @@ Whichever form it takes, what Golem records is the commit a checkout lands on. A
 
 Everything after the first `#` is the version, so a namespaced ref such as `release/1.2.3` needs no escaping. But `#` is also a legal character in a path, so for a **local path** Golem tests the path exactly as written first, keeping any version-looking segment in the path. Only when nothing is there does Golem read what follows the `#` as the version. Every other form always splits at the first `#`.
 
-Naming no version asks for the repository's **default branch**, which is what a plain `git clone` gives you. Golem asks the remote which branch that is, so you do not have to know whether it is called `main` or `master`. Writing `#HEAD` asks for the same thing.
+Naming no version asks for the **newest release** the repository publishes as a tag, falling back to its **default branch** where it publishes no version tag. Writing `#HEAD` asks for the default branch outright. Golem asks the remote which branch that is, so you do not have to know whether it is called `main` or `master`. And `#*` asks for the newest release and fails where there is none.
 
 The version may instead be a **semver range** (`^1.2.0`, `~1.2`, `>=1.0.0 <2.0.0`), which Golem matches against the tags the remote publishes.
 

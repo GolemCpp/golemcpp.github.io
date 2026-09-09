@@ -1,12 +1,18 @@
 ```python
 # triggers the recipe mechanism
 project.dependency(
-  name="json",
-  repository="https://github.com/nlohmann/json.git",
-  version="^3.0.0",  # Resolves to v3.12.0
-  shallow=True,
+  ..., # more options
+  repository="https://github.com/nlohmann/json.git"
+  # asking no version asks for the latest release
 )
 
-# link the dependency
-project.program(..., deps=["json"])
+# link the dependency, and further declare more dependencies
+project.program(
+  ...,
+  deps=[
+    "@json", # matches the fully declared dependency above
+    "@gsl@microsoft#^4.0.0" # resolves to v4.2.2
+                            # delegate the remote URL to the recipe
+  ]
+)
 ```

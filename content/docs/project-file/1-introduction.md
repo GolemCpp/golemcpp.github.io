@@ -22,13 +22,6 @@ Here are equivalent examples illustrating their structure:
 ```python {title="golemfile.py"}
 def configure(project):
 
-    project.dependency(
-        name="json",
-        repository="https://github.com/nlohmann/json.git",
-        version="^3.0.0",
-        shallow=True,
-    )
-
     project.library(
         name="mylib",
         includes=["mylib/include"],
@@ -46,7 +39,7 @@ def configure(project):
         name="hello-minimal",
         source=["src"],
         use=["mylib"],
-        deps=["json"]
+        deps=["@json@nlohmann"]
     )
 ```
 
@@ -54,14 +47,6 @@ The Python version declares a `configure` function with a `project` parameter. T
 
 ```json {title="golemfile.json"}
 {
-  "dependencies": [
-    {
-      "name": "json",
-      "repository": "https://github.com/nlohmann/json.git",
-      "version": "^3.0.0",
-      "shallow": true
-    }
-  ],
   "targets": [
     {
       "name": "mylib",
@@ -75,7 +60,7 @@ The Python version declares a `configure` function with a `project` parameter. T
       "type": "program",
       "source": ["src"],
       "use": ["mylib"],
-      "deps": ["json"]
+      "deps": ["@json@nlohmann"]
     }
   ],
   "exports": [

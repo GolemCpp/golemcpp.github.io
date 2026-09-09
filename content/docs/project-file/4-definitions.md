@@ -293,7 +293,11 @@ Regarding the `version`, multiple formats are accepted:
 - Branch name (e.g. `main`, `master`, `develop`)
 - Tag (e.g. `v1.0.0`)
 - Node SemVer to search a version tag. (e.g. `^3.0.0`)
-- Nothing at all, or `HEAD`, for the repository's default branch
+- `*`, for the newest release, which requires the repository to publish one with a tag
+- `HEAD`, for the repository's default branch
+- Nothing at all, for the newest release, falling back to the default branch where the repository publishes no version tag
+
+Naming no version asks for what a project usually wants, and it always resolves.
 
 The **Node SemVer** format allows to define a search range of versions. This mechanism is inpired by what [NodeJS does](https://semver.npmjs.com/).
 
@@ -329,6 +333,48 @@ project.program(
 ```
 
 In this example, the program `'hello'` refers to a dependency by setting `deps=['json']`. The program will be linked against a library defined in the project file or recipe corresponding to the dependency.
+
+### Referring to a source directly
+
+A `deps` entry is a declared `name`, matched exactly, or a **source**. An entry matching no declaration declares the dependency itself, so the example above is usually written:
+
+```python
+project.program(
+    name="hello",
+    source=["hello/src"],
+    deps=["@json"]
+)
+```
+
+A source is written the way `location` takes one. E.g. a [source identity](/docs/reference/source-identities/), a repository URL, or a path. And a source may name a version after a `#`:
+
+```python
+project.program(
+    name="hello",
+    source=["hello/src"],
+    deps=["@boost#^1.87.0", "./mylib", "https://github.com/microsoft/GSL.git"]
+)
+```
+
+A declared name always wins. Two entries naming one source and one version share the dependency they declare. Two entries asking for different versions get one each.
+
+**A dependency declared this way carries only what the entry says**: the source, and the [version](#version-formats) if the entry names one. Everything else takes its default, so the dependency is asked for its [default exports](#default-exports), cloned the ordinary way rather than `shallow`, and built for the `variant` and `link` the project is. Wanting any of those, or an `imports` and `targets` of its own, or any other [configuration parameter](/docs/project-file/configurations), means declaring the dependency.
+
+Declaring one does not mean naming it. A declaration with no `name` is referred to by its identity, and the `deps` entry must be as much or less qualified to match it:
+
+```python
+# Using an identity delegates knowledge of the remote URL to the corresponding recipe.
+project.dependency(location="@json@nlohmann", version="^3.0.0")
+
+project.program(name="hello", source=["hello/src"], deps=["@json"]) # Less qualified, works
+
+# Using a remote URL doesn't prevent the existence of an identity.
+project.dependency(location="https://github.com/microsoft/GSL.git") # @gsl@microsoft@github.com
+
+project.program(name="hello", source=["hello/src"], deps=["@gsl"]) # Less qualified, works
+```
+
+> [!NOTE]+ An entry that is neither a declared name nor a usable source is **refused**.
 
 ### Commands
 

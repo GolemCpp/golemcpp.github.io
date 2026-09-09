@@ -83,7 +83,7 @@ Example of a cloned repository in a cached dependency: `@json@nlohmann@github.co
 
 A cache key must be usable as a single directory name on every platform Golem runs on. A revision that is not a commit, a branch or a tag, which is what a cookbook or an overlay is cached at, is therefore spelled with the characters a directory name may hold, lowercased, then followed by `=` and a digest of the revision as written:
 
-- `@recipes@golemcpp@github.com` : a cookbook asking for no version, so the default branch
+- `@recipes@golemcpp@github.com` : a cookbook asking for no version, so its newest release
 - `@recipes@golemcpp@github.com#main=0d6e4079` : the `main` branch of a cookbook
 - `@lib@acme@github.com#release~1.2.3=88ded651` : the `release/1.2.3` tag
 
