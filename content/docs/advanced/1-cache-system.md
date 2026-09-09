@@ -15,7 +15,7 @@ seo:
 
 Have a look at [examples/cache](https://github.com/GolemCpp/golem/tree/main/examples/cache) to find a working example illustrating the concepts described in this section.
 
-Every cached resource carries a `.golem-manifest.json` descriptor at its root recording its kind, the source it was obtained from and what that fetch left there. Use [golem cache](/docs/commands/golem-cache/) to list, size, and clean cached resources across the configured caches.
+Every cached resource carries a `resource.json` descriptor at its root recording its kind, the source it was obtained from and what that fetch left there. Use [golem cache](/docs/commands/golem-cache/) to list, size, and clean cached resources across the configured caches.
 
 ## How cache settings are resolved
 
@@ -36,13 +36,13 @@ A cached resource is a directory holding what Golem fetched plus what it built f
 
 ```text
 <cache>/dependencies/@json@nlohmann@github.com#65ee684/
-├── .golem-manifest.json   the descriptor: kind, source, what was fetched, timestamps
+├── resource.json          the descriptor: kind, source, what was fetched, timestamps
 ├── source/                the git clone (or the copied directory)
 ├── include/               headers exposed to the calling project
 └── <build-slug>/          artifacts, per platform/compiler/variant
 ```
 
-Note that every resource kind has at least `.golem-manifest.json` and `source/` in its cache location.
+Note that every resource kind has at least `resource.json` and `source/` in its cache location.
 
 The directory name is a [source identity](/docs/reference/source-identities/) and the version it landed on. Golem composes that identity from the locator.
 
@@ -150,7 +150,7 @@ On Windows, `cl.exe` and cannot handle paths longer than about 255 characters. B
 
 It applies uniformly to every resource kind — dependencies, cookbooks, overlays, and tools — and the setting is forwarded to dependency sub-builds so the whole dependency graph uses the same layout.
 
-A minimized resource is still fully described by its `.golem-manifest.json`, so [golem cache](/docs/commands/golem-cache/) reports its real kind and source regardless of where it is stored.
+A minimized resource is still fully described by its `resource.json`, so [golem cache](/docs/commands/golem-cache/) reports its real kind and source regardless of where it is stored.
 
 ### Priority to existing non-minimized resources
 

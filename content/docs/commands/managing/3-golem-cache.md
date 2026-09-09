@@ -41,7 +41,7 @@ When the build directory does not exist or the project was never configured, `go
 
 ## Resource manifests
 
-Every resource newly stored in a cache carries a small `.golem-manifest.json` descriptor at its root. It records the resource **kind**, its **cache key**, the **source** it was obtained from, what that **fetch** left there, the **manifest schema version** (so the on-disk layout can evolve), and **created** / **last used** timestamps. This lets Golem manage cached resources without relying on their opaque directory names.
+Every resource newly stored in a cache carries a small `resource.json` descriptor at its root. It records the resource **kind**, its **cache key**, the **source** it was obtained from, what that **fetch** left there, the **manifest schema version** (so the on-disk layout can evolve), and **created** / **last used** timestamps. This lets Golem manage cached resources without relying on their opaque directory names.
 
 Every resource kind — dependency, cookbook, overlay, tool — describes its source the same way:
 
