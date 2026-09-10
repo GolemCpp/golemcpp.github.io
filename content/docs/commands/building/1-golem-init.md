@@ -46,7 +46,8 @@ golem init [--project-dir=<project_dir>] [--force]
   golem build
   ```
 
-- If you later add dependencies, with `project.dependency(...)` or by [referring to a source](/docs/project-file/definitions/#referring-to-a-source-directly) from `deps`, run:
+- The generated file shows both ways to add a dependency: declaring one with `project.dependency(...)` under a local name, and [naming a source](/docs/project-file/definitions/#referring-to-a-source-directly) in `deps` with an optional `#<version>`.
+- If you later add dependencies, either way, run:
 
   ```bash
   golem resolve
