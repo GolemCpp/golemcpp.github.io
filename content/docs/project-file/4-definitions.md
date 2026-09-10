@@ -164,7 +164,7 @@ Dependency definitions allow a project to refer to another project. Doing so, li
 
 Any repository can be a dependency. If the dependency is using Golem, it can be used seemlessly. If the dependency is not using Golem, it needs a recipe to work.
 
-The recipe may exist in the [default cookbook](/docs/advanced/recipes/#the-default-cookbook). But a [custom cookbook](/docs/advanced/recipes/#custom-cookbooks) can also be set independently.
+The recipe may exist in the [default cookbook](/docs/advanced/recipes/#the-default-cookbook). But a [custom cookbook](/docs/advanced/recipes/#custom-cookbooks) can also be set independently. No registry is involved in any of this. See [Sources, not Packages](/docs/guides/sources-not-packages/).
 
 Here is how to define a dependency:
 

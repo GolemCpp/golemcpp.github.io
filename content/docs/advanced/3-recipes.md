@@ -17,6 +17,8 @@ Golem aware dependencies, those having Golem project file defined at their root,
 
 A collection of recipes is a **cookbook**.
 
+Coming from a package manager, this is where the two models part: a cookbook holds no registry and owns no name. See [Sources, not Packages](/docs/guides/sources-not-packages/).
+
 ## The default cookbook
 
 **Contributions to the default cookbook are very welcome!**

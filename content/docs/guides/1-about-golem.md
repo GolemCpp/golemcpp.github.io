@@ -17,9 +17,11 @@ Golem is a cross-platform build system for C/C++ projects.
 
 It can build projects like CMake does, or manage dependencies like Conan does. It only requires Python and Git to work.
 
+Dependencies work without a package registry, which is where Golem differs most from what you may expect. See [Sources, not Packages](/docs/guides/sources-not-packages/).
+
 Golem's main goal is to remove the noise in the project file, and favor the developers intents rather than the technical details when unneeded.
 
-Here is how a **golemfile.py** looks like:
+Here is what a **golemfile.py** looks like:
 
 ```python {title="golemfile.py"}
 def configure(project):

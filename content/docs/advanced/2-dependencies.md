@@ -15,6 +15,8 @@ seo:
 
 Have a look at [examples/dependencies](https://github.com/GolemCpp/golem/tree/main/examples/dependencies) to find a working example illustrating the concepts described in this section.
 
+This section assumes the model Golem uses. [Sources, not Packages](/docs/guides/sources-not-packages/) introduces it.
+
 ## Management and Conflict mitigation
 
 It is expected in a complex project that dependencies have some dependencies in common, and sometimes they are conflicting with each other.
@@ -23,7 +25,7 @@ The `overrides.json` file solves this issue by overriding how dependencies shoul
 
 > [!TIP]+ The most common use cases are forcing a specific version or forcing the release variant on a dependency accross a whole dependency tree.
 
-Here is how a it looks like:
+Here is what a it looks like:
 
 ```json {title="overrides.json"}
 [

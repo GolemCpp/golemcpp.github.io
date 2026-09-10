@@ -15,7 +15,7 @@ seo:
 
 Golem names a directory after the source it holds: the recipe directory in a [cookbook](/docs/advanced/recipes/), the cache root of a dependency, the file a remote's advertisement is kept in. That name is a **source identity**, and it is derived from the repository URL alone.
 
-This page is the grammar. If you are writing a recipe and only need the directory name for one library, [Recipes](/docs/advanced/recipes/) has the short answer.
+This page is the grammar. If you are writing a recipe and only need the directory name for one library, [Recipes](/docs/advanced/recipes/) has the short answer. If you are coming from a package manager and wondering where the registry is, [Sources, not Packages](/docs/guides/sources-not-packages/) covers that instead.
 
 ## The grammar
 
