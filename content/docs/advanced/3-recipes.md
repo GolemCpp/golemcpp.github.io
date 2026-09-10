@@ -59,7 +59,7 @@ Other shapes (e.g. an SSH clone, a path on your machine, a name Golem had to spe
 | `git@github.com:nlohmann/json.git` | `@json@nlohmann@github.com@scp.git` | `@json@nlohmann@github.com`      |
 | `https://git.corp/team/json.git`   | `@json@team@git.corp`               | `@json`, if a cookbook holds one |
 
-So a recipe is named at the qualification that makes it unambiguous, and no further: `@boost` for a package everyone means the same thing by, `@json@nlohmann` where the name alone is not enough, the host only where the owner would still be. The shorter the name, the more remotes one recipe serves (e.g. a fork, an internal mirror, an SSH clone) and the longer it is, the more narrowly it serves.
+So a recipe is named at the qualification that makes it unambiguous, and no further: `@boost` for a source everyone means the same thing by, `@json@nlohmann` where the name alone is not enough, the host only where the owner would still be. The shorter the name, the more remotes one recipe serves (e.g. a fork, an internal mirror, an SSH clone) and the longer it is, the more narrowly it serves.
 
 **Every lookup reports which recipe served it**, so a recipe serving at a shorter qualification is something you read rather than something you notice:
 
