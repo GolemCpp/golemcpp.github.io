@@ -14,7 +14,7 @@ seo:
   noindex: false # false (default) or true
 ---
 
-This command resolves the version of each dependency, clones them in the cache system, and configures them.
+This command resolves the version of each dependency and clones them in the cache system.
 
 When defining **dependencies** in the project file, this command becomes **mandatory** after `golem configure`.
 
@@ -32,10 +32,10 @@ golem resolve [options]
 
 - `--only-update-dependencies-regex=<regex>`
 
-  Allows to perform a version resolution and eventually retrieve and configure a new version of the dependencies having a repository matching the regex.
+  Allows to perform a version resolution and eventually retrieve a new version of the dependencies having a repository matching the regex.
 
-  Unmatched dependencies keep their version resolved to their previous value, but are configured too.
+  Unmatched dependencies keep their version resolved to their previous value.
 
-  This option is meant to be used after a `golem resolve` already fully resolved and configured all the needed dependencies at least once. This helps to update certain dependencies expected to have changed, e.g. when following a development branch.
+  This option is meant to be used after a `golem resolve` already fully resolved all the needed dependencies at least once. This helps to update certain dependencies expected to have changed, e.g. when following a development branch.
 
   Default: Matches all the dependencies
